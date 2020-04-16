@@ -1,0 +1,4 @@
+4/16/2020
+- Seen / Unseen message
+- new SearchActivity
+- Database improve, create chatlist to show in ChatsFragment

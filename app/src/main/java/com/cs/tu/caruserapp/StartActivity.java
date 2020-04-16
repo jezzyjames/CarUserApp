@@ -10,7 +10,6 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//Test
 public class StartActivity extends AppCompatActivity {
 
     Button login, register;

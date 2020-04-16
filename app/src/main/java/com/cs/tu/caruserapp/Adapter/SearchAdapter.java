@@ -17,17 +17,16 @@ import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
-import com.cs.tu.caruserapp.SearchActivity;
 
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     View view;
 
     private Context mContext;
     private List<User> mUsers;
 
-    public UserAdapter(Context mContext, List<User> mUsers) {
+    public SearchAdapter(Context mContext, List<User> mUsers) {
         this.mContext = mContext;
         this.mUsers = mUsers;
     }
@@ -36,14 +35,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //Store user_item layout into view
-        if(mContext instanceof SearchActivity){
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_search_result, parent, false);
-        }else{
-            //return "holder" that carrying layout "view" to onBindViewHolder
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
-        }
-
-        return new UserAdapter.ViewHolder(view);
+        view = LayoutInflater.from(mContext).inflate(R.layout.user_search_result, parent, false);
+        //return "holder" that carrying layout "view" to onBindViewHolder
+        return new SearchAdapter.ViewHolder(view);
 
     }
 
@@ -57,27 +51,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
 
-        if(mContext instanceof SearchActivity) {
-            holder.btn_chat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
+        holder.btn_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                intent.putExtra("userid", user.getId());
+                mContext.startActivity(intent);
 
-                }
-            });
-        }else{
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
-
-                }
-            });
-        }
+            }
+        });
 
     }
 

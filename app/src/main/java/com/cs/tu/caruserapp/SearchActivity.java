@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
+import com.cs.tu.caruserapp.Fragments.SearchFragment;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,89 +36,34 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity {
-
-    CircleImageView profile_image;
-    TextView username;
-
-    FirebaseUser firebaseUser;
-    DatabaseReference reference;
+public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-
-        profile_image = findViewById(R.id.profile_image);
-        username = findViewById(R.id.username);
-
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
+        getSupportActionBar().setTitle("Search");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if(user.getImageURL().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else{
-                    //set Image URL to profile_image
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onClick(View v) {
+                finish();
             }
         });
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
         ViewPager viewPager = findViewById(R.id.view_pager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         //set viewPagerAdapter with fragments
-        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+        viewPagerAdapter.addFragment(new SearchFragment(), "Users");
 
         //connect viewPager to adapter
         viewPager.setAdapter(viewPagerAdapter);
 
-        //connect tabLayout to viewPager
-        tabLayout.setupWithViewPager(viewPager);
-
-    }
-
-    //show menu on top
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    //Signout if logout has been selected
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class));
-                finish();
-                return true;
-
-            case R.id.search_button:
-                Toast.makeText(this, "Search Cliked!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-
-        }
-
-        return false;
     }
 
     //Setup ViewPageAdapter properties
@@ -153,4 +100,5 @@ public class MainActivity extends AppCompatActivity {
             return titles.get(position);
         }
     }
+
 }

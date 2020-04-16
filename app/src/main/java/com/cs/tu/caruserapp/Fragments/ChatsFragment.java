@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
 import com.cs.tu.caruserapp.Model.Chat;
+import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChatsFragment extends Fragment {
 
@@ -38,7 +39,7 @@ public class ChatsFragment extends Fragment {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
 
-    private List<String> usersList;
+    private List<Chatlist> usersList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,78 +55,58 @@ public class ChatsFragment extends Fragment {
 
             usersList = new ArrayList<>();
 
-            //refer database branch "Chats"
-            reference = FirebaseDatabase.getInstance().getReference("Chats");
-            //Read data from reference
+            reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(firebaseUser.getUid());
             reference.addValueEventListener(new ValueEventListener() {
-                //Found data
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     usersList.clear();
-
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        Chat chat = snapshot.getValue(Chat.class);
-
-                        //store opposite user id into userList ArrayList
-                        if(chat.getSender().equals(firebaseUser.getUid())){
-                            usersList.add((chat.getReceiver()));
-                        }
-                        if(chat.getReceiver().equals(firebaseUser.getUid())){
-                            usersList.add(chat.getSender());
-                        }
+                        Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                        //add all users that you are chatting with from Chatlist(Database) in userList
+                        usersList.add(chatlist);
                     }
-
-                    readChats();
+                    //show all users that you are chatting with on screen
+                    chatList();
                 }
+
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e("", databaseError.getMessage());
+
                 }
             });
 
             return view;
     }
 
-    private void readChats(){
+    private void chatList() {
         mUsers = new ArrayList<>();
-
         reference = FirebaseDatabase.getInstance().getReference("Users");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
-
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-
-                    //display user in chat tab
-                    for(String id : usersList){
-                        if(user.getId().equals(id)){
-                            //if user id is exist in array dont add (add only 1 time)
-                            if(mUsers.size() != 0){
-                                for(User user1 : mUsers){
-                                    if(!user.getId().equals(user1.getId())){
-                                        mUsers.add(user);
-                                    }
-                                }
-                            }else{
-                                //add user id that want to show in chat tab in mUser ArrayList
-                                mUsers.add(user);
-                            }
+                    for(Chatlist chatlist : usersList){
+                        //if users id in database equal to users id in userList (users that you are chatting with)
+                        if(user.getId().equals(chatlist.getId())){
+                            //add that user to mUsers to show on Chat fragment page view
+                            mUsers.add(user);
                         }
                     }
                 }
-
                 userAdapter = new UserAdapter(getContext(), mUsers);
                 recyclerView.setAdapter(userAdapter);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("", databaseError.getMessage());
+
             }
         });
     }
+
+
 }
