@@ -1,4 +1,9 @@
+*--Changelog--*
+
 4/16/2020
 - Seen / Unseen message
 - new SearchActivity
 - Database improve, create chatlist to show in ChatsFragment
+- Login/Register progressing response (prevent users click button many times)
+4/18/2020
+- Notification

@@ -11,12 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
+import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
+import com.cs.tu.caruserapp.Notification.Token;
 import com.cs.tu.caruserapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +47,8 @@ public class ChatsFragment extends Fragment {
     DatabaseReference reference;
 
     private List<Chatlist> usersList;
+
+    private static final String TAG = "ChatFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +85,9 @@ public class ChatsFragment extends Fragment {
                 }
             });
 
-            return view;
+        updateToken();
+
+        return view;
     }
 
     private void chatList() {
@@ -106,6 +117,31 @@ public class ChatsFragment extends Fragment {
 
             }
         });
+
+    }
+
+    private void updateToken(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+                        Token tokenl = new Token(token);
+                        reference.child(firebaseUser.getUid()).setValue(tokenl);
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                    }
+                });
     }
 
 

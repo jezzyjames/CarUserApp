@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     MaterialEditText username, email, password;
     Button btn_register;
+    ProgressBar register_progress;
 
     FirebaseAuth auth;
     DatabaseReference regference;
@@ -44,6 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         btn_register = findViewById(R.id.btn_register);
+        register_progress = findViewById(R.id.register_progress);
+        register_progress.setVisibility(View.INVISIBLE);
 
         auth = FirebaseAuth.getInstance();
 
@@ -56,10 +60,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(txt_username) || TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)){
                     Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+
                 }else if(txt_password.length() < 8){
                     Toast.makeText(RegisterActivity.this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+
                 }else{
+                    btn_register.setVisibility(View.INVISIBLE);
+                    register_progress.setVisibility(View.VISIBLE);
                     register(txt_username, txt_email, txt_password);
+
                 }
             }
         });
@@ -101,6 +110,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                         }else{
                             Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                            register_progress.setVisibility(View.INVISIBLE);
+                            btn_register.setVisibility(View.VISIBLE);
                         }
                     }
                 });

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     MaterialEditText email, password;
     Button btn_login;
+    ProgressBar login_progress;
 
     FirebaseAuth auth;
 
@@ -39,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         btn_login = findViewById(R.id.btn_login);
+        login_progress = findViewById(R.id.login_progress);
+        login_progress.setVisibility(View.INVISIBLE);
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +52,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)){
                     Toast.makeText(LoginActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+
                 }else{
+                    btn_login.setVisibility(View.INVISIBLE);
+                    login_progress.setVisibility(View.VISIBLE);
+
                     auth.signInWithEmailAndPassword(txt_email, txt_password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -63,6 +71,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                     }else{
                                         Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
+                                        login_progress.setVisibility(View.INVISIBLE);
+                                        btn_login.setVisibility(View.VISIBLE);
+
                                     }
                                 }
                             });

@@ -43,14 +43,41 @@
             app:met_floatingLabel="normal"
             android:hint="Password"/>
 
-        <Button
+<!--        <Button-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Login"-->
+<!--            android:id="@+id/btn_login"-->
+<!--            android:background="@color/colorPrimaryDark"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:textColor="#fff"/>-->
+
+<!--        <ProgressBar-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
-            android:id="@+id/btn_login"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:textColor="#fff"/>
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/btn_login"
+                android:background="@color/colorPrimaryDark"
+                android:layout_marginTop="10dp"
+                android:textColor="#fff"/>
+
+            <ProgressBar
+                android:id="@+id/login_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 
