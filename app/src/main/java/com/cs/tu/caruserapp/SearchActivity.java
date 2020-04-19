@@ -1,47 +1,59 @@
 package com.cs.tu.caruserapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cs.tu.caruserapp.Fragments.ChatsFragment;
-import com.cs.tu.caruserapp.Fragments.SearchFragment;
 import com.cs.tu.caruserapp.Model.User;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchActivity extends AppCompatActivity {
 
+    EditText search_users;
+
+    CardView cardview_result;
+    ImageButton btn_search;
+    CircleImageView image_profile;
+    TextView txt_username;
+    Button btn_chat;
+    TextView cant_chat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        cardview_result = findViewById(R.id.cardview_result);
+        search_users = findViewById(R.id.search_users);
+        btn_search = findViewById(R.id.btn_search);
+        image_profile = findViewById(R.id.profile_image);
+        txt_username = findViewById(R.id.txt_username);
+        btn_chat = findViewById(R.id.btn_chat);
+        cant_chat = findViewById(R.id.cant_chat);
+
+        cardview_result.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,51 +66,79 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        search_users.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    searchUsers(search_users.getText().toString().toLowerCase());
+                    return true;
+                }
+                return false;
+            }
+        });
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        //set viewPagerAdapter with fragments
-        viewPagerAdapter.addFragment(new SearchFragment(), "Users");
-
-        //connect viewPager to adapter
-        viewPager.setAdapter(viewPagerAdapter);
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchUsers(search_users.getText().toString().toLowerCase());
+            }
+        });
 
     }
 
-    //Setup ViewPageAdapter properties
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    private void searchUsers(String s) {
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search_name").equalTo(s);
 
-        private ArrayList<Fragment> fragments;
-        private ArrayList<String> titles;
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        final User user = snapshot.getValue(User.class);
+                        assert user != null;
+                        assert firebaseUser != null;
 
-        ViewPagerAdapter(FragmentManager fm){
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-            this.fragments = new ArrayList<>();
-            this.titles = new ArrayList<>();
-        }
+                        txt_username.setText(user.getUsername());
+                        if(user.getImageURL().equals("default")){
+                            image_profile.setImageResource(R.mipmap.ic_launcher);
+                        }else{
+                            Glide.with(getApplicationContext()).load(user.getImageURL()).into(image_profile);
+                        }
+                        cardview_result.setVisibility(View.VISIBLE);
 
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
+                        //if search result is your own id
+                        if (!user.getId().equals(firebaseUser.getUid())) {
+                            btn_chat.setVisibility(View.VISIBLE);
+                            cant_chat.setVisibility(View.INVISIBLE);
+                            btn_chat.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                                    intent.putExtra("userid", user.getId());
+                                    startActivity(intent);
 
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
+                                }
+                            });
 
-        public void addFragment(Fragment fragment, String title){
-            fragments.add(fragment);
-            titles.add(title);
-        }
+                        }else{
+                            btn_chat.setVisibility(View.INVISIBLE);
+                            cant_chat.setVisibility(View.VISIBLE);
+                        }
+                }
+                }else{
+                    Toast.makeText(SearchActivity.this, "ID not found", Toast.LENGTH_SHORT).show();
+                    cardview_result.setVisibility(View.INVISIBLE);
+                }
+            }
 
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles.get(position);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("", databaseError.getMessage());
+            }
+        });
+
     }
+
 
 }

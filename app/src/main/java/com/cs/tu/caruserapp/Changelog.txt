@@ -9,3 +9,7 @@
 - Notification
 4/19/2020
 - Profile Activity
+- Build SearchActivity instead SearchFragment
+    + use card view for search result
+    + improve search box and search result
+    + search keyboard layout and ActionListener

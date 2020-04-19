@@ -11,11 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
-import com.cs.tu.caruserapp.MainActivity;
-import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Token;
@@ -34,7 +31,6 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChatsFragment extends Fragment {
 

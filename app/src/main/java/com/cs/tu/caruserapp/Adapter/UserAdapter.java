@@ -13,12 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
-import com.cs.tu.caruserapp.SearchActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,13 +44,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //Store user_item layout into view
-        if(mContext instanceof SearchActivity){
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_search_result, parent, false);
-        }else{
-            //return "holder" that carrying layout "view" to onBindViewHolder
-            view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
-        }
+        view = LayoutInflater.from(mContext).inflate(R.layout.user_item, parent, false);
 
+        //return "holder" that carrying layout "view" to onBindViewHolder
         return new UserAdapter.ViewHolder(view);
 
     }
@@ -67,30 +61,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
         }
 
-        if(mContext instanceof SearchActivity) {
-            holder.btn_chat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
+        //Show last message on user list
+        lastMessage(user.getId(), holder.last_msg);
 
-                }
-            });
-        }else{
-            //Show last message on user list
-            lastMessage(user.getId(), holder.last_msg);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MessageActivity.class);
+                intent.putExtra("userid", user.getId());
+                mContext.startActivity(intent);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, MessageActivity.class);
-                    intent.putExtra("userid", user.getId());
-                    mContext.startActivity(intent);
-
-                }
-            });
-        }
+            }
+        });
 
     }
 
