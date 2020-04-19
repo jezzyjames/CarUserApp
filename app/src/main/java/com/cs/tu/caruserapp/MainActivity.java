@@ -74,6 +74,20 @@ public class MainActivity extends AppCompatActivity {
                     //set Image URL to profile_image
                     Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
+
+                profile_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    }
+                });
+                username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    }
+                });
+
             }
 
             @Override
@@ -151,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.search_button:
-                Toast.makeText(this, "Search Cliked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
 

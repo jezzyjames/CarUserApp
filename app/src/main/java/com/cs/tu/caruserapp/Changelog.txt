@@ -7,3 +7,5 @@
 - Login/Register progressing response (prevent users click button many times)
 4/18/2020
 - Notification
+4/19/2020
+- Profile Activity
