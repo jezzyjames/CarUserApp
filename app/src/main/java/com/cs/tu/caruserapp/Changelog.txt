@@ -10,6 +10,8 @@
 4/19/2020
 - Profile Activity
 - Build SearchActivity instead SearchFragment
-    + use card view for search result
-    + improve search box and search result
-    + search keyboard layout and ActionListener
+                                                   + use card view for search result
+                                                   + improve search box and search result
+                                                   + search keyboard layout and ActionListener
+4/20/2020
+- Notify unread number on chatlist

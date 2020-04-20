@@ -64,8 +64,6 @@ public class MessageActivity extends AppCompatActivity {
 
     ValueEventListener seenListener;
 
-    String userid;
-
     APIService apiService;
 
     boolean notify = false;
@@ -185,7 +183,7 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(hashMap);
 
-
+        //Add chatlist to sender ID
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(firebaseUser.getUid())
                 .child(receiver);
@@ -204,6 +202,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        //Add chatlist to receiver ID
         final DatabaseReference receiver_chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(receiver)
                 .child(firebaseUser.getUid());
@@ -223,7 +222,7 @@ public class MessageActivity extends AppCompatActivity {
         });
 
 
-        //NOTIFICATION
+        //NOTIFICATION Part
         final String msg = message;
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());

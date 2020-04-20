@@ -64,6 +64,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         //Show last message on user list
         lastMessage(user.getId(), holder.last_msg);
 
+        //show notify sign on unread message
+        newMessage(user.getId(), holder.unread_num);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,12 +120,44 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
+    private void newMessage(final String userid, final TextView unread_num){
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int unread = 0;
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) && !chat.isIsseen()){
+                        unread++;
+                    }
+                }
+
+                if(unread == 0){
+                    unread_num.setVisibility(View.INVISIBLE);
+                }else{
+                    unread_num.setText("" + unread);
+                    unread_num.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView username;
         public ImageView profile_image;
         public Button btn_chat;
         TextView last_msg;
+        TextView unread_num;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -131,6 +166,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             profile_image = itemView.findViewById(R.id.profile_image);
             btn_chat = itemView.findViewById(R.id.btn_chat);
             last_msg = itemView.findViewById(R.id.last_msg);
+            unread_num = itemView.findViewById(R.id.unread_num);
 
         }
     }

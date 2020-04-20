@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+
+
         //set viewPagerAdapter with fragments
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
 

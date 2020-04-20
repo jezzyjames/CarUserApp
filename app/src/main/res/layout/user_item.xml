@@ -34,4 +34,16 @@
         android:layout_marginLeft="20dp"
         android:maxLines="1"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/unread_num"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="#fff"
+        android:background="@drawable/background_circle"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
 </RelativeLayout>
