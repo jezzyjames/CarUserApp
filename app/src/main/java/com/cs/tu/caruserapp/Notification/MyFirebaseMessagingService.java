@@ -4,10 +4,9 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -17,14 +16,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -50,14 +46,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
+            //--- Dont send noti while chatting --- get current chatting receiver id
+            SharedPreferences preferences = getSharedPreferences("PREFS", MODE_PRIVATE);
+            String currentUser = preferences.getString("currentuser", "none");
+
+            //get sender ID from payload
+            String user = remoteMessage.getData().get("user");
+            //get receiver ID from payload
             String receiver = remoteMessage.getData().get("receiver");
+
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             if(firebaseUser != null && receiver.equals(firebaseUser.getUid())){
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                    sendOreoNotification(remoteMessage);
-                }else {
-                    sendNotification(remoteMessage);
+                //--- Dont send noti while chatting ---
+                if(!currentUser.equals(user)){
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        sendOreoNotification(remoteMessage);
+                    }else {
+                        sendNotification(remoteMessage);
+                    }
                 }
             }
 

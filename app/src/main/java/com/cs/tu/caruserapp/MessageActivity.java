@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,6 +68,7 @@ public class MessageActivity extends AppCompatActivity {
     APIService apiService;
 
     boolean notify = false;
+    String receiver_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,7 @@ public class MessageActivity extends AppCompatActivity {
 
         //get opposite user id data in intent from UserAdapter (Reciever id)
         intent = getIntent();
-        final String userid = intent.getStringExtra("userid");
+        receiver_id = intent.getStringExtra("receiver_id");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +114,7 @@ public class MessageActivity extends AppCompatActivity {
                 notify = true;
                 String msg = text_send.getText().toString();
                 if(!msg.equals("")){
-                    sendMessage(firebaseUser.getUid(), userid, msg);
+                    sendMessage(firebaseUser.getUid(), receiver_id, msg);
                 }else{
                     Toast.makeText(MessageActivity.this, "Can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -121,7 +123,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
         //Read user data in database
         reference.addValueEventListener(new ValueEventListener() {
             //found user
@@ -138,7 +140,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
                 //read and show all chat message on screen
-                readMessage(firebaseUser.getUid(), userid, user.getImageURL());
+                readMessage(firebaseUser.getUid(), receiver_id, user.getImageURL());
             }
             //didn't found
             @Override
@@ -147,17 +149,17 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        seenMessage(userid);
+        seenMessage(receiver_id);
     }
 
-    private void seenMessage(final String userid){
+    private void seenMessage(final String receiver_id){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid)){
+                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(receiver_id)){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isseen", true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -265,10 +267,9 @@ public class MessageActivity extends AppCompatActivity {
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(response.code() == 200){
                                         if(response.body().success != 1){
-                                            Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MessageActivity.this, "Failed to send notification message!", Toast.LENGTH_SHORT).show();
                                         }
 
-                                        Toast.makeText(MessageActivity.this, "Sent complete!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
@@ -317,14 +318,24 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    //--- Dont send noti while chatting ---
+    private void currentUser(String userid){
+        SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("currentuser", userid);
+        editor.apply();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        //--- Dont send noti while chatting --- set current chatting receiver ID to SharedPreference
+        currentUser(receiver_id);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         reference.removeEventListener(seenListener);
+        currentUser("none");
     }
 }

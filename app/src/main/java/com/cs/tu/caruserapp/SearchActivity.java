@@ -115,7 +115,7 @@ public class SearchActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
-                                    intent.putExtra("userid", user.getId());
+                                    intent.putExtra("receiver_id", user.getId());
                                     startActivity(intent);
 
                                 }
