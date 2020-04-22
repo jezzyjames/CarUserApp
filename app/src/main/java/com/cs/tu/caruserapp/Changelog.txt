@@ -16,3 +16,5 @@
 4/20/2020
 - Notify unread number on chatlist
 - Dont send noti of that user while chatting with that user
+4/22/2020
+- Update some UI
