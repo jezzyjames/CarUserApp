@@ -29,5 +29,11 @@
         android:visibility="gone"
         android:layout_below="@+id/show_message"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/send_time_stamp"
+        android:text="12.00"
+        android:layout_below="@id/txt_seen"/>
 
 </RelativeLayout>

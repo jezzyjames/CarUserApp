@@ -63,7 +63,6 @@ public class MessageActivity extends AppCompatActivity {
 
     ImageButton btn_send;
     EditText text_send;
-    TextView ststamp;
     MessageAdapter messageAdapter;
     List<Chat> mchat;
 
@@ -110,7 +109,7 @@ public class MessageActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
-        ststamp = findViewById(R.id.send_time_stamp);
+
 
         //get opposite user id data in intent from UserAdapter (Reciever id)
         intent = getIntent();

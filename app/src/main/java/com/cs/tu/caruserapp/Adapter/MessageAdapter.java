@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,6 +60,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
+        holder.ststamp.setText(chat.getTime()+",");
+
         //if position == last recent chat
         //text seen is show only last chat
         if(position == mChat.size()-1){
@@ -81,6 +84,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public TextView show_message;
         public ImageView profile_image;
         public TextView txt_seen;
+        public TextView ststamp;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +92,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             show_message = itemView.findViewById(R.id.show_message);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
+            ststamp = itemView.findViewById(R.id.send_time_stamp);
         }
     }
 
