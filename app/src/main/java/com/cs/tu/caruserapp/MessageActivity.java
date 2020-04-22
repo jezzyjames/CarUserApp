@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -36,9 +37,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -55,7 +63,7 @@ public class MessageActivity extends AppCompatActivity {
 
     ImageButton btn_send;
     EditText text_send;
-
+    TextView ststamp;
     MessageAdapter messageAdapter;
     List<Chat> mchat;
 
@@ -102,6 +110,7 @@ public class MessageActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
+        ststamp = findViewById(R.id.send_time_stamp);
 
         //get opposite user id data in intent from UserAdapter (Reciever id)
         intent = getIntent();
@@ -152,6 +161,7 @@ public class MessageActivity extends AppCompatActivity {
         seenMessage(receiver_id);
     }
 
+
     private void seenMessage(final String receiver_id){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
@@ -176,12 +186,16 @@ public class MessageActivity extends AppCompatActivity {
 
     private void sendMessage(String sender, final String receiver, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        String currentDateString = DateFormat.getDateInstance().format(new Date());
+        String currentTimeString = DateFormat.getTimeInstance().format(new Date());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
         hashMap.put("isseen", false);
+        hashMap.put("date",currentDateString);
+        hashMap.put("time", currentTimeString);
 
         reference.child("Chats").push().setValue(hashMap);
 
