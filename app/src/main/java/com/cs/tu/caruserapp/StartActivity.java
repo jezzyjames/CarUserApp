@@ -60,8 +60,6 @@ public class StartActivity extends AppCompatActivity {
         //check on start program if user is not null
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-
 
         if(firebaseUser != null){
             Intent intent = new Intent(StartActivity.this, MainActivity.class);

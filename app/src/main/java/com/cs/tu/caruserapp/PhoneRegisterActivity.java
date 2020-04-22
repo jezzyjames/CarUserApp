@@ -23,6 +23,7 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -114,9 +115,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(PhoneRegisterActivity.this, "Verify phone number complete!", Toast.LENGTH_SHORT).show();
-                //register new user to database at "Users"
-                reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-//                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+//                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//                Toast.makeText(PhoneRegisterActivity.this, firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
+
 //                HashMap<String, String> hashMap = new HashMap<>();
 //                hashMap.put("id", userid);
 //                hashMap.put("username", username);
