@@ -28,9 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     MaterialEditText username, email, password;
     Button btn_register;
     ProgressBar register_progress;
-
     FirebaseAuth auth;
-    DatabaseReference regference;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
                             String userid = firebaseUser.getUid();
 
                             //register new user to database at "Users"
-                            regference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                            reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", userid);
@@ -95,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("imageURL", "default");
                             hashMap.put("search_name", username.toLowerCase());
 
-                            regference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){

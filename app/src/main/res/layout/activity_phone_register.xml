@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".RegisterActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/bar_layout" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_below="@+id/toolbar"
+        android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/phone_view_part"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:ccp_defaultNameCode="TH" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/editText_phone"
+            android:inputType="phone"
+            android:hint="Phone number"
+            android:textColorHint="@color/white"
+            android:paddingLeft="15dp"
+            android:ems="11"
+            android:textColor="@color/white"
+            android:background="@color/edittext_bg"
+            android:drawableLeft="@drawable/ic_phone"
+            android:drawablePadding="10dp" />
+
+    </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/phone_refer"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="25dp"
+            android:id="@+id/editText_code"
+            android:hint="Enter verifying code"
+            android:textColorHint="@color/white"
+            android:paddingLeft="15dp"
+            android:ems="11"
+            android:textColor="@color/white"
+            android:background="@color/edittext_bg"
+            android:drawableLeft="@drawable/ic_lock"
+            android:drawablePadding="10dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/resend_code"
+            android:text="Resend code"
+            android:textColor="@color/blue"
+            android:textSize="18dp"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp">
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Continue"
+                android:id="@+id/verify_btn"
+                android:background="@drawable/round_btn"
+                android:textColor="@color/white"/>
+
+            <ProgressBar
+                android:id="@+id/verify_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
