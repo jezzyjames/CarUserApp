@@ -60,7 +60,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
-        holder.ststamp.setText(chat.getTime()+",");
+        holder.ststamp.setText(chat.getTime()+"•");
 
         //if position == last recent chat
         //text seen is show only last chat
