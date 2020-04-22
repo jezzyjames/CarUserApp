@@ -110,7 +110,6 @@ public class MessageActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
 
-
         //get opposite user id data in intent from UserAdapter (Reciever id)
         intent = getIntent();
         receiver_id = intent.getStringExtra("receiver_id");
