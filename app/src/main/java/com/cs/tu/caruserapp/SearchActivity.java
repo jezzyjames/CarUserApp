@@ -93,6 +93,7 @@ public class SearchActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //if dataSnapshot is not null
                 if(dataSnapshot.exists()){
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final User user = snapshot.getValue(User.class);

@@ -1,0 +1,119 @@
+package com.cs.tu.caruserapp.Dialog;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
+
+import com.cs.tu.caruserapp.R;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+
+
+public class AddCarDialog extends DialogFragment {
+
+    //interface for send input to ProfileActivity
+    public interface OnInputListener{
+        void sendInput(String input_carid, String input_brand, String input_model, String input_color);
+    }
+    public OnInputListener mOnInputListener;
+
+    Button btn_cancel;
+    Button btn_add;
+
+    EditText edt_carid;
+    EditText edt_brand;
+    EditText edt_model;
+    EditText edt_color;
+
+    DatabaseReference reference;
+    FirebaseUser firebaseUser;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.add_car_dialog, container,false);
+
+        btn_cancel = view.findViewById(R.id.btn_cancel);
+        btn_add = view.findViewById(R.id.btn_add);
+        edt_carid = view.findViewById(R.id.edt_car_id);
+        edt_brand = view.findViewById(R.id.edt_brand);
+        edt_model = view.findViewById(R.id.edt_model);
+        edt_color = view.findViewById(R.id.edt_color);
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog().dismiss();
+            }
+        });
+
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String input_carid = edt_carid.getText().toString();
+                final String input_brand = edt_brand.getText().toString();
+                final String input_model = edt_model.getText().toString();
+                final String input_color = edt_color.getText().toString();
+
+                if(!input_carid.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
+
+                    Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(!dataSnapshot.exists()){
+                                mOnInputListener.sendInput(input_carid, input_brand, input_model, input_color);
+                                getDialog().dismiss();
+
+                            }else{
+                                Toast.makeText(getActivity(), "Can't add this car, this car is already registered.", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e("", databaseError.getMessage());
+                        }
+                    });
+
+
+                }else{
+                    Toast.makeText(getActivity(), "Please fill all blanks!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try{
+            mOnInputListener = (OnInputListener) getActivity();
+        }catch (ClassCastException e){
+            Log.e("", "onAttach: ClassCastException: " + e.getMessage());
+        }
+    }
+}

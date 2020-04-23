@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -26,8 +27,12 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
 
 import java.util.HashMap;
@@ -91,20 +96,44 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                     //*******verify phone number*******
                 }else{
-                    phoneNumber = ccp.getFullNumberWithPlus();
-                    if(!phoneNumber.equals("")){
-                        verify_btn.setVisibility(View.GONE);
-                        verify_progress.setVisibility(View.VISIBLE);
+                    verify_btn.setVisibility(View.GONE);
+                    verify_progress.setVisibility(View.VISIBLE);
 
-                        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                phoneNumber,                                          //phone number to verify
-                                60,                                                //timeout duration
-                                TimeUnit.SECONDS,                                     //unit of timeout
-                                PhoneRegisterActivity.this,                   //activity for callback
-                                mCallbacks);                                          //onVerificationStateChangedCallbacks
+                    if(!editText_phone.getText().toString().equals("")){
+                        phoneNumber = ccp.getFullNumberWithPlus();
+
+                        //Check if phone number is exist
+                        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(phoneNumber);
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(!dataSnapshot.exists()){
+                                    verify_btn.setVisibility(View.GONE);
+                                    verify_progress.setVisibility(View.VISIBLE);
+
+                                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                            phoneNumber,                                          //phone number to verify
+                                            60,                                                //timeout duration
+                                            TimeUnit.SECONDS,                                     //unit of timeout
+                                            PhoneRegisterActivity.this,                   //activity for callback
+                                            mCallbacks);                                          //onVerificationStateChangedCallbacks
+                                }else{
+                                    Toast.makeText(PhoneRegisterActivity.this, "This phone number is used, please use other phone number.", Toast.LENGTH_SHORT).show();
+                                    verify_btn.setVisibility(View.VISIBLE);
+                                    verify_progress.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Log.e("", databaseError.getMessage());
+                            }
+                        });
 
                     }else{
                         Toast.makeText(PhoneRegisterActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                        verify_btn.setVisibility(View.VISIBLE);
+                        verify_progress.setVisibility(View.GONE);
                     }
                 }
 
@@ -112,20 +141,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
         });
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            //Instant verification: in some cases the phone number can be instantly verified **without needing to send or enter a verification code**.
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(PhoneRegisterActivity.this, "Verify phone number complete!", Toast.LENGTH_SHORT).show();
-
-//                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//                Toast.makeText(PhoneRegisterActivity.this, firebaseUser.getUid(), Toast.LENGTH_SHORT).show();
-
-//                HashMap<String, String> hashMap = new HashMap<>();
-//                hashMap.put("id", userid);
-//                hashMap.put("username", username);
-//                hashMap.put("imageURL", "default");
-//                hashMap.put("search_name", username.toLowerCase());
-
-
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
@@ -148,6 +167,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
             @Override
             public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                Toast.makeText(PhoneRegisterActivity.this, "code senttttttttttttt", Toast.LENGTH_SHORT).show();
                 super.onCodeSent(s, forceResendingToken);
 
                 mVerificationId = s;
@@ -182,7 +202,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -191,13 +211,37 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             verify_progress.setVisibility(View.GONE);
-                            sendUsertoRegisterActivity();
+
+                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                            //register new user to database at "Users"
+                            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("id", firebaseUser.getUid());
+                            hashMap.put("carid", "none");
+                            hashMap.put("phone_number", phoneNumber);
+                            hashMap.put("imageURL", "default");
+                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(PhoneRegisterActivity.this, "Register successful!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(PhoneRegisterActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            });
 
                         } else {
                             // Sign in failed, display a message and update the UI
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
 
                             Toast.makeText(PhoneRegisterActivity.this, "Error: " + task.getException().toString(), Toast.LENGTH_SHORT).show();
+
+                            verify_progress.setVisibility(View.GONE);
+                            verify_btn.setVisibility(View.VISIBLE);
 
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
@@ -215,10 +259,6 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 this,               // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 mResendToken);             // ForceResendingToken from callbacks
-    }
-
-    private void RegisterUser(){
-
     }
 
     private void sendUsertoMainActivity(){

@@ -18,3 +18,9 @@
 - Dont send noti of that user while chatting with that user
 4/22/2020
 - Update some UI
+
+4/23/2020
+- phone authentication
+- new profile activity
+    + driver license verification
+    + add car to id (max 3)
