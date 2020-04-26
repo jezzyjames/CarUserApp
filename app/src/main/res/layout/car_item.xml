@@ -2,64 +2,156 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
-    android:layout_marginBottom="1dp"
+    android:layout_marginBottom="10dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/design_default_color_primary_dark"
+    android:padding="4dp"
+    android:elevation="5dp"
+    android:id="@+id/layout_border">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:id="@+id/car_image"
-        android:src="@mipmap/ic_launcher"/>
-
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Car id"
-        android:id="@+id/car_id"
-        android:layout_toRightOf="@id/car_image"
-        android:layout_marginLeft="10dp"
-        android:textSize="18sp"/>
+        android:layout_margin="0.5dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Brand"
-        android:id="@+id/brand"
-        android:layout_toRightOf="@id/car_image"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"
-        android:textSize="18sp"
-        android:layout_below="@id/car_id"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Model"
-        android:id="@+id/model"
-        android:layout_toRightOf="@id/car_image"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"
-        android:textSize="18sp"
-        android:layout_below="@id/brand"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/is_use"
+                android:text="In used"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Color"
-        android:id="@+id/car_color"
-        android:layout_toRightOf="@id/car_image"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"
-        android:textSize="18sp"
-        android:layout_below="@id/model"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/car_image"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_below="@id/is_use"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_carid"
+            android:text="Car id: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/car_image"
+            android:layout_marginLeft="10dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Car id"
+            android:id="@+id/car_id"
+            android:layout_toRightOf="@id/title_carid"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_province"
+            android:text="Province: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/car_image"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/title_carid"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Province"
+            android:id="@+id/province"
+            android:layout_toRightOf="@id/title_province"
+            android:layout_below="@id/car_id"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_brand"
+            android:text="Brand: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/car_image"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/title_province"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Brand"
+            android:id="@+id/brand"
+            android:layout_toRightOf="@id/title_brand"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:layout_below="@id/province"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_model"
+            android:text="Model: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/car_image"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/title_brand"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Model"
+            android:id="@+id/model"
+            android:layout_toRightOf="@id/title_model"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:layout_below="@id/brand" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_color"
+            android:text="Color: "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/car_image"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/title_model"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Color"
+            android:id="@+id/color"
+            android:layout_toRightOf="@id/title_color"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:layout_below="@id/model"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

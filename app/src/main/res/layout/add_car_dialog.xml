@@ -38,6 +38,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/txt_province"
+                android:text="Province"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/txt_car_brand"
                 android:text="Brand"
                 android:textSize="18sp"
@@ -72,7 +80,15 @@
                 android:id="@+id/edt_car_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="5"
+                android:ems="4"
+                android:background="@color/edittext_bg"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/edt_province"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="6"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"/>
 
@@ -96,7 +112,7 @@
                 android:id="@+id/edt_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:ems="6"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"/>
 

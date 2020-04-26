@@ -2,14 +2,16 @@ package com.cs.tu.caruserapp.Model;
 
 public class Car {
 
-    private String id;
+    private String car_id;
+    private String province;
     private String brand;
     private String model;
     private String color;
     private String imageURL;
 
-    public Car(String id, String brand, String model, String color, String imageURL) {
-        this.id = id;
+    public Car(String id, String province, String brand, String model, String color, String imageURL) {
+        this.car_id = id;
+        this.province = province;
         this.brand = brand;
         this.model = model;
         this.color = color;
@@ -20,12 +22,20 @@ public class Car {
 
     }
 
-    public String getId() {
-        return id;
+    public String getCar_id() {
+        return car_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCar_id(String car_id) {
+        this.car_id = car_id;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
     }
 
     public String getBrand() {

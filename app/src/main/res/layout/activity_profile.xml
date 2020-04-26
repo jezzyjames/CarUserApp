@@ -25,13 +25,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_below="@id/bar_layout">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:elevation="8dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -44,7 +45,8 @@
                     android:id="@+id/profile_image"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:src="@mipmap/ic_launcher"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,44 +58,31 @@
                     android:textSize="18dp"
                     android:layout_below="@id/profile_image"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/car_id"
-                    android:text="Car ID"
-                    android:layout_below="@+id/license_status"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/btn_add_car"
-                    android:background="@drawable/ic_add"
-                    android:layout_below="@+id/license_status"
-                    android:layout_toRightOf="@id/car_id"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="10dp"/>
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/car_id"
+                    android:layout_below="@id/license_status"
                     android:layout_marginTop="10dp"/>
 
-
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_add_car"
+                    android:text="Add car"
+                    android:layout_below="@+id/recycler_view"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:drawableLeft="@drawable/ic_add"
+                    android:drawablePadding="5dp"/>
 
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
-
-
     
 </RelativeLayout>

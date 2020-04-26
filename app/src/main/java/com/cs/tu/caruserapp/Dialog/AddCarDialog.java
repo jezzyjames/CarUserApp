@@ -1,8 +1,6 @@
 package com.cs.tu.caruserapp.Dialog;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +17,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.cs.tu.caruserapp.R;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -33,7 +29,7 @@ public class AddCarDialog extends DialogFragment {
 
     //interface for send input to ProfileActivity
     public interface OnInputListener{
-        void sendInput(String input_carid, String input_brand, String input_model, String input_color);
+        void sendInput(String input_carid, String input_province, String input_brand, String input_model, String input_color);
     }
     public OnInputListener mOnInputListener;
 
@@ -41,12 +37,10 @@ public class AddCarDialog extends DialogFragment {
     Button btn_add;
 
     EditText edt_carid;
+    EditText edt_province;
     EditText edt_brand;
     EditText edt_model;
     EditText edt_color;
-
-    DatabaseReference reference;
-    FirebaseUser firebaseUser;
 
     @Nullable
     @Override
@@ -56,6 +50,7 @@ public class AddCarDialog extends DialogFragment {
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         edt_carid = view.findViewById(R.id.edt_car_id);
+        edt_province = view.findViewById(R.id.edt_province);
         edt_brand = view.findViewById(R.id.edt_brand);
         edt_model = view.findViewById(R.id.edt_model);
         edt_color = view.findViewById(R.id.edt_color);
@@ -71,18 +66,19 @@ public class AddCarDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final String input_carid = edt_carid.getText().toString();
+                final String input_province = edt_province.getText().toString();
                 final String input_brand = edt_brand.getText().toString();
                 final String input_model = edt_model.getText().toString();
                 final String input_color = edt_color.getText().toString();
 
-                if(!input_carid.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
+                if(!input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
 
                     Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(!dataSnapshot.exists()){
-                                mOnInputListener.sendInput(input_carid, input_brand, input_model, input_color);
+                                mOnInputListener.sendInput(input_carid, input_province, input_brand, input_model, input_color);
                                 getDialog().dismiss();
 
                             }else{

@@ -1,173 +1,94 @@
-//package com.cs.tu.caruserapp.Adapter;
-//
-//import android.content.Context;
-//import android.content.Intent;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.Button;
-//import android.widget.ImageView;
-//import android.widget.TextView;
-//
-//import androidx.annotation.NonNull;
-//import androidx.recyclerview.widget.RecyclerView;
-//
-//import com.bumptech.glide.Glide;
-//import com.cs.tu.caruserapp.MessageActivity;
-//import com.cs.tu.caruserapp.Model.Car;
-//import com.cs.tu.caruserapp.R;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//import com.google.firebase.database.DataSnapshot;
-//import com.google.firebase.database.DatabaseError;
-//import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.FirebaseDatabase;
-//import com.google.firebase.database.ValueEventListener;
-//
-//import java.util.List;
-//
-//public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
-//    View view;
-//
-//    private Context mContext;
-//    private List<Car> mCars;
-//
-//    String theLastMessage;
-//
-//    public CarAdapter(Context mContext, List<Car> mCars) {
-//        this.mContext = mContext;
-//        this.mCars = mCars;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        //Store user_item layout into view
-//        view = LayoutInflater.from(mContext).inflate(R.layout.car, parent, false);
-//
-//        //return "holder" that carrying layout "view" to onBindViewHolder
-//        return new CarAdapter.ViewHolder(view);
-//
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        final Car car = mCars.get(position);
-//        holder.username.setText(car.getUsername());
-//        if(car.getImageURL().equals("default")){
-//            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
-//        }else{
-//            Glide.with(mContext).load(car.getImageURL()).into(holder.profile_image);
-//        }
-//
-//        //Show last message on user list
-//        lastMessage(car.getId(), holder.last_msg);
-//
-//        //show notify sign on unread message
-//        newMessage(car.getId(), holder.unread_num);
-//
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, MessageActivity.class);
-//                intent.putExtra("receiver_id", user.getId());
-//                mContext.startActivity(intent);
-//
-//            }
-//        });
-//
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return mCars.size();
-//    }
-//
-//    //check for last message
-//    private void lastMessage(final String userid, final TextView last_msg){
-//        theLastMessage = "default";
-//        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-//
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    Chat chat = snapshot.getValue(Chat.class);
-//                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) || chat.getReceiver().equals(userid) && chat.getSender().equals(firebaseUser.getUid())){
-//                        theLastMessage = chat.getMessage();
-//                    }
-//                }
-//
-//                switch (theLastMessage){
-//                    case "default":
-//                        last_msg.setText("No Message");
-//                        break;
-//
-//                    default:
-//                        last_msg.setText(theLastMessage);
-//                        break;
-//                }
-//
-//                theLastMessage = "default";
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-//
-//    private void newMessage(final String userid, final TextView unread_num){
-//        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-//
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                int unread = 0;
-//                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    Chat chat = snapshot.getValue(Chat.class);
-//                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) && !chat.isIsseen()){
-//                        unread++;
-//                    }
-//                }
-//
-//                if(unread == 0){
-//                    unread_num.setVisibility(View.INVISIBLE);
-//                }else{
-//                    unread_num.setText("" + unread);
-//                    unread_num.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-//
-//    public class ViewHolder extends RecyclerView.ViewHolder{
-//
-//        public TextView username;
-//        public ImageView profile_image;
-//        public Button btn_chat;
-//        TextView last_msg;
-//        TextView unread_num;
-//
-//        public ViewHolder(@NonNull View itemView) {
-//            super(itemView);
-//
-//            username = itemView.findViewById(R.id.username);
-//            profile_image = itemView.findViewById(R.id.profile_image);
-//            btn_chat = itemView.findViewById(R.id.btn_chat);
-//            last_msg = itemView.findViewById(R.id.last_msg);
-//            unread_num = itemView.findViewById(R.id.unread_num);
-//
-//        }
-//    }
-//
-//}
+package com.cs.tu.caruserapp.Adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.R;
+
+import java.util.List;
+
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
+    View view;
+
+    private Context mContext;
+    private List<Car> mCars;
+
+    public CarAdapter(Context mContext, List<Car> mCars) {
+        this.mContext = mContext;
+        this.mCars = mCars;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Store user_item layout into view
+        view = LayoutInflater.from(mContext).inflate(R.layout.car_item, parent, false);
+
+        //return "holder" that carrying layout "view" to onBindViewHolder
+        return new CarAdapter.ViewHolder(view);
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final Car car = mCars.get(position);
+        holder.txt_car_id.setText(car.getCar_id());
+        holder.txt_province.setText(car.getProvince());
+        holder.txt_car_brand.setText(car.getBrand());
+        holder.txt_car_model.setText(car.getModel());
+        holder.txt_car_color.setText(car.getColor());
+
+        if(car.getImageURL().equals("default")){
+            holder.car_image.setImageResource(R.mipmap.ic_launcher);
+        }else{
+            Glide.with(mContext).load(car.getImageURL()).into(holder.car_image);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mCars.size();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
+        public TextView txt_car_id;
+        public TextView txt_province;
+        public TextView txt_car_brand;
+        public TextView txt_car_model;
+        public TextView txt_car_color;
+        public ImageView car_image;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            txt_car_id = itemView.findViewById(R.id.car_id);
+            txt_province = itemView.findViewById(R.id.province);
+            txt_car_brand = itemView.findViewById(R.id.brand);
+            txt_car_model = itemView.findViewById(R.id.model);
+            txt_car_color = itemView.findViewById(R.id.color);
+            car_image = itemView.findViewById(R.id.car_image);
+
+        }
+    }
+
+}
