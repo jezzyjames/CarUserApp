@@ -24,3 +24,11 @@
 - new profile activity
     + driver license verification
     + add car to id (max 3)
+
+4/26/2020
+- show own cars on profile activity
+
+4/27/2020
+- add auto complete text view province to AddCarDialog
+- add color spinner to AddCarDialog
+- Change Style "Add" and "Cancle" Button in AddCarDialog

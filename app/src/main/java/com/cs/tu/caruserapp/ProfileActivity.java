@@ -7,20 +7,16 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Adapter.CarAdapter;
-import com.cs.tu.caruserapp.Adapter.UserAdapter;
 import com.cs.tu.caruserapp.Dialog.AddCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +45,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private RecyclerView recyclerView;
 
     private CarAdapter carAdapter;
-    private List<Car> mCars;
     private List<Car> carsList;
 
     CircleImageView image_profile;
@@ -140,37 +135,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         });
 
     }
-
-//
-//    private void showCarList() {
-//        mCars = new ArrayList<>();
-//        reference = FirebaseDatabase.getInstance().getReference("Cars");
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                mCars.clear();
-//                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                    User user = snapshot.getValue(User.class);
-//                    for(Carlist carlist : carsList){
-//                        //if users id in database equal to users id in userList (users that you are chatting with)
-//                        if(user.getId().equals(chatlist.getId())){
-//                            //add that user to mUsers to show on Chat fragment page view
-//                            mCars.add(user);
-//                        }
-//                    }
-//                }
-//                carAdapter = new CarAdapter(getContext(), mCars);
-//                recyclerView.setAdapter(carAdapter);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
 
     private void addCar(final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
 

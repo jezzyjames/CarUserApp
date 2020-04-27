@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_car_id"
-                android:text="Car number plate"
+                android:text="Plate number"
                 android:textSize="18sp"
                 android:layout_marginTop="10dp"/>
 
@@ -41,7 +41,7 @@
                 android:id="@+id/txt_province"
                 android:text="Province"
                 android:textSize="18sp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,11 +84,11 @@
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"/>
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/edt_province"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="6"
+                android:ems="10"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"/>
 
@@ -108,13 +108,29 @@
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"/>
 
-            <EditText
-                android:id="@+id/edt_color"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="6"
-                android:background="@color/edittext_bg"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/color_spinner"
+                    android:background="@color/edittext_bg"
+                    android:spinnerMode="dropdown"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drop_down"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 
@@ -125,19 +141,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_cancel"
             android:text="Cancel"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"/>
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_add"
             android:text="Add"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"/>

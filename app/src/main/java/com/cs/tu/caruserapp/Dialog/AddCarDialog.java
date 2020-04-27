@@ -6,8 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,14 +37,14 @@ public class AddCarDialog extends DialogFragment {
     }
     public OnInputListener mOnInputListener;
 
-    Button btn_cancel;
-    Button btn_add;
+    TextView btn_cancel;
+    TextView btn_add;
 
     EditText edt_carid;
-    EditText edt_province;
+    AutoCompleteTextView edt_province;
     EditText edt_brand;
     EditText edt_model;
-    EditText edt_color;
+    Spinner color_spinner;
 
     @Nullable
     @Override
@@ -50,10 +54,19 @@ public class AddCarDialog extends DialogFragment {
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         edt_carid = view.findViewById(R.id.edt_car_id);
+
         edt_province = view.findViewById(R.id.edt_province);
+        String[] province = getResources().getStringArray(R.array.province_arrays);
+        ArrayAdapter<String> province_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province);
+        edt_province.setAdapter(province_adapter);
+
         edt_brand = view.findViewById(R.id.edt_brand);
         edt_model = view.findViewById(R.id.edt_model);
-        edt_color = view.findViewById(R.id.edt_color);
+
+        color_spinner = view.findViewById(R.id.color_spinner);
+        ArrayAdapter<CharSequence> color_adapter = ArrayAdapter.createFromResource(getContext(), R.array.color_arrays, android.R.layout.simple_spinner_item);
+        color_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        color_spinner.setAdapter(color_adapter);
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +82,7 @@ public class AddCarDialog extends DialogFragment {
                 final String input_province = edt_province.getText().toString();
                 final String input_brand = edt_brand.getText().toString();
                 final String input_model = edt_model.getText().toString();
-                final String input_color = edt_color.getText().toString();
+                final String input_color = color_spinner.getSelectedItem().toString();
 
                 if(!input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
 

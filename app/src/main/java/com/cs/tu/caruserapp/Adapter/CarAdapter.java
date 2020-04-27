@@ -1,13 +1,17 @@
 package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +22,8 @@ import java.util.List;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     View view;
+
+    private int selectedPos = 0;
 
     private Context mContext;
     private List<Car> mCars;
@@ -39,8 +45,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Car car = mCars.get(position);
+        holder.itemView.setBackgroundColor(selectedPos == position ? Color.parseColor("#3F51B5") : Color.TRANSPARENT);
+        holder.is_use.setVisibility(selectedPos == position ? View.VISIBLE : View.GONE);
+
         holder.txt_car_id.setText(car.getCar_id());
         holder.txt_province.setText(car.getProvince());
         holder.txt_car_brand.setText(car.getBrand());
@@ -56,6 +65,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
+
+                notifyItemChanged(selectedPos);
+                selectedPos = holder.getAdapterPosition();
+                notifyItemChanged(selectedPos);
+
+
+
 
 
             }
@@ -77,6 +94,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         public TextView txt_car_model;
         public TextView txt_car_color;
         public ImageView car_image;
+        public TextView is_use;
+        public RelativeLayout layout_border;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +106,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
+            is_use = itemView.findViewById(R.id.is_use);
+            layout_border = itemView.findViewById(R.id.layout_border);
 
         }
     }
