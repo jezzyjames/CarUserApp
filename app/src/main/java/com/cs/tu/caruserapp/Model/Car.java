@@ -8,14 +8,16 @@ public class Car {
     private String model;
     private String color;
     private String imageURL;
+    private String owner_id;
 
-    public Car(String id, String province, String brand, String model, String color, String imageURL) {
+    public Car(String id, String province, String brand, String model, String color, String imageURL, String owner_id) {
         this.car_id = id;
         this.province = province;
         this.brand = brand;
         this.model = model;
         this.color = color;
         this.imageURL = imageURL;
+        this.owner_id = owner_id;
     }
 
     public Car(){
@@ -68,5 +70,13 @@ public class Car {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
     }
 }

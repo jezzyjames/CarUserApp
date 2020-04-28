@@ -167,7 +167,6 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
             @Override
             public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                Toast.makeText(PhoneRegisterActivity.this, "code senttttttttttttt", Toast.LENGTH_SHORT).show();
                 super.onCodeSent(s, forceResendingToken);
 
                 mVerificationId = s;
@@ -218,7 +217,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", firebaseUser.getUid());
-                            hashMap.put("carid", "none");
+                            hashMap.put("active_carid", "none");
                             hashMap.put("phone_number", phoneNumber);
                             hashMap.put("imageURL", "default");
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -88,45 +89,60 @@ public class SearchActivity extends AppCompatActivity {
 
     private void searchUsers(String s) {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("search_name").equalTo(s);
-
+        Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(s);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //if dataSnapshot is not null
                 if(dataSnapshot.exists()){
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        final User user = snapshot.getValue(User.class);
-                        assert user != null;
-                        assert firebaseUser != null;
+                        final Car car = snapshot.getValue(Car.class);
+                        assert car != null;
 
-                        txt_username.setText(user.getUsername());
-                        if(user.getImageURL().equals("default")){
-                            image_profile.setImageResource(R.mipmap.ic_launcher);
-                        }else{
-                            Glide.with(getApplicationContext()).load(user.getImageURL()).into(image_profile);
-                        }
-                        cardview_result.setVisibility(View.VISIBLE);
+                        Query query2 = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(car.getOwner_id());
+                        query2.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    final User user = snapshot.getValue(User.class);
+                                    assert user != null;
+                                    assert firebaseUser != null;
+                                    txt_username.setText(user.getUsername());
+                                    if (user.getImageURL().equals("default")) {
+                                        image_profile.setImageResource(R.mipmap.ic_launcher);
+                                    } else {
+                                        Glide.with(getApplicationContext()).load(user.getImageURL()).into(image_profile);
+                                    }
+                                    cardview_result.setVisibility(View.VISIBLE);
 
-                        //if search result is your own id
-                        if (!user.getId().equals(firebaseUser.getUid())) {
-                            btn_chat.setVisibility(View.VISIBLE);
-                            cant_chat.setVisibility(View.INVISIBLE);
-                            btn_chat.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
-                                    intent.putExtra("receiver_id", user.getId());
-                                    startActivity(intent);
+                                    //if search result is your own id
+                                    if (!user.getId().equals(firebaseUser.getUid())) {
+                                        btn_chat.setVisibility(View.VISIBLE);
+                                        cant_chat.setVisibility(View.INVISIBLE);
+                                        btn_chat.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
+                                                intent.putExtra("receiver_id", user.getId());
+                                                startActivity(intent);
 
+                                            }
+                                        });
+
+                                    } else {
+                                        btn_chat.setVisibility(View.INVISIBLE);
+                                        cant_chat.setVisibility(View.VISIBLE);
+                                    }
                                 }
-                            });
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }else{
-                            btn_chat.setVisibility(View.INVISIBLE);
-                            cant_chat.setVisibility(View.VISIBLE);
-                        }
-                }
+                            }
+                        });
+
+                    }
+
                 }else{
                     Toast.makeText(SearchActivity.this, "ID not found", Toast.LENGTH_SHORT).show();
                     cardview_result.setVisibility(View.INVISIBLE);
@@ -140,6 +156,5 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
-
 
 }

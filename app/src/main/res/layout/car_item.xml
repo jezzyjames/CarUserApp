@@ -38,8 +38,7 @@
             android:layout_height="90dp"
             android:id="@+id/car_image"
             android:src="@mipmap/ic_launcher"
-            android:layout_centerVertical="true"
-            android:layout_below="@id/is_use"/>
+            android:layout_marginTop="35dp"/>
 
         <TextView
             android:layout_width="wrap_content"

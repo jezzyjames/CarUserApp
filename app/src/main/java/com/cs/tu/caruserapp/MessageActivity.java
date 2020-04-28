@@ -96,6 +96,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        //api for using firebase cloud message (for notification)
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         //setup recyclerView for showing message
@@ -136,7 +137,7 @@ public class MessageActivity extends AppCompatActivity {
             //found user
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //set opposite user data on Action bar
+                //set receiver data on Action bar
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
 

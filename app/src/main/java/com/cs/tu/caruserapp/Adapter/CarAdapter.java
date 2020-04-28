@@ -2,22 +2,26 @@ package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
@@ -50,7 +54,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.itemView.setBackgroundColor(selectedPos == position ? Color.parseColor("#3F51B5") : Color.TRANSPARENT);
         holder.is_use.setVisibility(selectedPos == position ? View.VISIBLE : View.GONE);
 
-        holder.txt_car_id.setText(car.getCar_id());
+        holder.txt_car_id.setText(car.getCar_id().toUpperCase());
         holder.txt_province.setText(car.getProvince());
         holder.txt_car_brand.setText(car.getBrand());
         holder.txt_car_model.setText(car.getModel());
@@ -71,10 +75,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 selectedPos = holder.getAdapterPosition();
                 notifyItemChanged(selectedPos);
 
+                //change active_carid
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("active_carid", car.getCar_id());
+                reference.updateChildren(map);
 
-
-
-
+                Toast.makeText(mContext, "Changed car to : " + car.getCar_id(), Toast.LENGTH_SHORT).show();
             }
         });
 

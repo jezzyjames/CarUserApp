@@ -32,3 +32,6 @@
 - add auto complete text view province to AddCarDialog
 - add color spinner to AddCarDialog
 - Change Style "Add" and "Cancle" Button in AddCarDialog
+
+4/28/2020
+- Search users by car id
