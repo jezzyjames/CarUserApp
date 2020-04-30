@@ -35,3 +35,6 @@
 
 4/28/2020
 - Search users by car id
+
+4/30/2020
+- improve register and login design

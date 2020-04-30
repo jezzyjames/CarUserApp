@@ -3,14 +3,12 @@ package com.cs.tu.caruserapp.Model;
 public class User {
 
     private String id;
-    private String active_carid;
     private String username;
     private String imageURL;
     private String search_name;
 
-    public User(String id, String username, String imageURL, String search_name, String active_carid) {
+    public User(String id, String username, String imageURL, String search_name) {
         this.id = id;
-        this.active_carid = active_carid;
         this.username = username;
         this.imageURL = imageURL;
         this.search_name = search_name;
@@ -48,11 +46,4 @@ public class User {
 
     public void setSearch_name(String search_name) { this.search_name = search_name; }
 
-    public String getActive_carid() {
-        return active_carid;
-    }
-
-    public void setActive_carid(String active_carid) {
-        this.active_carid = active_carid;
-    }
 }

@@ -1,14 +1,12 @@
 package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,18 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     View view;
-
-    private int selectedPos = 0;
 
     private Context mContext;
     private List<Car> mCars;
@@ -51,8 +42,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Car car = mCars.get(position);
-        holder.itemView.setBackgroundColor(selectedPos == position ? Color.parseColor("#3F51B5") : Color.TRANSPARENT);
-        holder.is_use.setVisibility(selectedPos == position ? View.VISIBLE : View.GONE);
 
         holder.txt_car_id.setText(car.getCar_id().toUpperCase());
         holder.txt_province.setText(car.getProvince());
@@ -69,20 +58,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
-                notifyItemChanged(selectedPos);
-                selectedPos = holder.getAdapterPosition();
-                notifyItemChanged(selectedPos);
-
-                //change active_carid
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("active_carid", car.getCar_id());
-                reference.updateChildren(map);
-
-                Toast.makeText(mContext, "Changed car to : " + car.getCar_id(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -93,7 +69,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         return mCars.size();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView txt_car_id;
@@ -102,7 +77,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         public TextView txt_car_model;
         public TextView txt_car_color;
         public ImageView car_image;
-        public TextView is_use;
         public RelativeLayout layout_border;
 
         public ViewHolder(@NonNull View itemView) {
@@ -114,7 +88,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
-            is_use = itemView.findViewById(R.id.is_use);
             layout_border = itemView.findViewById(R.id.layout_border);
 
         }

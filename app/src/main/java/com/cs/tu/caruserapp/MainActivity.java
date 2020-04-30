@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
         //set viewPagerAdapter with fragments
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
 
         //connect viewPager to adapter
         viewPager.setAdapter(viewPagerAdapter);

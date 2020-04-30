@@ -116,6 +116,7 @@ public class MessageActivity extends AppCompatActivity {
         receiver_id = intent.getStringExtra("receiver_id");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        //********* SEND MESSAGE BUTTON ***********//
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +132,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        //********* READ MESSAGE ***********//
         reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
         //Read user data in database
         reference.addValueEventListener(new ValueEventListener() {

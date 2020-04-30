@@ -60,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private List<Car> carsList;
 
     CircleImageView image_profile;
+    TextView username;
     TextView txt_add_car;
 
     DatabaseReference reference;
@@ -80,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         image_profile = findViewById(R.id.profile_image);
+        username = findViewById(R.id.username);
         txt_add_car = findViewById(R.id.txt_add_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -102,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                username.setText(user.getUsername());
                 if(user.getImageURL().equals("default")){
                     image_profile.setImageResource(R.mipmap.ic_launcher);
                 }else{
@@ -122,10 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
             }
         });
 
-
-
-
-        //get your owner cars from database and show on recyclerView
+        //***get your owner cars from database and show on recyclerView***
         carsList = new ArrayList<>();
 
         Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("owner_id").equalTo(firebaseUser.getUid());
@@ -175,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private void addCar(final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id);
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("car_id", car_id.toLowerCase());
@@ -186,36 +186,10 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         hashMap.put("imageURL", "default");
         hashMap.put("owner_id", firebaseUser.getUid());
 
-        reference.child("Cars").push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(ProfileActivity.this, "Added car complete!", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-        Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("owner_id").equalTo(firebaseUser.getUid());
-        query.addValueEventListener(new ValueEventListener() {
-            int count_car = 0;
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    count_car++;
-                }
-                //force change active carid on first added car
-                if(count_car == 1){
-                    DatabaseReference active_car_reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("active_carid", car_id);
-                    active_car_reference.updateChildren(map);
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

@@ -2,6 +2,7 @@ package com.cs.tu.caruserapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
@@ -39,15 +41,20 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneRegisterActivity extends AppCompatActivity {
+    TextInputLayout layoutUsername;
+    TextInputEditText edt_username;
     CountryCodePicker ccp;
-    EditText editText_phone;
+    TextInputLayout layoutPhone;
+    TextInputEditText editText_phone;
     TextView phone_refer;
-    EditText editText_code;
+    TextInputLayout layoutVerifyCode;
+    TextInputEditText editText_code;
     TextView resend_code;
     Button verify_btn;
     ProgressBar verify_progress;
 
     boolean code_sent = false;
+    String username = "";
     String phoneNumber = "";
     LinearLayout phone_view_part;
 
@@ -65,11 +72,20 @@ public class PhoneRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_register);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Register");
+
+        layoutUsername = findViewById(R.id.layoutUsername);
+
+        edt_username = findViewById(R.id.edt_username);
         phone_view_part = findViewById(R.id.phone_view_part);
         ccp = findViewById(R.id.ccp);
-        editText_phone = findViewById(R.id.editText_phone);
+        layoutPhone = findViewById(R.id.layoutPhone);
+        editText_phone = findViewById(R.id.edt_phone);
         phone_refer = findViewById(R.id.phone_refer);
-        editText_code = findViewById(R.id.editText_code);
+        layoutVerifyCode = findViewById(R.id.layoutVerifyCode);
+        editText_code = findViewById(R.id.edt_verify_code);
         resend_code = findViewById(R.id.resend_code);
         verify_btn = findViewById(R.id.verify_btn);
         verify_progress = findViewById(R.id.verify_progress);
@@ -98,40 +114,53 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 }else{
                     verify_btn.setVisibility(View.GONE);
                     verify_progress.setVisibility(View.VISIBLE);
+                    if(!edt_username.getText().toString().equals("")) {
+                        layoutUsername.setErrorEnabled(false);
+                        username = edt_username.getText().toString();
 
-                    if(!editText_phone.getText().toString().equals("")){
-                        phoneNumber = ccp.getFullNumberWithPlus();
+                        if (!editText_phone.getText().toString().equals("")) {
+                            layoutPhone.setErrorEnabled(false);
+                            phoneNumber = ccp.getFullNumberWithPlus();
 
-                        //Check if phone number is exist
-                        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(phoneNumber);
-                        query.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(!dataSnapshot.exists()){
-                                    verify_btn.setVisibility(View.GONE);
-                                    verify_progress.setVisibility(View.VISIBLE);
+                            //Check if phone number is exist
+                            Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(phoneNumber);
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.exists()) {
+                                        layoutPhone.setErrorEnabled(false);
+                                        verify_btn.setVisibility(View.GONE);
+                                        verify_progress.setVisibility(View.VISIBLE);
 
-                                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                            phoneNumber,                                          //phone number to verify
-                                            60,                                                //timeout duration
-                                            TimeUnit.SECONDS,                                     //unit of timeout
-                                            PhoneRegisterActivity.this,                   //activity for callback
-                                            mCallbacks);                                          //onVerificationStateChangedCallbacks
-                                }else{
-                                    Toast.makeText(PhoneRegisterActivity.this, "This phone number is used, please use other phone number.", Toast.LENGTH_SHORT).show();
-                                    verify_btn.setVisibility(View.VISIBLE);
-                                    verify_progress.setVisibility(View.GONE);
+                                        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                phoneNumber,                                          //phone number to verify
+                                                60,                                                //timeout duration
+                                                TimeUnit.SECONDS,                                     //unit of timeout
+                                                PhoneRegisterActivity.this,                   //activity for callback
+                                                mCallbacks);                                          //onVerificationStateChangedCallbacks
+                                    } else {
+                                        layoutPhone.setError("This phone number is used, please use other phone number.");
+                                        Toast.makeText(PhoneRegisterActivity.this, "This phone number is used, please use other phone number.", Toast.LENGTH_SHORT).show();
+                                        verify_btn.setVisibility(View.VISIBLE);
+                                        verify_progress.setVisibility(View.GONE);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Log.e("", databaseError.getMessage());
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e("", databaseError.getMessage());
+                                }
+                            });
 
+                        } else {
+                            layoutPhone.setError("Please enter a valid phone number");
+                            Toast.makeText(PhoneRegisterActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                            verify_btn.setVisibility(View.VISIBLE);
+                            verify_progress.setVisibility(View.GONE);
+                        }
                     }else{
-                        Toast.makeText(PhoneRegisterActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                        layoutUsername.setError("Please enter display name");
+                        Toast.makeText(PhoneRegisterActivity.this, "Please enter display name", Toast.LENGTH_SHORT).show();
                         verify_btn.setVisibility(View.VISIBLE);
                         verify_progress.setVisibility(View.GONE);
                     }
@@ -158,11 +187,12 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                 verify_progress.setVisibility(View.GONE);
                 verify_btn.setVisibility(View.VISIBLE);
+                layoutUsername.setVisibility(View.VISIBLE);
                 phone_view_part.setVisibility(View.VISIBLE);
 
                 verify_btn.setText("Continue");
                 code_sent = false;
-                editText_code.setVisibility(View.GONE);
+                layoutVerifyCode.setVisibility(View.GONE);
             }
 
             @Override
@@ -172,6 +202,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 mVerificationId = s;
                 mResendToken = forceResendingToken;
 
+                layoutUsername.setVisibility(View.GONE);
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
@@ -180,7 +211,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                 verify_btn.setText("Submit");
                 verify_btn.setVisibility(View.VISIBLE);
-                editText_code.setVisibility(View.VISIBLE);
+                layoutVerifyCode.setVisibility(View.VISIBLE);
 
                 //set resend code button
                 resend_code.setVisibility(View.VISIBLE);
@@ -190,7 +221,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 resend_code.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        resendnCode(phoneNumber, mResendToken);
+                        resendCode(phoneNumber, mResendToken);
                     }
                 });
 
@@ -217,9 +248,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", firebaseUser.getUid());
-                            hashMap.put("active_carid", "none");
+                            hashMap.put("username", username);
                             hashMap.put("phone_number", phoneNumber);
                             hashMap.put("imageURL", "default");
+
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -250,7 +282,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void resendnCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken mResendToken) {
+    private void resendCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken mResendToken) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -258,18 +290,6 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 this,               // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 mResendToken);             // ForceResendingToken from callbacks
-    }
-
-    private void sendUsertoMainActivity(){
-        Intent intent = new Intent(PhoneRegisterActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void sendUsertoRegisterActivity(){
-        Intent intent = new Intent(PhoneRegisterActivity.this, RegisterActivity.class);
-        startActivity(intent);
-        finish();
     }
 
 }
