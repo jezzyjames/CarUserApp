@@ -140,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
 //        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 //        viewPagerAdapter.addFragment(chatsFragment, "chat");
 
