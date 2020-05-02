@@ -6,18 +6,13 @@ public class Chat {
     private String receiver;
     private String sender_car_id;
     private String receiver_car_id;
-    private String sender_car_id;
-    private String receiver_car_id;
     private String message;
     private boolean isseen;
-    private String time;
     private String time;
 
     public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, boolean isSeen, String time) {
         this.sender = sender;
         this.receiver = receiver;
-        this.sender_car_id = sender_car_id;
-        this.receiver_car_id = receiver_car_id;
         this.sender_car_id = sender_car_id;
         this.receiver_car_id = receiver_car_id;
         this.message = message;
