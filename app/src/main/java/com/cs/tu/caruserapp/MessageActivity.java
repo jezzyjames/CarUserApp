@@ -42,6 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -199,7 +201,10 @@ public class MessageActivity extends AppCompatActivity {
     private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         String currentDateString = DateFormat.getDateInstance().format(new Date());
-        String currentTimeString = DateFormat.getTimeInstance().format(new Date());
+        String pattern = "HH:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String currentTimeString = simpleDateFormat.format(new Date());
+        //String currentTimeString = DateFormat.getTimeInstance().format(new Date());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
