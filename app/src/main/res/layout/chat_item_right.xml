@@ -34,17 +34,17 @@
             android:id="@+id/send_time_stamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_message"
-            android:layout_marginLeft="165dp"
+            android:layout_toLeftOf="@id/txt_seen"
+            android:layout_marginVertical="20dp"
             android:text="12.00"/>
 
         <TextView
             android:id="@+id/txt_seen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_message"
-            android:layout_toRightOf="@id/send_time_stamp"
-            android:layout_marginLeft="2dp"
+            android:layout_marginVertical="20dp"
+            android:layout_toLeftOf="@id/show_message"
+            android:layout_marginRight="2dp"
             android:text="seen" />
 
 
