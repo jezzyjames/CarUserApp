@@ -11,13 +11,18 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
+import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,9 +31,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,10 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private List<Car> carsList;
+
+    ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,25 +104,64 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
 
 
-        //set viewPagerAdapter with fragments
-        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+        carsList = new ArrayList<>();
+
+        Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("owner_id").equalTo(firebaseUser.getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                carsList.clear();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Car car = snapshot.getValue(Car.class);
+                    carsList.add(car);
+
+
+                }
+
+                viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                for(int i = 0; i < carsList.size(); i++){
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("car_id", carsList.get(i).getCar_id());
+                    ChatsFragment chatsFragment = new ChatsFragment();
+                    chatsFragment.setArguments(bundle);
+                    viewPagerAdapter.addFragment(chatsFragment, carsList.get(i).getCar_id());
+
+                }
+
+                viewPager.setAdapter(viewPagerAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+//        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+//        viewPagerAdapter.addFragment(chatsFragment, "chat");
 
         //connect viewPager to adapter
-        viewPager.setAdapter(viewPagerAdapter);
+//        viewPager.setAdapter(viewPagerAdapter);
+
+        //set viewPagerAdapter with fragments
+//        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+//        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
 
         //connect tabLayout to viewPager
         tabLayout.setupWithViewPager(viewPager);
 
+
+
     }
+
 
     //show menu on top
     @Override

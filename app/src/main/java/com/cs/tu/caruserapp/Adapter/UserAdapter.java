@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.MessageActivity;
+import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
+import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,13 +33,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     View view;
 
     private Context mContext;
-    private List<User> mUsers;
+    private List<Car> mCars;
+    private List<Chatlist> userList;
 
     String theLastMessage;
 
-    public UserAdapter(Context mContext, List<User> mUsers) {
+    public UserAdapter(Context mContext, List<Car> mCars, List<Chatlist> userList) {
         this.mContext = mContext;
-        this.mUsers = mUsers;
+        this.mCars = mCars;
+        this.userList = userList;
     }
 
     @NonNull
@@ -53,25 +57,29 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final User user = mUsers.get(position);
-        holder.username.setText(user.getUsername());
-        if(user.getImageURL().equals("default")){
+        final Car car = mCars.get(position);
+        final Chatlist chatlist = userList.get(position);
+
+        holder.username.setText(car.getCar_id());
+        if(car.getImageURL().equals("default")){
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
         }else{
-            Glide.with(mContext).load(user.getImageURL()).into(holder.profile_image);
+            Glide.with(mContext).load(car.getImageURL()).into(holder.profile_image);
         }
 
         //Show last message on user list
-        lastMessage(user.getId(), holder.last_msg);
+//        lastMessage(user.getId(), holder.last_msg);
 
         //show notify sign on unread message
-        newMessage(user.getId(), holder.unread_num);
+//        newMessage(user.getId(), holder.unread_num);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.putExtra("receiver_id", user.getId());
+                intent.putExtra("receiver_id", car.getOwner_id());
+                intent.putExtra("receiver_car_id", car.getCar_id());
+                intent.putExtra("sender_car_id", chatlist.getSender_car_id());
                 mContext.startActivity(intent);
 
             }
@@ -81,7 +89,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mUsers.size();
+        return mCars.size();
     }
 
     //check for last message
@@ -155,7 +163,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public TextView username;
         public ImageView profile_image;
-        public Button btn_chat;
         TextView last_msg;
         TextView unread_num;
 
@@ -164,7 +171,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             username = itemView.findViewById(R.id.username);
             profile_image = itemView.findViewById(R.id.profile_image);
-            btn_chat = itemView.findViewById(R.id.btn_chat);
             last_msg = itemView.findViewById(R.id.last_msg);
             unread_num = itemView.findViewById(R.id.unread_num);
 

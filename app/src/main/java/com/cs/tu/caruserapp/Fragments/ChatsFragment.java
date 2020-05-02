@@ -11,8 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cs.tu.caruserapp.Adapter.SearchCarAdapter;
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
+import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Token;
@@ -25,9 +29,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +45,7 @@ public class ChatsFragment extends Fragment {
 
     private UserAdapter userAdapter;
     private List<User> mUsers;
+    private List<Car> mCars;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -49,37 +57,41 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
-            recyclerView = view.findViewById(R.id.recycler_view);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            //get current user auth state
-            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        //get current user auth state
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-            usersList = new ArrayList<>();
+        Bundle bundle = getArguments();
+        String car_id = bundle.getString("car_id", "");
 
-            reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(firebaseUser.getUid());
-            reference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    usersList.clear();
-                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        Chatlist chatlist = snapshot.getValue(Chatlist.class);
-                        //add all users that you are chatting with from Chatlist(Database) in userList
-                        usersList.add(chatlist);
-                    }
-                    //show all users that you are chatting with on screen
-                    chatList();
-                }
+        usersList = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(firebaseUser.getUid()).child(car_id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                    //add all users that you are chatting with from Chatlist(Database) in userList
+                    usersList.add(chatlist);
 
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });
+                Log.e("Test ", ""+usersList.size());
+                chatList();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         updateToken();
 
@@ -87,23 +99,23 @@ public class ChatsFragment extends Fragment {
     }
 
     private void chatList() {
-        mUsers = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Users");
+        mCars = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("Cars");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mUsers.clear();
+                mCars.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    User user = snapshot.getValue(User.class);
+                    Car car = snapshot.getValue(Car.class);
                     for(Chatlist chatlist : usersList){
                         //if users id in database equal to users id in userList (users that you are chatting with)
-                        if(user.getId().equals(chatlist.getId())){
+                        if(car.getCar_id().equals(chatlist.getReceiver_car_id())){
                             //add that user to mUsers to show on Chat fragment page view
-                            mUsers.add(user);
+                            mCars.add(car);
                         }
                     }
                 }
-                userAdapter = new UserAdapter(getContext(), mUsers);
+                userAdapter = new UserAdapter(getContext(), mCars, usersList);
                 recyclerView.setAdapter(userAdapter);
 
             }

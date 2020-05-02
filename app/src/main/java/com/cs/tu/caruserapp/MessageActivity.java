@@ -3,6 +3,7 @@ package com.cs.tu.caruserapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Adapter.MessageAdapter;
 import com.cs.tu.caruserapp.Fragments.APIService;
+import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Sender;
 import com.cs.tu.caruserapp.Model.User;
@@ -76,6 +78,8 @@ public class MessageActivity extends AppCompatActivity {
 
     boolean notify = false;
     String receiver_id;
+    String receiver_car_id;
+    String sender_car_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +93,14 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessageActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                boolean from_search = intent.getBooleanExtra("from_search", false);
+                if(from_search) {
+                    Intent intent = new Intent(MessageActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
                 finish();
+
             }
         });
 
@@ -114,6 +122,9 @@ public class MessageActivity extends AppCompatActivity {
         //get opposite user id data in intent from UserAdapter (Reciever id)
         intent = getIntent();
         receiver_id = intent.getStringExtra("receiver_id");
+        receiver_car_id = intent.getStringExtra("receiver_car_id");
+        sender_car_id = intent.getStringExtra("sender_car_id");
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //********* SEND MESSAGE BUTTON ***********//
@@ -123,7 +134,7 @@ public class MessageActivity extends AppCompatActivity {
                 notify = true;
                 String msg = text_send.getText().toString();
                 if(!msg.equals("")){
-                    sendMessage(firebaseUser.getUid(), receiver_id, msg);
+                    sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg);
                 }else{
                     Toast.makeText(MessageActivity.this, "Can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -132,25 +143,25 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        //********* READ MESSAGE ***********//
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
+        //********* SHOW USER NAME, PROFILE PIC AND READ MESSAGE ***********//
+        reference = FirebaseDatabase.getInstance().getReference("Cars").child(receiver_car_id);
         //Read user data in database
         reference.addValueEventListener(new ValueEventListener() {
             //found user
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //set receiver data on Action bar
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
+                Car car = dataSnapshot.getValue(Car.class);
+                username.setText(car.getCar_id());
 
-                if(user.getImageURL().equals("default")){
+                if(car.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 }else{
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
+                    Glide.with(getApplicationContext()).load(car.getImageURL()).into(profile_image);
                 }
 
                 //read and show all chat message on screen
-                readMessage(firebaseUser.getUid(), receiver_id, user.getImageURL());
+                readMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, car.getImageURL());
             }
             //didn't found
             @Override
@@ -159,18 +170,18 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        seenMessage(receiver_id);
+        seenMessage(receiver_car_id);
     }
 
 
-    private void seenMessage(final String receiver_id){
+    private void seenMessage(final String receiver_car_id){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(receiver_id)){
+                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id)){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isseen", true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -185,7 +196,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, final String receiver, String message){
+    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         String currentDateString = DateFormat.getDateInstance().format(new Date());
         String currentTimeString = DateFormat.getTimeInstance().format(new Date());
@@ -193,6 +204,8 @@ public class MessageActivity extends AppCompatActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
+        hashMap.put("sender_car_id", sender_car_id);
+        hashMap.put("receiver_car_id", receiver_car_id);
         hashMap.put("message", message);
         hashMap.put("isseen", false);
         hashMap.put("date",currentDateString);
@@ -203,13 +216,16 @@ public class MessageActivity extends AppCompatActivity {
         //Add chatlist to sender ID
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(firebaseUser.getUid())
-                .child(receiver);
+                .child(sender_car_id)
+                .child(receiver_car_id);
 
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
                     chatRef.child("id").setValue(receiver);
+                    chatRef.child("sender_car_id").setValue(sender_car_id);
+                    chatRef.child("receiver_car_id").setValue(receiver_car_id);
                 }
             }
 
@@ -222,13 +238,16 @@ public class MessageActivity extends AppCompatActivity {
         //Add chatlist to receiver ID
         final DatabaseReference receiver_chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(receiver)
-                .child(firebaseUser.getUid());
+                .child(receiver_car_id)
+                .child(sender_car_id);
 
         receiver_chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists()){
                     receiver_chatRef.child("id").setValue(firebaseUser.getUid());
+                    receiver_chatRef.child("sender_car_id").setValue(receiver_car_id);
+                    receiver_chatRef.child("receiver_car_id").setValue(sender_car_id);
                 }
             }
 
@@ -250,7 +269,7 @@ public class MessageActivity extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 if(notify){
                     //send noti msg to receiver with sender name
-                    sendNotification(receiver, user.getUsername(), msg);
+//                    sendNotification(receiver, user.getUsername(), msg);
                 }
                 notify = false;
             }
@@ -304,7 +323,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //userid mean opposite id (reciever)***
-    private void readMessage(final String myid, final String userid, final String imageurl){
+    private void readMessage(final String myid, final String userid, final String sender_car_id, final String receiver_car_id, final String imageurl){
         mchat = new ArrayList<>();
 
         //Read database from Chats
@@ -316,7 +335,9 @@ public class MessageActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     //add all chat that include sender and receiver id to ArrayList
-                    if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid) || chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id)
+                            || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
+
                             mchat.add(chat);
                     }
 
@@ -334,9 +355,9 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //--- Dont send noti while chatting ---
-    private void currentUser(String userid){
+    private void currentUser(String receiver_car_id){
         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-        editor.putString("currentuser", userid);
+        editor.putString("currentuser", receiver_car_id);
         editor.apply();
     }
 
@@ -344,7 +365,7 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //--- Dont send noti while chatting --- set current chatting receiver ID to SharedPreference
-        currentUser(receiver_id);
+        currentUser(receiver_car_id);
     }
 
     @Override

@@ -47,7 +47,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:src="@mipmap/ic_launcher"
-                    android:visibility="visible"/>
+                    android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -60,21 +60,52 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:id="@+id/verify_layout"
+                    android:layout_below="@id/username"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/license_status_text"
+                        android:text="Driver license verify status: "
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/license_status"
+                        android:layout_toRightOf="@id/license_status_text"
+                        android:text="unverified"
+                        android:textColor="@color/red"
+                        android:textSize="18dp"/>
+                </RelativeLayout>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:id="@+id/verify_btn"
+                    android:layout_below="@id/verify_layout"
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/license_status"
-                    android:text="Driver license verify status: unverified"
-                    android:textSize="18dp"
-                    android:layout_below="@id/username" />
+                    android:background="@drawable/round_btn"
+                    android:backgroundTint="@color/red"
+                    android:text="verify now"
+                    android:textSize="14dp"
+                    android:layout_marginTop="10dp"
+                    android:padding="10dp"
+                    android:textColor="@color/white"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/license_status"
+                    android:layout_below="@id/verify_btn"
                     android:layout_marginTop="10dp"/>
 
                 <TextView

@@ -1,6 +1,9 @@
 package com.cs.tu.caruserapp.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,25 +11,35 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
 
 import java.util.List;
 
-public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
+public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.ViewHolder> {
     View view;
+
+    private int selectedPos = 0;
 
     private Context mContext;
     private List<Car> mCars;
+    private String receiver_id;
+    private String receiver_car_id;
 
-    public CarAdapter(Context mContext, List<Car> mCars) {
+
+    public SearchCarAdapter(Context mContext, List<Car> mCars, String receiver_id, String receiver_car_id) {
         this.mContext = mContext;
         this.mCars = mCars;
+        this.receiver_id = receiver_id;
+        this.receiver_car_id = receiver_car_id;
+
     }
 
     @NonNull
@@ -36,13 +49,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         view = LayoutInflater.from(mContext).inflate(R.layout.car_item, parent, false);
 
         //return "holder" that carrying layout "view" to onBindViewHolder
-        return new CarAdapter.ViewHolder(view);
+        return new SearchCarAdapter.ViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Car car = mCars.get(position);
+        holder.itemView.setBackgroundColor(selectedPos == position ? Color.parseColor("#3F51B5") : Color.TRANSPARENT);
 
         holder.txt_car_id.setText(car.getCar_id().toUpperCase());
         holder.txt_province.setText(car.getProvince());
@@ -59,7 +73,29 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
 
+                notifyItemChanged(selectedPos);
+                selectedPos = holder.getAdapterPosition();
+                notifyItemChanged(selectedPos);
+
+                new AlertDialog.Builder(mContext)
+                        .setTitle("Confirm")
+                        .setMessage("Choose car id number " + car.getCar_id().toUpperCase() + "\nto your active car?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(mContext, MessageActivity.class);
+                                intent.putExtra("receiver_id", receiver_id);
+                                intent.putExtra("receiver_car_id", receiver_car_id);
+                                intent.putExtra("sender_car_id", car.getCar_id());
+                                intent.putExtra("from_search", true);
+                                mContext.startActivity(intent);
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
             }
         });
 

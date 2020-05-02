@@ -1,6 +1,10 @@
 package com.cs.tu.caruserapp.Model;
 
-public class Car {
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Car implements Parcelable {
 
     private String car_id;
     private String province;
@@ -23,6 +27,28 @@ public class Car {
     public Car(){
 
     }
+
+    protected Car(Parcel in) {
+        car_id = in.readString();
+        province = in.readString();
+        brand = in.readString();
+        model = in.readString();
+        color = in.readString();
+        imageURL = in.readString();
+        owner_id = in.readString();
+    }
+
+    public static final Creator<Car> CREATOR = new Creator<Car>() {
+        @Override
+        public Car createFromParcel(Parcel in) {
+            return new Car(in);
+        }
+
+        @Override
+        public Car[] newArray(int size) {
+            return new Car[size];
+        }
+    };
 
     public String getCar_id() {
         return car_id;
@@ -78,5 +104,21 @@ public class Car {
 
     public void setOwner_id(String owner_id) {
         this.owner_id = owner_id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(car_id);
+        dest.writeString(province);
+        dest.writeString(brand);
+        dest.writeString(model);
+        dest.writeString(color);
+        dest.writeString(imageURL);
+        dest.writeString(owner_id);
     }
 }

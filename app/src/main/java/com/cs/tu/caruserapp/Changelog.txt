@@ -38,3 +38,7 @@
 
 4/30/2020
 - improve register and login design
+
+5/2/2020
+- show chat list and message by car id
+- separate each car id fragment

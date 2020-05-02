@@ -4,14 +4,20 @@ public class Chat {
 
     private String sender;
     private String receiver;
+    private String sender_car_id;
+    private String receiver_car_id;
     private String message;
     private boolean isseen;
+
 
     public Chat(String sender, String receiver, String message, boolean isSeen) {
         this.sender = sender;
         this.receiver = receiver;
+        this.sender_car_id = sender_car_id;
+        this.receiver_car_id = receiver_car_id;
         this.message = message;
         this.isseen = isseen;
+
     }
 
     public Chat() {
@@ -47,5 +53,21 @@ public class Chat {
 
     public void setIsseen(boolean isseen) {
         this.isseen = isseen;
+    }
+
+    public String getSender_car_id() {
+        return sender_car_id;
+    }
+
+    public void setSender_car_id(String sender_car_id) {
+        this.sender_car_id = sender_car_id;
+    }
+
+    public String getReceiver_car_id() {
+        return receiver_car_id;
+    }
+
+    public void setReceiver_car_id(String receiver_car_id) {
+        this.receiver_car_id = receiver_car_id;
     }
 }

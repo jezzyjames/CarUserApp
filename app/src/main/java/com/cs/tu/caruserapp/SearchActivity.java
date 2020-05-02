@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.Adapter.CarAdapter;
+import com.cs.tu.caruserapp.Dialog.AddCarDialog;
+import com.cs.tu.caruserapp.Dialog.ChooseCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -98,48 +104,39 @@ public class SearchActivity extends AppCompatActivity {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Car car = snapshot.getValue(Car.class);
                         assert car != null;
+                        assert firebaseUser != null;
 
-                        Query query2 = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(car.getOwner_id());
-                        query2.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    final User user = snapshot.getValue(User.class);
-                                    assert user != null;
-                                    assert firebaseUser != null;
-                                    txt_username.setText(user.getUsername());
-                                    if (user.getImageURL().equals("default")) {
-                                        image_profile.setImageResource(R.mipmap.ic_launcher);
-                                    } else {
-                                        Glide.with(getApplicationContext()).load(user.getImageURL()).into(image_profile);
-                                    }
-                                    cardview_result.setVisibility(View.VISIBLE);
+                        txt_username.setText(car.getCar_id());
+                        if (car.getImageURL().equals("default")) {
+                            image_profile.setImageResource(R.mipmap.ic_launcher);
+                        } else {
+                            Glide.with(getApplicationContext()).load(car.getImageURL()).into(image_profile);
+                        }
+                        cardview_result.setVisibility(View.VISIBLE);
 
-                                    //if search result is your own id
-                                    if (!user.getId().equals(firebaseUser.getUid())) {
-                                        btn_chat.setVisibility(View.VISIBLE);
-                                        cant_chat.setVisibility(View.INVISIBLE);
-                                        btn_chat.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                Intent intent = new Intent(getApplicationContext(), MessageActivity.class);
-                                                intent.putExtra("receiver_id", user.getId());
-                                                startActivity(intent);
+                        //if search result is your own id
+                        if (!car.getOwner_id().equals(firebaseUser.getUid())) {
+                            btn_chat.setVisibility(View.VISIBLE);
+                            cant_chat.setVisibility(View.INVISIBLE);
+                            btn_chat.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("receiver_id", car.getOwner_id());
+                                    bundle.putString("receiver_car_id", car.getCar_id());
 
-                                            }
-                                        });
+                                    DialogFragment dialogFragment = new ChooseCarDialog();
+                                    dialogFragment.setArguments(bundle);
+                                    dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                                    dialogFragment.show(getSupportFragmentManager(), "choosecar");
 
-                                    } else {
-                                        btn_chat.setVisibility(View.INVISIBLE);
-                                        cant_chat.setVisibility(View.VISIBLE);
-                                    }
                                 }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            });
 
-                            }
-                        });
+                        } else {
+                            btn_chat.setVisibility(View.INVISIBLE);
+                            cant_chat.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -156,5 +153,6 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+
 
 }
