@@ -82,7 +82,6 @@ public class ChatsFragment extends Fragment {
 
 
                 }
-                Log.e("Test ", ""+usersList.size());
                 chatList();
 
             }
