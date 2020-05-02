@@ -104,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         carsList = new ArrayList<>();
 
         Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("owner_id").equalTo(firebaseUser.getUid());
