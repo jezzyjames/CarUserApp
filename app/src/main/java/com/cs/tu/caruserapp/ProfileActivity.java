@@ -155,6 +155,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         @Override
                         public void onClick(View v) {
                             DialogFragment dialogFragment = new AddCarDialog();
+                            dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
                             dialogFragment.show(getSupportFragmentManager(), "addcar");
 
                         }
