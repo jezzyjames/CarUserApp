@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +42,11 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneRegisterActivity extends AppCompatActivity {
-    TextInputLayout layoutUsername;
-    TextInputEditText edt_username;
+    LinearLayout layoutName;
+    TextInputLayout layoutFirstname;
+    TextInputEditText edt_firstname;
+    TextInputLayout layoutLastname;
+    TextInputEditText edt_lastname;
     CountryCodePicker ccp;
     TextInputLayout layoutPhone;
     TextInputEditText editText_phone;
@@ -54,7 +58,8 @@ public class PhoneRegisterActivity extends AppCompatActivity {
     ProgressBar verify_progress;
 
     boolean code_sent = false;
-    String username = "";
+    String firstname = "";
+    String lastname = "";
     String phoneNumber = "";
     LinearLayout phone_view_part;
 
@@ -76,9 +81,11 @@ public class PhoneRegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Register");
 
-        layoutUsername = findViewById(R.id.layoutUsername);
-
-        edt_username = findViewById(R.id.edt_username);
+        layoutName = findViewById(R.id.layoutName);
+        layoutFirstname = findViewById(R.id.layoutFirstname);
+        edt_firstname = findViewById(R.id.edt_firstname);
+        layoutLastname = findViewById(R.id.layoutLastname);
+        edt_lastname = findViewById(R.id.edt_lastname);
         phone_view_part = findViewById(R.id.phone_view_part);
         ccp = findViewById(R.id.ccp);
         layoutPhone = findViewById(R.id.layoutPhone);
@@ -114,9 +121,11 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 }else{
                     verify_btn.setVisibility(View.GONE);
                     verify_progress.setVisibility(View.VISIBLE);
-                    if(!edt_username.getText().toString().equals("")) {
-                        layoutUsername.setErrorEnabled(false);
-                        username = edt_username.getText().toString();
+                    if(!edt_firstname.getText().toString().equals("") && !edt_lastname.getText().toString().equals("")) {
+                        layoutFirstname.setErrorEnabled(false);
+                        layoutLastname.setErrorEnabled(false);
+                        firstname = edt_firstname.getText().toString();
+                        lastname = edt_lastname.getText().toString();
 
                         if (!editText_phone.getText().toString().equals("")) {
                             layoutPhone.setErrorEnabled(false);
@@ -159,8 +168,19 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             verify_progress.setVisibility(View.GONE);
                         }
                     }else{
-                        layoutUsername.setError("Please enter display name");
-                        Toast.makeText(PhoneRegisterActivity.this, "Please enter display name", Toast.LENGTH_SHORT).show();
+                        if(edt_firstname.getText().toString().equals("")){
+                            layoutFirstname.setError("Please enter display name");
+                            Toast.makeText(PhoneRegisterActivity.this, "Please enter first name", Toast.LENGTH_SHORT).show();
+                        }else{
+                            layoutFirstname.setErrorEnabled(false);
+                        }
+
+                        if(edt_lastname.getText().toString().equals("")){
+                            layoutLastname.setError("Please enter display name");
+                            Toast.makeText(PhoneRegisterActivity.this, "Please enter last name", Toast.LENGTH_SHORT).show();
+                        }else{
+                            layoutLastname.setErrorEnabled(false);
+                        }
                         verify_btn.setVisibility(View.VISIBLE);
                         verify_progress.setVisibility(View.GONE);
                     }
@@ -187,7 +207,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                 verify_progress.setVisibility(View.GONE);
                 verify_btn.setVisibility(View.VISIBLE);
-                layoutUsername.setVisibility(View.VISIBLE);
+                layoutName.setVisibility(View.VISIBLE);
                 phone_view_part.setVisibility(View.VISIBLE);
 
                 verify_btn.setText("Continue");
@@ -202,7 +222,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 mVerificationId = s;
                 mResendToken = forceResendingToken;
 
-                layoutUsername.setVisibility(View.GONE);
+                layoutName.setVisibility(View.GONE);
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
@@ -248,9 +268,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", firebaseUser.getUid());
-                            hashMap.put("username", username);
+                            hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
+                            hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
                             hashMap.put("phone_number", phoneNumber);
-                            hashMap.put("imageURL", "default");
+                            hashMap.put("verify_status", "unverified");
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
