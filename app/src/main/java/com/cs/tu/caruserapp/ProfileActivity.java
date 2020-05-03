@@ -103,12 +103,8 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if(user.getImageURL().equals("default")){
-                    image_profile.setImageResource(R.mipmap.ic_launcher);
-                }else{
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(image_profile);
-                }
+                username.setText(user.getFirstname() + " " + user.getLastname());
+
             }
 
             @Override
