@@ -60,15 +60,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
 
-        holder.ststamp.setText(chat.getTime()+"•");
+        holder.ststamp.setText(chat.getTime());
 
         //if position == last recent chat
         //text seen is show only last chat
         if(position == mChat.size()-1){
             if(chat.isIsseen()){
-                holder.txt_seen.setText("Seen");
+                holder.txt_seen.setText("•"+"Seen");
             }else{
-                holder.txt_seen.setText("Sent");
+                holder.txt_seen.setText("•"+"Sent");
             }
         }else{
             holder.txt_seen.setVisibility(View.GONE);
