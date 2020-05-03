@@ -11,18 +11,15 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.Chatlist;
+import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,26 +108,50 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 carsList.clear();
-
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Car car = snapshot.getValue(Car.class);
                     carsList.add(car);
-
-
                 }
 
-                viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                for(int i = 0; i < carsList.size(); i++){
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                        for(int i = 0; i < carsList.size(); i++){
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("car_id", carsList.get(i).getCar_id());
-                    ChatsFragment chatsFragment = new ChatsFragment();
-                    chatsFragment.setArguments(bundle);
-                    viewPagerAdapter.addFragment(chatsFragment, carsList.get(i).getCar_id());
+                            final String sender_car_id = carsList.get(i).getCar_id();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("car_id", sender_car_id);
+                            final ChatsFragment chatsFragment = new ChatsFragment();
+                            chatsFragment.setArguments(bundle);
 
-                }
+                            //count unread message
+                            int unread = 0;
+                            for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                                Chat chat = snapshot.getValue(Chat.class);
+                                if(chat.getReceiver_car_id().equals(sender_car_id) && !chat.isIsseen()){
+                                    unread++;
+                                }
+                            }
 
-                viewPager.setAdapter(viewPagerAdapter);
+                            String unreadnum = "";
+                            if(unread != 0){
+                                unreadnum = " (" + unread + ")";
+                            }
+                            //add fragment each car id
+                            viewPagerAdapter.addFragment(chatsFragment, sender_car_id + unreadnum);
+
+                        }
+                        viewPager.setAdapter(viewPagerAdapter);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 
@@ -140,23 +161,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        viewPagerAdapter.addFragment(chatsFragment, "chat");
-
-        //connect viewPager to adapter
-//        viewPager.setAdapter(viewPagerAdapter);
-
-        //set viewPagerAdapter with fragments
-//        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-//        viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-
-        //connect tabLayout to viewPager
         tabLayout.setupWithViewPager(viewPager);
 
-
-
     }
-
 
     //show menu on top
     @Override

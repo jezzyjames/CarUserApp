@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
-import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +69,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         lastMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.last_msg);
 
         //show notify sign on unread message
-//        newMessage(user.getId(), holder.unread_num);
+        countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.unread_num);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,8 +126,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
-    private void newMessage(final String userid, final TextView unread_num){
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private void countNewMessage(final String sender_car_id, final String receiver_car_id, final TextView unread_num){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -138,7 +135,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 int unread = 0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userid) && !chat.isIsseen()){
+                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) && !chat.isIsseen()){
                         unread++;
                     }
                 }
@@ -160,7 +157,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-
         public TextView username;
         public ImageView profile_image;
         TextView last_msg;

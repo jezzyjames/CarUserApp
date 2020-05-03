@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,11 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.cs.tu.caruserapp.Adapter.CarAdapter;
-import com.cs.tu.caruserapp.Dialog.AddCarDialog;
 import com.cs.tu.caruserapp.Dialog.ChooseCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -153,6 +148,5 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
-
 
 }

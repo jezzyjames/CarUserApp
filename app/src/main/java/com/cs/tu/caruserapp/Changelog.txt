@@ -42,3 +42,8 @@
 5/2/2020
 - show chat list and message by car id
 - separate each car id fragment
+
+5/3/2020
+- unread message number on tablayout and end of user item
+- remove some junk code
+- fix notification

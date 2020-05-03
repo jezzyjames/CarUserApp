@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
-
+//Notification for Oreo and above
 public class NewNotification extends ContextWrapper {
 
     private static final String CHANNEL_ID = "com.cs.tu.caruserapp";

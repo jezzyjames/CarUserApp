@@ -51,15 +51,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String currentUser = preferences.getString("currentuser", "none");
 
             //get sender ID from payload
-            String user = remoteMessage.getData().get("user");
+            String sender_car_id = remoteMessage.getData().get("sender_car_id");
             //get receiver ID from payload
             String receiver = remoteMessage.getData().get("receiver");
 
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             if(firebaseUser != null && receiver.equals(firebaseUser.getUid())){
-                //--- Dont send noti while chatting ---
-                if(!currentUser.equals(user)){
+                //--- Dont send noti while chatting if sender of notification is who are you chatting with ---
+                if(!currentUser.equals(sender_car_id)){
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                         sendOreoNotification(remoteMessage);
                     }else {
@@ -112,17 +112,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendOreoNotification(RemoteMessage remoteMessage) {
-        String user = remoteMessage.getData().get("user");
+        String sender_id = remoteMessage.getData().get("sender_id");
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         // "\\D" mean All character that is not numbers         replace all character with empty string
-        int j = Integer.parseInt(user.replaceAll("[\\D]", ""));
+        int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
         Intent intent = new Intent(this, MessageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userid", user);
+        bundle.putString("sender_id", sender_id);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -142,16 +142,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
-        String user = remoteMessage.getData().get("user");
+        String sender_id = remoteMessage.getData().get("sender_id");
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        int j = Integer.parseInt(user.replaceAll("[\\D]", ""));
+        int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
         Intent intent = new Intent(this, MessageActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("userid", user);
+        bundle.putString("sender_id", sender_id);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);

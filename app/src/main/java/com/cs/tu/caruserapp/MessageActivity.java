@@ -3,11 +3,9 @@ package com.cs.tu.caruserapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,8 +22,7 @@ import com.cs.tu.caruserapp.Adapter.MessageAdapter;
 import com.cs.tu.caruserapp.Fragments.APIService;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
-import com.cs.tu.caruserapp.Model.Sender;
-import com.cs.tu.caruserapp.Model.User;
+import com.cs.tu.caruserapp.Model.Sender;;
 import com.cs.tu.caruserapp.Notification.Client;
 import com.cs.tu.caruserapp.Notification.Data;
 import com.cs.tu.caruserapp.Notification.MyResponse;
@@ -39,18 +36,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Time;
 import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -163,7 +154,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
                 //read and show all chat message on screen
-                readMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, car.getImageURL());
+                readMessage(sender_car_id, receiver_car_id, car.getImageURL());
             }
             //didn't found
             @Override
@@ -265,37 +256,42 @@ public class MessageActivity extends AppCompatActivity {
 
         //NOTIFICATION Part
         final String msg = message;
+        if(notify){
+            //send noti msg to receiver with sender name
+            sendNotification(receiver, sender_car_id, receiver_car_id, msg);
+        }
+        notify = false;
 
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //store all user list in user object
-                User user = dataSnapshot.getValue(User.class);
-                if(notify){
-                    //send noti msg to receiver with sender name
-//                    sendNotification(receiver, user.getUsername(), msg);
-                }
-                notify = false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                //store your information
+//                User user = dataSnapshot.getValue(User.class);
+//                if(notify){
+//                    //send noti msg to receiver with sender name
+//                    sendNotification(receiver, sender_car_id, msg);
+//                }
+//                notify = false;
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
     }
 
-    private void sendNotification(final String receiver, final String username, final String message){
+    private void sendNotification(final String receiver_id, final String sender_car_id, final String receiver_car_id, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
+        Query query = tokens.orderByKey().equalTo(receiver_id);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), R.mipmap.ic_launcher, username+": "+message, "New Message", receiver);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_launcher, sender_car_id+": "+message, "New Message", receiver_id, receiver_car_id);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());
@@ -328,7 +324,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //userid mean opposite id (reciever)***
-    private void readMessage(final String myid, final String userid, final String sender_car_id, final String receiver_car_id, final String imageurl){
+    private void readMessage(final String sender_car_id, final String receiver_car_id, final String imageurl){
         mchat = new ArrayList<>();
 
         //Read database from Chats

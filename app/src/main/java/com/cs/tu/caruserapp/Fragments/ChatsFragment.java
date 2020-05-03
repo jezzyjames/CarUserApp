@@ -11,10 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.cs.tu.caruserapp.Adapter.SearchCarAdapter;
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chatlist;
@@ -29,12 +26,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +39,6 @@ public class ChatsFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private UserAdapter userAdapter;
-    private List<User> mUsers;
     private List<Car> mCars;
 
     FirebaseUser firebaseUser;
