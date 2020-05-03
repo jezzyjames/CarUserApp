@@ -1,12 +1,10 @@
 package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,7 +76,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         public TextView txt_car_model;
         public TextView txt_car_color;
         public ImageView car_image;
-//        public RelativeLayout layout_border;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,7 +86,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
-//            layout_border = itemView.findViewById(R.id.layout_border);
 
         }
     }

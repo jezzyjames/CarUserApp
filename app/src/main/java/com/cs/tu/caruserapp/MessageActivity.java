@@ -262,25 +262,6 @@ public class MessageActivity extends AppCompatActivity {
         }
         notify = false;
 
-//        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                //store your information
-//                User user = dataSnapshot.getValue(User.class);
-//                if(notify){
-//                    //send noti msg to receiver with sender name
-//                    sendNotification(receiver, sender_car_id, msg);
-//                }
-//                notify = false;
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
 
     private void sendNotification(final String receiver_id, final String sender_car_id, final String receiver_car_id, final String message){

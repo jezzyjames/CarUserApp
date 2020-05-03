@@ -4,17 +4,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.Model.Car;
@@ -33,9 +40,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
+    ImageView user_icon;
     TextView username;
 
     FirebaseUser firebaseUser;
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
+        user_icon = findViewById(R.id.user_icon);
         username = findViewById(R.id.username);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -70,7 +78,18 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname());
+                if(!user.isVerify_status()){
+                    username.setText(user.getFirstname() + " : unverified");
+                    username.setTextColor(Color.RED);
+                    user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                }
 
+                user_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    }
+                });
                 username.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -104,11 +123,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                         for(int i = 0; i < carsList.size(); i++){
-
-                            final String sender_car_id = carsList.get(i).getCar_id();
+                            String sender_car_id = carsList.get(i).getCar_id();
                             Bundle bundle = new Bundle();
                             bundle.putString("car_id", sender_car_id);
-                            final ChatsFragment chatsFragment = new ChatsFragment();
+                            ChatsFragment chatsFragment = new ChatsFragment();
                             chatsFragment.setArguments(bundle);
 
                             //count unread message

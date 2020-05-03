@@ -266,12 +266,12 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                             //register new user to database at "Users"
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-                            HashMap<String, String> hashMap = new HashMap<>();
+                            HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("id", firebaseUser.getUid());
                             hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
                             hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
                             hashMap.put("phone_number", phoneNumber);
-                            hashMap.put("verify_status", "unverified");
+                            hashMap.put("verify_status", false);
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

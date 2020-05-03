@@ -27,22 +27,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:layout_alignBottom="@id/show_message"
         android:layout_toRightOf="@id/show_message">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_seen"
-            android:visibility="gone"
-            android:textSize="10sp"/>
 
         <TextView
             android:id="@+id/send_time_stamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
             android:text="12:00"
             android:textSize="10sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_seen"
+            android:layout_below="@id/send_time_stamp"
+            android:textSize="10sp"
+            android:layout_alignEnd="@id/send_time_stamp"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

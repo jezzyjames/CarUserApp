@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Dialog.ChooseCarActivity"></activity>
+        <activity android:name=".ChangeImageActivity"></activity>
+        <activity android:name=".Dialog.ChooseCarActivity" />
         <activity android:name=".Dialog.ChooseCarDialog" />
         <activity android:name=".PhoneRegisterActivity" />
         <activity android:name=".ProfileActivity" />

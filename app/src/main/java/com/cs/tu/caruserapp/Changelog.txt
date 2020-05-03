@@ -50,3 +50,4 @@
 - register must be input firstname and lastname
 - delete search_name , username and imageURL
 - add progress bar to SearchActivity
+- unverified user will show red

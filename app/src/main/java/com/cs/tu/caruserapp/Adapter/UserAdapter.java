@@ -16,6 +16,7 @@ import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
+import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,6 +72,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         //show notify sign on unread message
         countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.unread_num);
 
+        //check verify status
+        checkVerifyStatus(car.getOwner_id(), holder.verify_status);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +89,28 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     }
 
+    private void checkVerifyStatus(final String receiver_id, final TextView verify_status) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if(!user.isVerify_status()){
+                    verify_status.setVisibility(View.VISIBLE);
+                }else{
+                    verify_status.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     @Override
     public int getItemCount() {
         return mCars.size();
@@ -93,9 +119,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     //check for last message
     private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg){
         theLastMessage = "default";
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -128,7 +152,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private void countNewMessage(final String sender_car_id, final String receiver_car_id, final TextView unread_num){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -161,6 +184,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public ImageView profile_image;
         TextView last_msg;
         TextView unread_num;
+        TextView verify_status;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -169,6 +193,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             profile_image = itemView.findViewById(R.id.profile_image);
             last_msg = itemView.findViewById(R.id.last_msg);
             unread_num = itemView.findViewById(R.id.unread_num);
+            verify_status = itemView.findViewById(R.id.verify_status);
 
         }
     }

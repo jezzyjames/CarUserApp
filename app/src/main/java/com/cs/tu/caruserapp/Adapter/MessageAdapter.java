@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,9 +65,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         //text seen is show only last chat
         if(position == mChat.size()-1){
             if(chat.isIsseen()){
-                holder.txt_seen.setText("•"+"Seen");
+                holder.txt_seen.setText("Seen");
             }else{
-                holder.txt_seen.setText("•"+"Sent");
+                holder.txt_seen.setText("Sent");
             }
         }else{
             holder.txt_seen.setVisibility(View.GONE);

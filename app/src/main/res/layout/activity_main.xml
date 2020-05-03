@@ -23,8 +23,9 @@
            <ImageView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:background="@drawable/ic_user"
-               android:backgroundTint="@color/white"/>
+               android:src="@drawable/ic_user"
+               android:tint="@color/white"
+               android:id="@+id/user_icon"/>
 
            <TextView
                android:layout_width="wrap_content"
@@ -35,6 +36,14 @@
                android:textColor="#fff"
                android:textStyle="bold"
                android:layout_marginStart="25dp"/>
+
+           <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_info"
+               android:tint="@color/white"
+               android:layout_marginLeft="10dp"
+               android:tooltipText="555555"/>
 
        </androidx.appcompat.widget.Toolbar>
 
@@ -54,5 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
 
 </LinearLayout>

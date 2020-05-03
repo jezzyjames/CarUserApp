@@ -74,7 +74,6 @@ public class ChatsFragment extends Fragment {
                     //add all users that you are chatting with from Chatlist(Database) in userList
                     usersList.add(chatlist);
 
-
                 }
                 chatList();
 

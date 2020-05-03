@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="XXX0000"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <TextView
@@ -52,12 +53,22 @@
                     android:layout_below="@id/username"
                     android:id="@+id/province"
                     android:textSize="14sp"
+                    android:textColor="@color/black"
                     android:layout_centerHorizontal="true"/>
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
     </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unverified user"
+        android:id="@+id/verify_status"
+        android:textColor="@color/red"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"
