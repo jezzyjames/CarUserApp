@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,15 +33,14 @@ import com.google.firebase.database.ValueEventListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchActivity extends AppCompatActivity {
-
     EditText search_users;
-
     CardView cardview_result;
     ImageButton btn_search;
     CircleImageView image_profile;
     TextView txt_username;
     Button btn_chat;
     TextView cant_chat;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class SearchActivity extends AppCompatActivity {
         txt_username = findViewById(R.id.txt_username);
         btn_chat = findViewById(R.id.btn_chat);
         cant_chat = findViewById(R.id.cant_chat);
+        progressBar = findViewById(R.id.progressbar);
 
         cardview_result.setVisibility(View.INVISIBLE);
 
@@ -89,6 +90,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void searchUsers(String s) {
+        progressBar.setVisibility(View.VISIBLE);
+
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(s);
         query.addValueEventListener(new ValueEventListener() {
@@ -96,6 +99,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //if dataSnapshot is not null
                 if(dataSnapshot.exists()){
+                    progressBar.setVisibility(View.GONE);
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Car car = snapshot.getValue(Car.class);
                         assert car != null;
@@ -136,6 +140,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
 
                 }else{
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(SearchActivity.this, "ID not found", Toast.LENGTH_SHORT).show();
                     cardview_result.setVisibility(View.INVISIBLE);
                 }

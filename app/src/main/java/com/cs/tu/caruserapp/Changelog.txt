@@ -47,3 +47,6 @@
 - unread message number on tablayout and end of user item
 - remove some junk code
 - fix notification
+- register must be input firstname and lastname
+- delete search_name , username and imageURL
+- add progress bar to SearchActivity

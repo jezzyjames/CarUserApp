@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
@@ -37,7 +36,6 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
-    CircleImageView profile_image;
     TextView username;
 
     FirebaseUser firebaseUser;
@@ -62,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
-        profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -72,20 +69,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
-                if(user.getImageURL().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else{
-                    //set Image URL to profile_image
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
-                }
+                username.setText(user.getFirstname());
 
-                profile_image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                    }
-                });
                 username.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
