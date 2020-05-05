@@ -77,6 +77,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
                 selectedPos = holder.getAdapterPosition();
                 notifyItemChanged(selectedPos);
 
+
                 new AlertDialog.Builder(mContext)
                         .setTitle("Confirm")
                         .setMessage("Choose car id number " + car.getCar_id().toUpperCase() + "\nto your active car?")
@@ -112,7 +113,6 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
         public TextView txt_car_model;
         public TextView txt_car_color;
         public ImageView car_image;
-//        public RelativeLayout layout_border;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -123,7 +123,6 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
-//            layout_border = itemView.findViewById(R.id.layout_border);
 
         }
     }

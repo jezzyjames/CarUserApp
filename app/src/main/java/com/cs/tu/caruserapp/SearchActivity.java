@@ -30,6 +30,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchActivity extends AppCompatActivity {
@@ -37,7 +38,11 @@ public class SearchActivity extends AppCompatActivity {
     CardView cardview_result;
     ImageButton btn_search;
     CircleImageView image_profile;
-    TextView txt_username;
+    TextView car_id;
+    TextView province;
+    TextView brand;
+    TextView model;
+    TextView color;
     Button btn_chat;
     TextView cant_chat;
     ProgressBar progressBar;
@@ -51,7 +56,11 @@ public class SearchActivity extends AppCompatActivity {
         search_users = findViewById(R.id.search_users);
         btn_search = findViewById(R.id.btn_search);
         image_profile = findViewById(R.id.profile_image);
-        txt_username = findViewById(R.id.txt_username);
+        car_id = findViewById(R.id.car_id);
+        province = findViewById(R.id.province);
+        brand = findViewById(R.id.car_brand);
+        model = findViewById(R.id.car_model);
+        color = findViewById(R.id.car_color);
         btn_chat = findViewById(R.id.btn_chat);
         cant_chat = findViewById(R.id.cant_chat);
         progressBar = findViewById(R.id.progressbar);
@@ -105,7 +114,13 @@ public class SearchActivity extends AppCompatActivity {
                         assert car != null;
                         assert firebaseUser != null;
 
-                        txt_username.setText(car.getCar_id());
+                        car_id.setText(car.getCar_id());
+                        province.setText(car.getProvince());
+                        brand.setText(car.getBrand());
+                        model.setText(car.getModel());
+                        color.setText(car.getColor());
+
+                        //set image
                         if (car.getImageURL().equals("default")) {
                             image_profile.setImageResource(R.mipmap.ic_launcher);
                         } else {

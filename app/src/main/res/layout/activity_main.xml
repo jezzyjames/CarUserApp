@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:background="@drawable/gradient_background">
@@ -40,10 +40,10 @@
            <ImageView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:id="@+id/info"
                android:src="@drawable/ic_info"
                android:tint="@color/white"
-               android:layout_marginLeft="10dp"
-               android:tooltipText="555555"/>
+               android:layout_marginLeft="10dp"/>
 
        </androidx.appcompat.widget.Toolbar>
 
@@ -63,7 +63,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-
 
 </LinearLayout>

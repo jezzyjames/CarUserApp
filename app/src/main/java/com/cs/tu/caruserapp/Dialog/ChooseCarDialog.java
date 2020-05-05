@@ -1,9 +1,12 @@
 package com.cs.tu.caruserapp.Dialog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cs.tu.caruserapp.Adapter.SearchCarAdapter;
 import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,8 @@ public class ChooseCarDialog extends DialogFragment {
     private RecyclerView recyclerView;
     private List<Car> carsList;
     private SearchCarAdapter searchCarAdapter;
+    private TextView txt_addcar;
+    private Button btn_addcar;
 
     FirebaseUser firebaseUser;
 
@@ -40,6 +47,11 @@ public class ChooseCarDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_car_dialog, container,false);
+
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        txt_addcar = view.findViewById(R.id.txt_add_car);
+        btn_addcar = view.findViewById(R.id.btn_addcar);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -60,12 +72,31 @@ public class ChooseCarDialog extends DialogFragment {
                     carsList.add(car);
                 }
 
-                Bundle bundle = getArguments();
-                String receiver_id = bundle.getString("receiver_id", "");
-                String receiver_car_id = bundle.getString("receiver_car_id", "");
+                if(carsList.size() == 0){
+                    recyclerView.setVisibility(View.GONE);
+                    txt_addcar.setVisibility(View.VISIBLE);
+                    btn_addcar.setVisibility(View.VISIBLE);
+                    btn_addcar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent profile_intent = new Intent(getActivity(), ProfileActivity.class);
+                            startActivity(profile_intent);
+                        }
+                    });
+                }else{
+                    txt_addcar.setVisibility(View.GONE);
+                    btn_addcar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
 
-                searchCarAdapter = new SearchCarAdapter(getContext(), carsList, receiver_id, receiver_car_id);
-                recyclerView.setAdapter(searchCarAdapter);
+                    Bundle bundle = getArguments();
+                    String receiver_id = bundle.getString("receiver_id", "");
+                    String receiver_car_id = bundle.getString("receiver_car_id", "");
+
+                    searchCarAdapter = new SearchCarAdapter(getContext(), carsList, receiver_id, receiver_car_id);
+                    recyclerView.setAdapter(searchCarAdapter);
+                }
+
+
 
             }
 

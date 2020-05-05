@@ -94,21 +94,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--        <EditText-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="40dp"-->
-        <!--            android:layout_marginTop="25dp"-->
-        <!--            android:id="@+id/editText_code"-->
-        <!--            android:hint="Enter verifying code"-->
-        <!--            android:textColorHint="@color/white"-->
-        <!--            android:paddingLeft="15dp"-->
-        <!--            android:ems="11"-->
-        <!--            android:textColor="@color/white"-->
-        <!--            android:background="@color/edittext_bg"-->
-        <!--            android:drawableLeft="@drawable/ic_lock"-->
-        <!--            android:drawablePadding="10dp"-->
-        <!--            android:visibility="visible"/>-->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -125,10 +110,11 @@
             android:layout_marginTop="40dp">
 
             <Button
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Continue"
+                android:textAllCaps="false"
                 android:id="@+id/verify_btn"
                 android:background="@drawable/round_btn"
                 android:textColor="@color/white"/>

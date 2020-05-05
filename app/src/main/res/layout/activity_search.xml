@@ -80,39 +80,161 @@
                     android:layout_marginTop="50dp"
                     android:src="@mipmap/ic_launcher"/>
 
-                <TextView
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txt_username"
-                    android:text="username"
-                    android:layout_below="@+id/profile_image"
+                    android:background="@color/black"
+                    android:padding="2dp"
+                    android:layout_marginTop="20dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    android:elevation="5dp"
+                    android:layout_below="@+id/profile_image"
+                    android:id="@+id/layoutCarid">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp">
+                            <TextView
+                                android:id="@+id/car_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="XXX0000"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Province"
+                                android:layout_below="@id/car_id"
+                                android:id="@+id/province"
+                                android:textSize="14sp"
+                                android:textColor="@color/black"
+                                android:textStyle="bold"
+                                android:layout_centerHorizontal="true"/>
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutCarDetail"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/layoutCarid"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="right">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@id/layoutCarid"
+                            android:layout_centerHorizontal="true"
+                            android:text="Brand:"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@id/car_brand"
+                            android:layout_centerHorizontal="true"
+                            android:text="Model:"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@id/car_model"
+                            android:layout_centerHorizontal="true"
+                            android:text="Color:"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/car_brand"
+                            android:layout_below="@id/layoutCarid"
+                            android:layout_centerHorizontal="true"
+                            android:text="brand"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/car_model"
+                            android:layout_below="@id/car_brand"
+                            android:layout_centerHorizontal="true"
+                            android:text="model"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/car_color"
+                            android:layout_below="@id/car_model"
+                            android:layout_centerHorizontal="true"
+                            android:text="color"
+                            android:textColor="@color/black"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_chat"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Chat"
                     android:textColor="@color/white"
                     android:background="@drawable/round_btn"
+                    android:backgroundTint="@color/colorPrimary"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="40dp"
-                    android:layout_below="@id/txt_username" />
+                    android:textAllCaps="false"
+                    android:layout_below="@id/layoutCarDetail" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/cant_chat"
                     android:text="You can't chat with yourself"
+                    android:textColor="@color/red"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="50dp"
-                    android:layout_below="@id/txt_username"
+                    android:layout_below="@id/layoutCarDetail"
                     android:visibility="gone"/>
 
             </RelativeLayout>

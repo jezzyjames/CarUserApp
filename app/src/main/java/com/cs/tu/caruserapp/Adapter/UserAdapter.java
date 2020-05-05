@@ -18,13 +18,14 @@ import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<Chatlist> userList;
 
     String theLastMessage;
+    String the_date_time;
 
     public UserAdapter(Context mContext, List<Car> mCars, List<Chatlist> userList) {
         this.mContext = mContext;
@@ -59,7 +61,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final Car car = mCars.get(position);
         final Chatlist chatlist = userList.get(position);
 
-        holder.username.setText(car.getCar_id());
+        holder.car_id.setText(car.getCar_id());
+        holder.province.setText(car.getProvince());
         if(car.getImageURL().equals("default")){
             holder.profile_image.setImageResource(R.mipmap.ic_launcher);
         }else{
@@ -67,7 +70,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         //Show last message on user list
-        lastMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.last_msg);
+        lastMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.last_msg, holder.date_time);
 
         //show notify sign on unread message
         countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.unread_num);
@@ -98,7 +101,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 if(!user.isVerify_status()){
                     verify_status.setVisibility(View.VISIBLE);
                 }else{
-                    verify_status.setVisibility(View.GONE);
+                    verify_status.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -117,8 +120,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     //check for last message
-    private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg){
+    private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg, final TextView date_time){
         theLastMessage = "default";
+        the_date_time = "default";
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -127,6 +131,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     Chat chat = snapshot.getValue(Chat.class);
                     if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
                         theLastMessage = chat.getMessage();
+                        the_date_time = chat.getTime();
                     }
                 }
 
@@ -137,6 +142,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                     default:
                         last_msg.setText(theLastMessage);
+                        date_time.setText(the_date_time);
                         break;
                 }
 
@@ -180,20 +186,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView username;
+        public TextView car_id;
+        public TextView province;
         public ImageView profile_image;
         TextView last_msg;
         TextView unread_num;
         TextView verify_status;
+        TextView date_time;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            username = itemView.findViewById(R.id.username);
+            car_id = itemView.findViewById(R.id.username);
+            province = itemView.findViewById(R.id.province);
             profile_image = itemView.findViewById(R.id.profile_image);
             last_msg = itemView.findViewById(R.id.last_msg);
             unread_num = itemView.findViewById(R.id.unread_num);
             verify_status = itemView.findViewById(R.id.verify_status);
+            date_time = itemView.findViewById(R.id.date_time);
 
         }
     }

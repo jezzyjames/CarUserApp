@@ -110,8 +110,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                     if(verificationCode.equals("")){
                         Toast.makeText(PhoneRegisterActivity.this, "Please enter verification code", Toast.LENGTH_SHORT).show();
+                        layoutVerifyCode.setError("Please insert verify code");
                     }else{
                         verify_progress.setVisibility(View.VISIBLE);
+                        layoutVerifyCode.setErrorEnabled(false);
 
                         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
                         signInWithPhoneAuthCredential(credential);

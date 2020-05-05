@@ -10,22 +10,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +56,50 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
+    TabLayout tabLayout;
+
+    ImageView info;
+    Animation anim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+
+        info = findViewById(R.id.info);
+        anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
+        info.startAnimation(anim);
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new FancyGifDialog.Builder(MainActivity.this)
+                        .setTitle("Your account is not verified")
+                        .setMessage("For the safety of everyone please verify yourself. if you don't, your unverified status will show to other")
+                        .setNegativeBtnText("Later")
+                        .setPositiveBtnBackground("#4A46B5")
+                        .setPositiveBtnText("Go")
+                        .setNegativeBtnBackground("#FFA9A7A8")
+                        .setGifResource(R.drawable.thieft)   //Pass your Gif here
+                        .isCancellable(false)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                                startActivity(profile_intent);
+                            }
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+
+                            }
+                        })
+                        .build();
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -117,44 +154,73 @@ public class MainActivity extends AppCompatActivity {
                     carsList.add(car);
                 }
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-                        for(int i = 0; i < carsList.size(); i++){
-                            String sender_car_id = carsList.get(i).getCar_id();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("car_id", sender_car_id);
-                            ChatsFragment chatsFragment = new ChatsFragment();
-                            chatsFragment.setArguments(bundle);
+                viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                for(int i = 0; i < carsList.size(); i++){
+                    String sender_car_id = carsList.get(i).getCar_id();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("car_id", sender_car_id);
+                    ChatsFragment chatsFragment = new ChatsFragment();
+                    chatsFragment.setArguments(bundle);
 
-                            //count unread message
-                            int unread = 0;
-                            for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                                Chat chat = snapshot.getValue(Chat.class);
-                                if(chat.getReceiver_car_id().equals(sender_car_id) && !chat.isIsseen()){
-                                    unread++;
+                    //count unread message
+//                    int unread = 0;
+//                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+//                        Chat chat = snapshot.getValue(Chat.class);
+//                        if(chat.getReceiver_car_id().equals(sender_car_id) && !chat.isIsseen()){
+//                            unread++;
+//                        }
+//                    }
+
+//                    String unreadnum = "";
+//                    if(unread != 0){
+//                        unreadnum = " (" + unread + ")";
+//                    }
+                    //add fragment each car id
+                    viewPagerAdapter.addFragment(chatsFragment, sender_car_id);
+
+                }
+                if(carsList.size() != 0){
+                    viewPager.setAdapter(viewPagerAdapter);
+                }else{
+                    new FancyGifDialog.Builder(MainActivity.this)
+                            .setTitle("Add your first car")
+                            .setMessage("To chat with other people, please add car in your profile.")
+                            .setNegativeBtnText("Later")
+                            .setPositiveBtnBackground("#4A46B5")
+                            .setPositiveBtnText("Go")
+                            .setNegativeBtnBackground("#FFA9A7A8")
+                            .setGifResource(R.drawable.driving_gif)   //Pass your Gif here
+                            .isCancellable(false)
+                            .OnPositiveClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
+                                    Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                                    startActivity(profile_intent);
                                 }
-                            }
+                            })
+                            .OnNegativeClicked(new FancyGifDialogListener() {
+                                @Override
+                                public void OnClick() {
 
-                            String unreadnum = "";
-                            if(unread != 0){
-                                unreadnum = " (" + unread + ")";
-                            }
-                            //add fragment each car id
-                            viewPagerAdapter.addFragment(chatsFragment, sender_car_id + unreadnum);
+                                }
+                            })
+                            .build();
+                }
 
-                        }
-                        viewPager.setAdapter(viewPagerAdapter);
 
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+//                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+//                reference.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
 
             }
 
@@ -179,10 +245,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
+            case R.id.profile:
+                Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(profile_intent);
+                return true;
+
             case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class));
-                finish();
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm")
+                        .setMessage("Are you sure to logout? ")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                                finish();
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .show();
                 return true;
 
             case R.id.search_button:

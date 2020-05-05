@@ -49,6 +49,8 @@ public class AddCarDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_car_dialog, container,false);
 
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         edt_carid = view.findViewById(R.id.edt_car_id);
