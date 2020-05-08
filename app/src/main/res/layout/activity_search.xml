@@ -49,13 +49,27 @@
                 android:layout_centerVertical="true"/>
 
             <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_clear_text"
+                android:src="@drawable/ic_clear"
+                android:tint="@color/white"
+                android:background="@drawable/round_btn"
+                android:backgroundTint="@color/transparation"
+                android:layout_toLeftOf="@id/btn_search"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:visibility="invisible"/>
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/colorPrimary"
                 android:id="@+id/btn_search"
                 android:background="@drawable/ic_search"
                 android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"/>
         </RelativeLayout>
 
         <androidx.cardview.widget.CardView
@@ -78,17 +92,28 @@
                     android:id="@+id/profile_image"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
-                    android:src="@mipmap/ic_launcher"/>
+                    android:src="@drawable/ic_dark_car"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/verify_status"
+                    android:text="Unverified user"
+                    android:textColor="@color/red"
+                    android:layout_below="@id/profile_image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"/>
 
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/black"
                     android:padding="2dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:elevation="5dp"
-                    android:layout_below="@+id/profile_image"
+                    android:layout_below="@+id/verify_status"
                     android:id="@+id/layoutCarid">
 
                     <androidx.cardview.widget.CardView
@@ -99,6 +124,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="4dp">
+
                             <TextView
                                 android:id="@+id/car_id"
                                 android:layout_width="wrap_content"

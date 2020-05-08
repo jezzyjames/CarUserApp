@@ -51,10 +51,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
 
+        if(position != 0 && chat.getDate().equals(mChat.get(position-1).getDate())){
+            holder.show_time.setVisibility(View.GONE);
+        }else{
+            holder.show_time.setText(chat.getDate());
+            holder.show_time.setVisibility(View.VISIBLE);
+        }
+
         holder.show_message.setText(chat.getMessage());
 
         if(imageurl.equals("default")){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+            holder.profile_image.setImageResource(R.drawable.ic_light_car);
         }else{
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
         }
@@ -84,11 +91,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public ImageView profile_image;
         public TextView txt_seen;
         public TextView ststamp;
+        public TextView show_time;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
+            show_time = itemView.findViewById(R.id.show_time);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
             ststamp = itemView.findViewById(R.id.send_time_stamp);

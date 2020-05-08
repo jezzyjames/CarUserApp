@@ -23,6 +23,7 @@ import com.cs.tu.caruserapp.Fragments.APIService;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Sender;;
+import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Client;
 import com.cs.tu.caruserapp.Notification.Data;
 import com.cs.tu.caruserapp.Notification.MyResponse;
@@ -39,9 +40,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -52,6 +55,7 @@ public class MessageActivity extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
+    TextView verify_status;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -109,6 +113,7 @@ public class MessageActivity extends AppCompatActivity {
 
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
+        verify_status = findViewById(R.id.verify_status);
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
 
@@ -147,8 +152,26 @@ public class MessageActivity extends AppCompatActivity {
                 Car car = dataSnapshot.getValue(Car.class);
                 username.setText(car.getCar_id());
 
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if(user.isVerify_status()){
+                            verify_status.setVisibility(View.INVISIBLE);
+                        }else{
+                            verify_status.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 if(car.getImageURL().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
+                    profile_image.setImageResource(R.drawable.ic_light_car);
                 }else{
                     Glide.with(getApplicationContext()).load(car.getImageURL()).into(profile_image);
                 }
@@ -191,11 +214,15 @@ public class MessageActivity extends AppCompatActivity {
 
     private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        String currentDateString = DateFormat.getDateInstance().format(new Date());
+
+        //get current date
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        String formattedDate = df.format(date);
+        //get current time
         String pattern = "HH:mm a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String currentTimeString = simpleDateFormat.format(new Date());
-        //String currentTimeString = DateFormat.getTimeInstance().format(new Date());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
@@ -204,7 +231,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver_car_id", receiver_car_id);
         hashMap.put("message", message);
         hashMap.put("isseen", false);
-        hashMap.put("date",currentDateString);
+        hashMap.put("date",formattedDate);
         hashMap.put("time", currentTimeString);
 
         reference.child("Chats").push().setValue(hashMap);
@@ -272,7 +299,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_launcher, sender_car_id+": "+message, "New Message", receiver_id, receiver_car_id);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id + " say :", receiver_id, receiver_car_id);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ public class AddCarDialog extends DialogFragment {
 
     TextView btn_cancel;
     TextView btn_add;
-
+    Button btn_add_car_photo;
     EditText edt_carid;
     AutoCompleteTextView edt_province;
     EditText edt_brand;
@@ -54,6 +55,7 @@ public class AddCarDialog extends DialogFragment {
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         edt_carid = view.findViewById(R.id.edt_car_id);
+        btn_add_car_photo = view.findViewById(R.id.btn_add_car_photo);
 
         edt_province = view.findViewById(R.id.edt_province);
         String[] province = getResources().getStringArray(R.array.province_arrays);

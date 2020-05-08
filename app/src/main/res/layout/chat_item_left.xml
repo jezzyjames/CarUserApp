@@ -5,48 +5,68 @@
     android:padding="8dp"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/profile_image"
-        android:src="@mipmap/ic_launcher"/>
-
     <TextView
+        android:id="@+id/show_time"
         android:layout_width="wrap_content"
-        android:maxWidth="240dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profile_image"
         android:layout_marginLeft="5dp"
-        android:text="hello"
-        android:id="@+id/show_message"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:background="@drawable/background_left"/>
+        android:background="@drawable/background_time"
+        android:maxWidth="240dp"
+        android:padding="4dp"
+        android:text="12 Mar"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_alignBottom="@id/show_message"
-        android:layout_toRightOf="@id/show_message">
+        android:layout_below="@id/show_time">
 
-        <TextView
-            android:id="@+id/send_time_stamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12:00"
-            android:textSize="10sp"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/profile_image"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
             android:layout_width="wrap_content"
+            android:maxWidth="240dp"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_seen"
-            android:layout_below="@id/send_time_stamp"
-            android:textSize="10sp"
-            android:layout_alignEnd="@id/send_time_stamp"
-            android:visibility="gone"/>
+            android:layout_toRightOf="@+id/profile_image"
+            android:layout_marginLeft="5dp"
+            android:text="hello"
+            android:id="@+id/show_message"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:background="@drawable/background_left"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@id/show_message"
+            android:layout_toRightOf="@id/show_message">
+
+            <TextView
+                android:id="@+id/send_time_stamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:00"
+                android:textSize="10sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_seen"
+                android:layout_below="@id/send_time_stamp"
+                android:textSize="10sp"
+                android:layout_alignEnd="@id/send_time_stamp"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
-
 
 </RelativeLayout>

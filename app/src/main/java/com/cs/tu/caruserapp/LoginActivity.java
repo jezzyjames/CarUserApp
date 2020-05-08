@@ -155,7 +155,6 @@ public class LoginActivity extends AppCompatActivity {
             //Instant verification: in some cases the phone number can be instantly verified **without needing to send or enter a verification code**.
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                Toast.makeText(LoginActivity.this, "Verify phone number complete!", Toast.LENGTH_SHORT).show();
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 

@@ -9,8 +9,9 @@ public class Chat {
     private String message;
     private boolean isseen;
     private String time;
+    private String date;
 
-    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, boolean isSeen, String time) {
+    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, boolean isSeen, String time, String date) {
         this.sender = sender;
         this.receiver = receiver;
         this.sender_car_id = sender_car_id;
@@ -18,6 +19,7 @@ public class Chat {
         this.message = message;
         this.isseen = isseen;
         this.time = time;
+        this.date = date;
     }
 
     public Chat() {
@@ -77,5 +79,13 @@ public class Chat {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

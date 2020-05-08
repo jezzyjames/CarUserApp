@@ -63,7 +63,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
         holder.txt_car_color.setText(car.getColor());
 
         if(car.getImageURL().equals("default")){
-            holder.car_image.setImageResource(R.mipmap.ic_launcher);
+            holder.car_image.setImageResource(R.drawable.ic_light_car);
         }else{
             Glide.with(mContext).load(car.getImageURL()).into(holder.car_image);
         }

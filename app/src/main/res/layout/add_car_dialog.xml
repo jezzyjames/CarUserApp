@@ -73,6 +73,22 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/colorPrimary"/>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_camera"
+                android:drawablePadding="5dp"
+                android:padding="5dp"
+                android:drawableTint="@color/white"
+                android:background="@color/colorPrimaryDark"
+                android:text="Add Car Photo"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:id="@+id/btn_add_car_photo"/>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -142,8 +158,6 @@
                     android:layout_centerVertical="true"/>
 
             </RelativeLayout>
-
-
 
         </LinearLayout>
 

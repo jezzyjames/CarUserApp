@@ -18,7 +18,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Adapter.CarAdapter;
 import com.cs.tu.caruserapp.Dialog.AddCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
@@ -60,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
     CircleImageView image_profile;
     TextView username;
+    TextView phonenumber;
     TextView txt_add_car;
 
     DatabaseReference reference;
@@ -81,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
         image_profile = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
+        phonenumber = findViewById(R.id.phonenumber);
         txt_add_car = findViewById(R.id.txt_add_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -104,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname() + " " + user.getLastname());
+                phonenumber.setText(user.getPhone_number());
 
             }
 
@@ -226,7 +228,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
-                        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                        reference = FirebaseDatabase.getInstance().getReference("Cars").child(firebaseUser.getUid());
                         HashMap<String, Object> map = new HashMap<>();
                         map.put("imageURL", mUri);
                         reference.updateChildren(map);

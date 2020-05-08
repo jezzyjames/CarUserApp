@@ -6,11 +6,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,10 +25,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Dialog.ChooseCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -36,8 +42,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SearchActivity extends AppCompatActivity {
     EditText search_users;
     CardView cardview_result;
+    ImageButton btn_clear_text;
     ImageButton btn_search;
     CircleImageView image_profile;
+    TextView verify_status;
     TextView car_id;
     TextView province;
     TextView brand;
@@ -54,8 +62,10 @@ public class SearchActivity extends AppCompatActivity {
 
         cardview_result = findViewById(R.id.cardview_result);
         search_users = findViewById(R.id.search_users);
+        btn_clear_text = findViewById(R.id.btn_clear_text);
         btn_search = findViewById(R.id.btn_search);
         image_profile = findViewById(R.id.profile_image);
+        verify_status = findViewById(R.id.verify_status);
         car_id = findViewById(R.id.car_id);
         province = findViewById(R.id.province);
         brand = findViewById(R.id.car_brand);
@@ -78,14 +88,48 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        search_users.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length()>0){
+                    btn_clear_text.setVisibility(View.VISIBLE);
+                    btn_clear_text.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            search_users.setText("");
+                        }
+                    });
+
+
+                }else{
+                    btn_clear_text.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
         search_users.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH){
                     searchUsers(search_users.getText().toString().toLowerCase());
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Context.INPUT_METHOD_SERVICE
+                    );
+                    imm.hideSoftInputFromWindow(search_users.getWindowToken(), 0);
                     return true;
                 }
                 return false;
+
             }
         });
 
@@ -93,6 +137,10 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchUsers(search_users.getText().toString().toLowerCase());
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                );
+                imm.hideSoftInputFromWindow(search_users.getWindowToken(), 0);
             }
         });
 
@@ -114,6 +162,24 @@ public class SearchActivity extends AppCompatActivity {
                         assert car != null;
                         assert firebaseUser != null;
 
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                if(user.isVerify_status()){
+                                    verify_status.setVisibility(View.INVISIBLE);
+                                }else{
+                                    verify_status.setVisibility(View.VISIBLE);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                         car_id.setText(car.getCar_id());
                         province.setText(car.getProvince());
                         brand.setText(car.getBrand());
@@ -122,7 +188,7 @@ public class SearchActivity extends AppCompatActivity {
 
                         //set image
                         if (car.getImageURL().equals("default")) {
-                            image_profile.setImageResource(R.mipmap.ic_launcher);
+                            image_profile.setImageResource(R.drawable.ic_light_car);
                         } else {
                             Glide.with(getApplicationContext()).load(car.getImageURL()).into(image_profile);
                         }

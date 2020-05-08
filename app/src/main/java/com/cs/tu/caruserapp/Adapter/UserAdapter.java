@@ -64,7 +64,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.car_id.setText(car.getCar_id());
         holder.province.setText(car.getProvince());
         if(car.getImageURL().equals("default")){
-            holder.profile_image.setImageResource(R.mipmap.ic_launcher);
+            holder.profile_image.setImageResource(R.drawable.ic_light_car);
         }else{
             Glide.with(mContext).load(car.getImageURL()).into(holder.profile_image);
         }
