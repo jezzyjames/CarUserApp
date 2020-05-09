@@ -150,7 +150,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //set receiver data on Action bar
                 Car car = dataSnapshot.getValue(Car.class);
-                username.setText(car.getCar_id());
+                username.setText(car.getCar_id().toUpperCase());
 
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
                 reference.addValueEventListener(new ValueEventListener() {

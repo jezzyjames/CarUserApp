@@ -67,3 +67,4 @@
 - if message is not older than years, show only date and month
 - add delete chatlist and delete car
 - add report an inappropriate user
+- fix little bug

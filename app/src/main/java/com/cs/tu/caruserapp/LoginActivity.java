@@ -106,6 +106,24 @@ public class LoginActivity extends AppCompatActivity {
                     verify_progress.setVisibility(View.VISIBLE);
 
                     if (!editText_phone.getText().toString().equals("")) {
+                        //admin test//
+                        if(editText_phone.getText().toString().equals("1212 312 121")) {
+                            FirebaseAuth auth = firebaseAuth.getInstance();
+                            auth.signInWithEmailAndPassword("jetdokoalah@gmail.com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(task.isSuccessful()){
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        Toast.makeText(LoginActivity.this, "Admin Login Failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                        //admin Test//
                         layoutPhone.setErrorEnabled(false);
                         phoneNumber = ccp.getFullNumberWithPlus();
 

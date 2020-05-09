@@ -81,7 +81,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final Car car = mCars.get(position);
         final Chatlist chatlist = userList.get(position);
 
-        holder.car_id.setText(car.getCar_id());
+        holder.car_id.setText(car.getCar_id().toUpperCase());
         holder.province.setText(car.getProvince());
         if(car.getImageURL().equals("default")){
             holder.profile_image.setImageResource(R.drawable.ic_light_car);

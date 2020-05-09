@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,8 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     TextView username;
     TextView phonenumber;
     TextView txt_add_car;
+    TextView license_status;
+    Button verify_btn;
 
     DatabaseReference reference;
     FirebaseUser firebaseUser;
@@ -82,6 +86,8 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         image_profile = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         phonenumber = findViewById(R.id.phonenumber);
+        license_status = findViewById(R.id.license_status);
+        verify_btn = findViewById(R.id.verify_btn);
         txt_add_car = findViewById(R.id.txt_add_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -106,6 +112,15 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname() + " " + user.getLastname());
                 phonenumber.setText(user.getPhone_number());
+                license_status.setText("verified");
+                license_status.setTextColor(Color.GREEN);
+                verify_btn.setVisibility(View.GONE);
+
+                if(!user.isVerify_status()){
+                    license_status.setText("unverified");
+                    license_status.setTextColor(Color.RED);
+                    verify_btn.setVisibility(View.VISIBLE);
+                }
 
             }
 

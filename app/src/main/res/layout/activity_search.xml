@@ -120,12 +120,14 @@
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
+                        android:minWidth="80dp"
                         android:layout_height="wrap_content">
 
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="4dp">
+                            android:padding="4dp"
+                            android:layout_gravity="center">
 
                             <TextView
                                 android:id="@+id/car_id"

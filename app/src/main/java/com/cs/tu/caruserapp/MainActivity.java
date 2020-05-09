@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
 
         info = findViewById(R.id.info);
-        anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
-        info.startAnimation(anim);
+        info.setVisibility(View.GONE);
         info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         .build();
             }
         });
+        anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,10 +115,20 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname());
+                username.setTextColor(Color.WHITE);
+                user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                info.setVisibility(View.GONE);
+                info.clearAnimation();
+
+
                 if(!user.isVerify_status()){
                     username.setText(user.getFirstname() + " : unverified");
                     username.setTextColor(Color.RED);
                     user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.red));
+
+                    info.setVisibility(View.VISIBLE);
+                    info.startAnimation(anim);
+
                 }
 
                 user_icon.setOnClickListener(new View.OnClickListener() {

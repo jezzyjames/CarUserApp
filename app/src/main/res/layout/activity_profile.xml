@@ -47,7 +47,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:layout_width="100dp"
@@ -62,7 +63,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/username"
-                            android:text="username"
+                            android:text="Firstname Lastname"
                             android:textSize="18sp"
                             android:textColor="@color/colorPrimaryDark"
                             android:layout_centerHorizontal="true"
@@ -110,7 +111,8 @@
                                 android:layout_marginTop="5dp"
                                 android:id="@+id/license_status_text"
                                 android:text="Driver license verify status: "
-                                android:textSize="18dp" />
+                                android:textSize="18dp"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -119,8 +121,6 @@
                                 android:layout_centerHorizontal="true"
                                 android:id="@+id/license_status"
                                 android:layout_toRightOf="@id/license_status_text"
-                                android:text="unverified"
-                                android:textColor="@color/red"
                                 android:textSize="18dp"/>
                         </RelativeLayout>
 
@@ -137,7 +137,8 @@
                             android:textSize="14sp"
                             android:layout_marginTop="10dp"
                             android:layout_margin="10dp"
-                            android:textColor="@color/white"/>
+                            android:textColor="@color/white"
+                            android:visibility="gone"/>
 
                     </RelativeLayout>
 
