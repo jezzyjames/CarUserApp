@@ -16,7 +16,11 @@ import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
@@ -54,7 +58,29 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(position != 0 && chat.getDate().equals(mChat.get(position-1).getDate())){
             holder.show_time.setVisibility(View.GONE);
         }else{
-            holder.show_time.setText(chat.getDate());
+            Date date = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+            String formattedDate = df.format(date);
+            String currentDateArr[] = formattedDate.split(" ");
+            String currentYear = currentDateArr[2];
+
+            String dateArr[] = chat.getDate().split(" ");
+            String day = dateArr[0];
+            String month = dateArr[1];
+            String year = dateArr[2];
+
+            if(chat.getDate().equalsIgnoreCase(formattedDate)){
+                holder.show_time.setText("Today");
+            }else{
+                holder.show_time.setText(chat.getDate());
+                if(year.equalsIgnoreCase(currentYear)){
+                    holder.show_time.setText(day + " " + month);
+                }else{
+                    holder.show_time.setText(day + " " + month + " " + year);
+                }
+
+            }
+
             holder.show_time.setVisibility(View.VISIBLE);
         }
 

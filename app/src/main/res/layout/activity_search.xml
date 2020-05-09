@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
     android:orientation="vertical"
 
     tools:context=".SearchActivity">
@@ -45,8 +44,9 @@
                 android:padding="5dp"
                 android:id="@+id/search_users"
                 android:background="@color/white"
-                android:hint="Search..."
-                android:layout_centerVertical="true"/>
+                android:hint="Search Car ID number..."
+                android:layout_centerVertical="true"
+                android:elevation="5dp"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -59,7 +59,8 @@
                 android:layout_toLeftOf="@id/btn_search"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:elevation="5dp"/>
 
             <ImageButton
                 android:layout_width="30dp"
@@ -69,7 +70,8 @@
                 android:background="@drawable/ic_search"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp"
+                android:elevation="5dp"/>
         </RelativeLayout>
 
         <androidx.cardview.widget.CardView

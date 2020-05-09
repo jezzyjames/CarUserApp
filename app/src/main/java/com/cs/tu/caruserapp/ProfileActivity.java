@@ -134,7 +134,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                     Car car = snapshot.getValue(Car.class);
                     carsList.add(car);
                 }
-                carAdapter = new CarAdapter(getApplicationContext(), carsList);
+                carAdapter = new CarAdapter(ProfileActivity.this, carsList);
                 recyclerView.setAdapter(carAdapter);
 
                 //can't add more than 3 cars

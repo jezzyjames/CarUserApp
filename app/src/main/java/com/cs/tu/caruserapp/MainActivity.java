@@ -253,8 +253,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.logout:
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm")
-                        .setMessage("Are you sure to logout? ")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setMessage("Are you sure to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         })
-                        .setNegativeButton(android.R.string.no, null)
+                        .setNegativeButton("No", null)
                         .show();
                 return true;
 

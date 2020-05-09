@@ -81,7 +81,7 @@
                 android:drawablePadding="5dp"
                 android:padding="5dp"
                 android:drawableTint="@color/white"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimary"
                 android:text="Add Car Photo"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -105,7 +105,8 @@
                 android:ems="4"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
-                android:maxLength="8"/>
+                android:maxLength="8"
+                android:inputType="text"/>
 
             <AutoCompleteTextView
                 android:id="@+id/edt_province"
@@ -115,7 +116,9 @@
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
                 android:maxLines="1"
-                android:maxLength="24"/>
+                android:maxLength="24"
+                android:inputType="text"
+                android:imeOptions="actionNext"/>
 
             <EditText
                 android:id="@+id/edt_brand"
@@ -125,7 +128,8 @@
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
                 android:maxLines="1"
-                android:maxLength="24"/>
+                android:maxLength="24"
+                android:inputType="text"/>
 
             <EditText
                 android:id="@+id/edt_model"
@@ -135,7 +139,8 @@
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
                 android:maxLines="1"
-                android:maxLength="24"/>
+                android:maxLength="24"
+                android:inputType="text"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -148,7 +153,7 @@
                     android:id="@+id/color_spinner"
                     android:background="@color/edittext_bg"
                     android:spinnerMode="dropdown"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"/>
 
                 <ImageView
                     android:layout_width="wrap_content"

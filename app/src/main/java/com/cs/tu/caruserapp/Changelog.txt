@@ -57,7 +57,13 @@
 5/5/2020
 - add giffy dialog
 
-5/8/20202
+5/8/2020
 - keyboard hidden when click search
 - add clear text button on search edit text
 - show date in message activity
+
+5/9/2020
+- show "today" in MessageActivity if sent message date is today and show only sent time on last message
+- if message is not older than years, show only date and month
+- add delete chatlist and delete car
+- add report an inappropriate user

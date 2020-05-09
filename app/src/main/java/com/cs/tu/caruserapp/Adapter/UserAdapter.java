@@ -1,14 +1,22 @@
 package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +26,10 @@ import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,9 +37,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     View view;
@@ -37,7 +53,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<Chatlist> userList;
 
     String theLastMessage;
-    String the_date_time;
+    String the_time;
+    String the_date;
+
+    FirebaseUser firebaseUser;
+    DatabaseReference reference;
 
     public UserAdapter(Context mContext, List<Car> mCars, List<Chatlist> userList) {
         this.mContext = mContext;
@@ -89,6 +109,122 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(car.getCar_id().toUpperCase());
+
+                String[] choices = {"Report inappropriate user", "Delete chat"};
+                builder.setItems(choices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                                builder.setTitle("Report " + car.getCar_id().toUpperCase());
+
+                                //set layout
+                                LinearLayout layout = new LinearLayout(mContext);
+                                layout.setOrientation(LinearLayout.VERTICAL);
+                                layout.setPadding(20,20,20,20);
+
+                                //set spinner
+                                String[] spinner_list = {"Spam message", "Harmful message", "Other"};
+                                final ArrayAdapter<String> adp = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, spinner_list);
+                                final Spinner spinner = new Spinner(mContext);
+                                spinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                spinner.setAdapter(adp);
+
+                                //set edit text
+                                final EditText report_input = new EditText(mContext);
+                                report_input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                                //connect together
+                                layout.addView(spinner);
+                                layout.addView(report_input);
+                                builder.setView(layout);
+
+                                builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String report_type = spinner.getSelectedItem().toString();
+                                        String report_message = report_input.getText().toString();
+
+                                        //get current date
+                                        Date date = Calendar.getInstance().getTime();
+                                        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+                                        String formattedDate = df.format(date);
+                                        //get current time
+                                        String pattern = "HH:mm a";
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                                        String currentTimeString = simpleDateFormat.format(new Date());
+
+                                        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                        reference = FirebaseDatabase.getInstance().getReference();
+                                        HashMap<String, String> hashMap = new HashMap<>();
+                                        hashMap.put("report_type", report_type);
+                                        hashMap.put("report_message", report_message);
+                                        hashMap.put("id", car.getOwner_id());
+                                        hashMap.put("car_id", car.getCar_id());
+                                        hashMap.put("date", formattedDate);
+                                        hashMap.put("time", currentTimeString);
+                                        hashMap.put("reporter_id", firebaseUser.getUid());
+                                        hashMap.put("reporter_car_id", chatlist.getSender_car_id());
+
+                                        reference.child("Report").child(car.getOwner_id()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(mContext, "User reported", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                builder.show();
+                                break;
+                            case 1:
+                                new android.app.AlertDialog.Builder(mContext)
+                                        .setTitle("Confirm")
+                                        .setMessage("Are you sure to delete " + car.getCar_id().toUpperCase() + " chat?")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                                reference = FirebaseDatabase.getInstance().getReference("Chatlist")
+                                                        .child(firebaseUser.getUid())
+                                                        .child(chatlist.getSender_car_id())
+                                                        .child(car.getCar_id());
+                                                reference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        Toast.makeText(mContext, "Delete chat complete", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                });
+
+                                            }
+                                        })
+                                        .setNegativeButton("No", null)
+                                        .show();
+                                break;
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return false;
+            }
+        });
 
     }
 
@@ -122,7 +258,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     //check for last message
     private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg, final TextView date_time){
         theLastMessage = "default";
-        the_date_time = "default";
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,18 +267,43 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     Chat chat = snapshot.getValue(Chat.class);
                     if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
                         theLastMessage = chat.getMessage();
-                        the_date_time = chat.getTime();
+                        the_date = chat.getDate();
+                        the_time = chat.getTime();
                     }
                 }
 
                 switch (theLastMessage){
                     case "default":
                         last_msg.setText("No Message");
+                        date_time.setText("");
                         break;
 
                     default:
                         last_msg.setText(theLastMessage);
-                        date_time.setText(the_date_time);
+
+                        Date date = Calendar.getInstance().getTime();
+                        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+                        String formattedDate = df.format(date);
+
+                        String currentDateArr[] = formattedDate.split(" ");
+                        String currentYear = currentDateArr[2];
+
+                        String dateArr[] = the_date.split(" ");
+                        String day = dateArr[0];
+                        String month = dateArr[1];
+                        String year = dateArr[2];
+
+                        if(the_date.equalsIgnoreCase(formattedDate)){
+                            date_time.setText(the_time);
+                        } else{
+                            if(currentYear.equalsIgnoreCase(year)){
+                                date_time.setText(day + " " + month);
+                            }else{
+                                date_time.setText(day + " " + month + " " + year);
+                            }
+
+                        }
+
                         break;
                 }
 

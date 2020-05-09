@@ -1,18 +1,27 @@
 package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -21,6 +30,9 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Car> mCars;
+
+    FirebaseUser firebaseUser;
+    DatabaseReference reference;
 
     public CarAdapter(Context mContext, List<Car> mCars) {
         this.mContext = mContext;
@@ -53,11 +65,54 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         }else{
             Glide.with(mContext).load(car.getImageURL()).into(holder.car_image);
         }
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(mContext, "click", Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(car.getCar_id().toUpperCase());
 
+                String[] choices = {"Delete this car"};
+                builder.setItems(choices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                new android.app.AlertDialog.Builder(mContext)
+                                        .setTitle("Confirm")
+                                        .setMessage("Are you sure to delete " + car.getCar_id().toUpperCase())
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                                reference = FirebaseDatabase.getInstance().getReference("Cars")
+                                                        .child(car.getCar_id());
+                                                reference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        Toast.makeText(mContext, "Delete car complete", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                });
+
+                                            }
+                                        })
+                                        .setNegativeButton("No", null)
+                                        .show();
+                                break;
+
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return false;
             }
         });
 
