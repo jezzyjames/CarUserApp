@@ -180,7 +180,7 @@ public class SearchActivity extends AppCompatActivity {
                             }
                         });
 
-                        car_id.setText(car.getCar_id());
+                        car_id.setText(car.getCar_id().toUpperCase());
                         province.setText(car.getProvince());
                         brand.setText(car.getBrand());
                         model.setText(car.getModel());

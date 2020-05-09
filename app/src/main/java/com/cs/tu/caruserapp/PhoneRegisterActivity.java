@@ -61,6 +61,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
     String firstname = "";
     String lastname = "";
     String phoneNumber = "";
+    String raw_phoneNumber = "";
     LinearLayout phone_view_part;
 
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
@@ -131,6 +132,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                         if (!editText_phone.getText().toString().equals("")) {
                             layoutPhone.setErrorEnabled(false);
+                            raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
                             phoneNumber = ccp.getFullNumberWithPlus();
 
                             //Check if phone number is exist
@@ -228,8 +230,21 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
+                String phoneArr[] = raw_phoneNumber.split(" ");
+                String hidden_number = phoneArr[0];
+                for(int i = 1; i < phoneArr.length-1; i++){
+                    String phone_part = phoneArr[i];
+                    for(int j = 0; j < phone_part.length(); j++){
+                        if(j == 0){
+                            hidden_number = hidden_number + " ";
+                        }
+                        hidden_number = hidden_number + "x";
+                    }
+                }
+                hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
+
                 phone_refer.setVisibility(View.VISIBLE);
-                phone_refer.setText("Message was sent to\n" + phoneNumber);
+                phone_refer.setText("Verification code was sent to\n" + hidden_number);
 
                 verify_btn.setText("Submit");
                 verify_btn.setVisibility(View.VISIBLE);
@@ -272,7 +287,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             hashMap.put("id", firebaseUser.getUid());
                             hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
                             hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
-                            hashMap.put("phone_number", phoneNumber);
+                            hashMap.put("phone_number", raw_phoneNumber);
                             hashMap.put("verify_status", false);
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {

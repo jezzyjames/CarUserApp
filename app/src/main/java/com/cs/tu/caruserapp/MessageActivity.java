@@ -95,6 +95,7 @@ public class MessageActivity extends AppCompatActivity {
                     Intent intent = new Intent(MessageActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    finish();
                 }
                 finish();
 
@@ -382,5 +383,18 @@ public class MessageActivity extends AppCompatActivity {
         super.onPause();
         reference.removeEventListener(seenListener);
         currentUser("none");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        boolean from_search = intent.getBooleanExtra("from_search", false);
+        if(from_search) {
+            Intent intent = new Intent(MessageActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+        finish();
     }
 }

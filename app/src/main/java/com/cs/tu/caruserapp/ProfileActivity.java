@@ -188,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private void addCar(final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase());
 
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("car_id", car_id.toLowerCase());

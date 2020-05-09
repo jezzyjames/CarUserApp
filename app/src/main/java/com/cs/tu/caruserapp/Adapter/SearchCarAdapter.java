@@ -81,7 +81,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
                 new AlertDialog.Builder(mContext)
                         .setTitle("Confirm")
                         .setMessage("Choose car id number " + car.getCar_id().toUpperCase() + "\nto your active car?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(mContext, MessageActivity.class);
@@ -93,7 +93,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
 
                             }
                         })
-                        .setNegativeButton(android.R.string.no, null)
+                        .setNegativeButton("No", null)
                         .show();
             }
         });

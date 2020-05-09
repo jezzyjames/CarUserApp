@@ -12,8 +12,8 @@ public class Car {
     private String imageURL;
     private String owner_id;
 
-    public Car(String id, String province, String brand, String model, String color, String imageURL, String owner_id) {
-        this.car_id = id;
+    public Car(String car_id, String province, String brand, String model, String color, String imageURL, String owner_id) {
+        this.car_id = car_id;
         this.province = province;
         this.brand = brand;
         this.model = model;
