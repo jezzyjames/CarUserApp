@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     View view;
@@ -125,7 +126,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         public TextView txt_car_brand;
         public TextView txt_car_model;
         public TextView txt_car_color;
-        public ImageView car_image;
+        public CircleImageView car_image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -179,6 +179,8 @@ public class MessageActivity extends AppCompatActivity {
 
                 //read and show all chat message on screen
                 readMessage(sender_car_id, receiver_car_id, car.getImageURL());
+
+
             }
             //didn't found
             @Override
@@ -186,8 +188,8 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-
         seenMessage(receiver_car_id);
+
     }
 
 
@@ -300,7 +302,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id + " say :", receiver_id, receiver_car_id);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " say :", receiver_id, receiver_car_id);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());

@@ -74,29 +74,7 @@ public class MainActivity extends AppCompatActivity {
         info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new FancyGifDialog.Builder(MainActivity.this)
-                        .setTitle("Your account is not verified")
-                        .setMessage("For the safety of everyone please verify yourself. if you don't, your unverified status will show to other")
-                        .setNegativeBtnText("Later")
-                        .setPositiveBtnBackground("#4A46B5")
-                        .setPositiveBtnText("Go")
-                        .setNegativeBtnBackground("#FFA9A7A8")
-                        .setGifResource(R.drawable.thieft)   //Pass your Gif here
-                        .isCancellable(false)
-                        .OnPositiveClicked(new FancyGifDialogListener() {
-                            @Override
-                            public void OnClick() {
-                                Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
-                                startActivity(profile_intent);
-                            }
-                        })
-                        .OnNegativeClicked(new FancyGifDialogListener() {
-                            @Override
-                            public void OnClick() {
-
-                            }
-                        })
-                        .build();
+                warnDialog(1);
             }
         });
         anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
@@ -128,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
                     info.setVisibility(View.VISIBLE);
                     info.startAnimation(anim);
+
+                    warnDialog(1);
 
                 }
 
@@ -192,29 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 if(carsList.size() != 0){
                     viewPager.setAdapter(viewPagerAdapter);
                 }else{
-                    new FancyGifDialog.Builder(MainActivity.this)
-                            .setTitle("Add your first car")
-                            .setMessage("To chat with other people, please add car in your profile.")
-                            .setNegativeBtnText("Later")
-                            .setPositiveBtnBackground("#4A46B5")
-                            .setPositiveBtnText("Go")
-                            .setNegativeBtnBackground("#FFA9A7A8")
-                            .setGifResource(R.drawable.driving_gif)   //Pass your Gif here
-                            .isCancellable(false)
-                            .OnPositiveClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-                                    Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
-                                    startActivity(profile_intent);
-                                }
-                            })
-                            .OnNegativeClicked(new FancyGifDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .build();
+                    warnDialog(0);
                 }
 
 
@@ -319,5 +277,58 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
+    }
+
+    public void warnDialog(int dialog){
+        switch (dialog){
+            case 0:
+                new FancyGifDialog.Builder(MainActivity.this)
+                        .setTitle("Add your first car")
+                        .setMessage("To chat with other people, please add car in your profile.")
+                        .setNegativeBtnText("Later")
+                        .setPositiveBtnBackground("#4A46B5")
+                        .setPositiveBtnText("Go")
+                        .setNegativeBtnBackground("#FFA9A7A8")
+                        .setGifResource(R.drawable.driving_gif)   //Pass your Gif here
+                        .isCancellable(false)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                                startActivity(profile_intent);
+                            }
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                            }
+                        })
+                        .build();
+            case 1:
+                new FancyGifDialog.Builder(MainActivity.this)
+                        .setTitle("Your account is not verified")
+                        .setMessage("For the safety of everyone please verify yourself. if you don't, you still can use the app but your unverified status will show to other")
+                        .setNegativeBtnText("Later")
+                        .setPositiveBtnBackground("#4A46B5")
+                        .setPositiveBtnText("Go")
+                        .setNegativeBtnBackground("#FFA9A7A8")
+                        .setGifResource(R.drawable.thieft)   //Pass your Gif here
+                        .isCancellable(false)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
+                                startActivity(profile_intent);
+                            }
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                            }
+                        })
+                        .build();
+        }
+
+
     }
 }

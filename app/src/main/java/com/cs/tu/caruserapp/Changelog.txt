@@ -69,3 +69,6 @@
 - add report an inappropriate user
 - fix minor bug
 - hidden phone number when register
+
+5/10/2020
+- fix notification bug

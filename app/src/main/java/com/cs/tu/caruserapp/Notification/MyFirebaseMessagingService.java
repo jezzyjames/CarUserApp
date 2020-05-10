@@ -113,6 +113,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendOreoNotification(RemoteMessage remoteMessage) {
         String sender_id = remoteMessage.getData().get("sender_id");
+
+        //contrast data from remote Message
+        String receiver_id = remoteMessage.getData().get("sender_id");
+        String receiver_car_id = remoteMessage.getData().get("sender_car_id");
+        String sender_car_id = remoteMessage.getData().get("receiver_car_id");
+
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
@@ -121,9 +127,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // "\\D" mean All character that is not numbers         replace all character with empty string
         int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
         Intent intent = new Intent(this, MessageActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("sender_id", sender_id);
-        intent.putExtras(bundle);
+        intent.putExtra("receiver_id", receiver_id);
+        intent.putExtra("receiver_car_id", receiver_car_id);
+        intent.putExtra("sender_car_id", sender_car_id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -143,6 +149,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(RemoteMessage remoteMessage) {
         String sender_id = remoteMessage.getData().get("sender_id");
+
+        //contrast data from remote Message
+        String receiver_id = remoteMessage.getData().get("sender_id");
+        String receiver_car_id = remoteMessage.getData().get("sender_car_id");
+        String sender_car_id = remoteMessage.getData().get("receiver_car_id");
+
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
@@ -150,9 +162,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
         Intent intent = new Intent(this, MessageActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("sender_id", sender_id);
-        intent.putExtras(bundle);
+        intent.putExtra("receiver_id", receiver_id);
+        intent.putExtra("receiver_car_id", receiver_car_id);
+        intent.putExtra("sender_car_id", sender_car_id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
 
