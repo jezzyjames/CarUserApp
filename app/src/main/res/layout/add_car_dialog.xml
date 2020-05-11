@@ -16,11 +16,36 @@
         android:background="@color/colorPrimaryDark"
         android:ems="10"/>
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_light_car"
+        android:id="@+id/car_photo"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_add_car_photo"
+        android:background="@drawable/round_btn"
+        android:text="Add car photo"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:drawableLeft="@drawable/ic_camera"
+        android:padding="10dp"
+        android:drawablePadding="5dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -72,21 +97,6 @@
                 android:textSize="18sp"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/colorPrimary"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:drawableLeft="@drawable/ic_camera"
-                android:drawablePadding="5dp"
-                android:padding="5dp"
-                android:drawableTint="@color/white"
-                android:background="@color/colorPrimary"
-                android:text="Add Car Photo"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:id="@+id/btn_add_car_photo"/>
 
 
         </LinearLayout>

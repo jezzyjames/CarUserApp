@@ -1,18 +1,24 @@
 package com.cs.tu.caruserapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -47,11 +53,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
 public class ProfileActivity extends AppCompatActivity implements AddCarDialog.OnInputListener {
     //Receive input from AddCarDialog
     @Override
-    public void sendInput(String input_carid, String input_province, String input_brand, String input_model, String input_color) {
-        addCar(input_carid, input_province, input_brand, input_model, input_color);
+    public void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, String input_color) {
+        addCar(imageUri, input_carid, input_province, input_brand, input_model, input_color);
     }
 
     private RecyclerView recyclerView;
@@ -59,7 +66,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private CarAdapter carAdapter;
     private List<Car> carsList;
 
-    CircleImageView image_profile;
     TextView username;
     TextView phonenumber;
     TextView txt_add_car;
@@ -70,9 +76,10 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     FirebaseUser firebaseUser;
 
     StorageReference storageReference;
-    private static final int IMAGE_REQUEST = 1;
-    private Uri imageUri;
+    private static final int REQUEST_IMAGE_CAPTURE = 0;
     private StorageTask uploadTask;
+
+    DialogFragment dialogFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -83,7 +90,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        image_profile = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         phonenumber = findViewById(R.id.phonenumber);
         license_status = findViewById(R.id.license_status);
@@ -130,13 +136,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
             }
         });
 
-        image_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImage();
-            }
-        });
-
         //***get your owner cars from database and show on recyclerView***
         carsList = new ArrayList<>();
 
@@ -167,9 +166,13 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                     txt_add_car.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            DialogFragment dialogFragment = new AddCarDialog();
-                            dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-                            dialogFragment.show(getSupportFragmentManager(), "addcar");
+                            if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+
+                            } else {
+                                showAddCarDialog();
+                            }
+
 
                         }
                     });
@@ -185,44 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
     }
 
-    private void addCar(final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
-
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase());
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("car_id", car_id.toLowerCase());
-        hashMap.put("province", province);
-        hashMap.put("brand", car_brand.substring(0, 1).toUpperCase() + car_brand.substring(1));
-        hashMap.put("model", car_model.substring(0, 1).toUpperCase() + car_model.substring(1));
-        hashMap.put("color", car_color);
-        hashMap.put("imageURL", "default");
-        hashMap.put("owner_id", firebaseUser.getUid());
-
-        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(ProfileActivity.this, "Added car complete!", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-    }
-
-    private void openImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_REQUEST);
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver contentResolver = ProfileActivity.this.getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    private void uploadImage(){
+    private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
         if(imageUri != null){
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
@@ -243,10 +209,25 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
-                        reference = FirebaseDatabase.getInstance().getReference("Cars").child(firebaseUser.getUid());
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("imageURL", mUri);
-                        reference.updateChildren(map);
+                        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase());
+
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("imageURL", mUri);
+                        hashMap.put("car_id", car_id.toLowerCase());
+                        hashMap.put("province", province);
+                        hashMap.put("brand", car_brand.substring(0, 1).toUpperCase() + car_brand.substring(1));
+                        hashMap.put("model", car_model.substring(0, 1).toUpperCase() + car_model.substring(1));
+                        hashMap.put("color", car_color);
+                        hashMap.put("owner_id", firebaseUser.getUid());
+                        reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                dialogFragment.dismiss();
+                                Toast.makeText(ProfileActivity.this, "Added car complete!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                     }else{
                         Toast.makeText(ProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                     }
@@ -260,20 +241,53 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         }else{
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
+
     }
 
+    private void showAddCarDialog(){
+        dialogFragment = new AddCarDialog();
+        dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+        dialogFragment.show(getSupportFragmentManager(), "addcar");
+
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = ProfileActivity.this.getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    //Check camera permission
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_IMAGE_CAPTURE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showAddCarDialog();
 
-        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
-            imageUri = data.getData();
+                } else {
+                    Toast.makeText(this, "Camera permission denied.", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(this)
+                            .setMessage("Please give a permission to add car")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", ProfileActivity.this.getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
-            if(uploadTask != null && uploadTask.isInProgress()){
-                Toast.makeText(this, "Upload in progress", Toast.LENGTH_SHORT).show();
-            }else{
-                uploadImage();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
+                }
+                return;
             }
         }
     }
+
+
 }

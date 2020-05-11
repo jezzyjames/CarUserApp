@@ -1,7 +1,16 @@
 package com.cs.tu.caruserapp.Dialog;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,26 +25,45 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.cs.tu.caruserapp.MainActivity;
+import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class AddCarDialog extends DialogFragment {
 
     //interface for send input to ProfileActivity
     public interface OnInputListener{
-        void sendInput(String input_carid, String input_province, String input_brand, String input_model, String input_color);
+        void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, String input_color);
     }
     public OnInputListener mOnInputListener;
 
+    CircleImageView car_photo;
     TextView btn_cancel;
     TextView btn_add;
     Button btn_add_car_photo;
@@ -45,6 +73,11 @@ public class AddCarDialog extends DialogFragment {
     EditText edt_model;
     Spinner color_spinner;
 
+    private static final int REQUEST_IMAGE_CAPTURE = 0;
+    private static final int GALLERY_REQUEST = 1;
+    private Uri imageUri;
+    String currentPhotoPath;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,6 +85,7 @@ public class AddCarDialog extends DialogFragment {
 
         getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
+        car_photo = view.findViewById(R.id.car_photo);
         btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         edt_carid = view.findViewById(R.id.edt_car_id);
@@ -77,6 +111,14 @@ public class AddCarDialog extends DialogFragment {
             }
         });
 
+        btn_add_car_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImage();
+
+            }
+        });
+
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,8 +135,8 @@ public class AddCarDialog extends DialogFragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(!dataSnapshot.exists()){
-                                mOnInputListener.sendInput(input_carid, input_province, input_brand, input_model, input_color);
-                                getDialog().dismiss();
+                                mOnInputListener.sendInput(imageUri, input_carid, input_province, input_brand, input_model, input_color);
+//                                getDialog().dismiss();
 
                             }else{
                                 Toast.makeText(getActivity(), "Can't add this car, this car is already registered.", Toast.LENGTH_SHORT).show();
@@ -127,4 +169,97 @@ public class AddCarDialog extends DialogFragment {
             Log.e("", "onAttach: ClassCastException: " + e.getMessage());
         }
     }
+
+    private void openImage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add car photo");
+
+        String[] choices = {"Camera", "Select from gallery"};
+        builder.setItems(choices, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            // Create the File where the photo should go
+                            File photoFile = null;
+                            try {
+                                photoFile = createImageFile();
+                            } catch (IOException ex) {
+
+                            }
+                            // Continue only if the File was successfully created
+                            if (photoFile != null) {
+                                Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.cs.tu.caruserapp", photoFile);
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                            }
+
+                        }
+                        break;
+
+                    case 1:
+                        Intent pictureActionIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        if (pictureActionIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            startActivityForResult(pictureActionIntent, GALLERY_REQUEST);
+                        }
+                        break;
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            File file = new File(currentPhotoPath);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+
+            }
+
+            //convert bitmap to Uri
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), bitmap, "Title", null);
+            imageUri = Uri.parse(path);
+            car_photo.setImageURI(imageUri);
+
+        }
+
+        if(requestCode == GALLERY_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            car_photo.setImageURI(imageUri);
+
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
 }
