@@ -223,7 +223,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                dialogFragment.dismiss();
                                 Toast.makeText(ProfileActivity.this, "Added car complete!", Toast.LENGTH_SHORT).show();
                             }
                         });

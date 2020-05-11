@@ -128,15 +128,15 @@ public class AddCarDialog extends DialogFragment {
                 final String input_model = edt_model.getText().toString();
                 final String input_color = color_spinner.getSelectedItem().toString();
 
-                if(!input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
-
+                if(imageUri != null && !input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
                     Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(!dataSnapshot.exists()){
                                 mOnInputListener.sendInput(imageUri, input_carid, input_province, input_brand, input_model, input_color);
-//                                getDialog().dismiss();
+                                getDialog().dismiss();
+
 
                             }else{
                                 Toast.makeText(getActivity(), "Can't add this car, this car is already registered.", Toast.LENGTH_SHORT).show();
@@ -151,7 +151,12 @@ public class AddCarDialog extends DialogFragment {
 
 
                 }else{
-                    Toast.makeText(getActivity(), "Please fill all blanks!", Toast.LENGTH_SHORT).show();
+                    if(imageUri == null){
+                        Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(getActivity(), "Please fill all blanks!", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
             }
