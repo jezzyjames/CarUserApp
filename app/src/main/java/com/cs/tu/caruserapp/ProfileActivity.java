@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ProfileActivity extends AppCompatActivity implements AddCarDialog.OnInputListener {
@@ -190,7 +189,9 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
     private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
         if(imageUri != null){
-            final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//            final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "." + getFileExtension(imageUri));
+            final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "/" + car_id + "_" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
             uploadTask = fileReference.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -209,7 +210,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
-                        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                         reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase());
 
                         HashMap<String, Object> hashMap = new HashMap<>();

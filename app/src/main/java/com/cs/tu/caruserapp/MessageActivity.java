@@ -1,16 +1,34 @@
 package com.cs.tu.caruserapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -28,6 +46,10 @@ import com.cs.tu.caruserapp.Notification.Client;
 import com.cs.tu.caruserapp.Notification.Data;
 import com.cs.tu.caruserapp.Notification.MyResponse;
 import com.cs.tu.caruserapp.Notification.Token;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,8 +58,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
-import java.text.DateFormat;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,6 +88,8 @@ public class MessageActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
 
+    ImageButton btn_camera;
+    ImageButton btn_gallery;
     ImageButton btn_send;
     EditText text_send;
     MessageAdapter messageAdapter;
@@ -77,6 +107,13 @@ public class MessageActivity extends AppCompatActivity {
     String receiver_id;
     String receiver_car_id;
     String sender_car_id;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 0;
+    private static final int GALLERY_REQUEST = 1;
+    Uri SendImageUri;
+    String currentPhotoPath;
+    StorageReference storageReference;
+    private StorageTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +152,8 @@ public class MessageActivity extends AppCompatActivity {
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
         verify_status = findViewById(R.id.verify_status);
+        btn_camera = findViewById(R.id.btn_camera);
+        btn_gallery = findViewById(R.id.btn_gallery);
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
 
@@ -125,6 +164,29 @@ public class MessageActivity extends AppCompatActivity {
         sender_car_id = intent.getStringExtra("sender_car_id");
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+
+
+        //********* CAMERA BUTTON ***********//
+        btn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MessageActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MessageActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+
+                } else {
+                    openImage(REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        });
+
+        //********* GALLERY BUTTON ***********//
+        btn_gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImage(GALLERY_REQUEST);
+            }
+        });
 
         //********* SEND MESSAGE BUTTON ***********//
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +195,7 @@ public class MessageActivity extends AppCompatActivity {
                 notify = true;
                 String msg = text_send.getText().toString();
                 if(!msg.equals("")){
-                    sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg);
+                    sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg, "text");
                 }else{
                     Toast.makeText(MessageActivity.this, "Can't send empty message", Toast.LENGTH_SHORT).show();
                 }
@@ -215,7 +277,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message){
+    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message, String message_type){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         //get current date
@@ -233,6 +295,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("sender_car_id", sender_car_id);
         hashMap.put("receiver_car_id", receiver_car_id);
         hashMap.put("message", message);
+        hashMap.put("message_type", message_type);
         hashMap.put("isseen", false);
         hashMap.put("date",formattedDate);
         hashMap.put("time", currentTimeString);
@@ -364,6 +427,199 @@ public class MessageActivity extends AppCompatActivity {
                 Log.e("", databaseError.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            File file = new File(currentPhotoPath);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+
+            }
+
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(currentPhotoPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+
+            SendImageUri = convertBitmapToUri(this, rotatedBitmap);
+            uploadImage(SendImageUri);
+
+        }
+
+        if(requestCode == GALLERY_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            SendImageUri = data.getData();
+            uploadImage(SendImageUri);
+
+        }
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImage(final Uri SendImageUri){
+        if(SendImageUri != null){
+            final StorageReference fileReference = storageReference.child("image_message/" + firebaseUser.getUid() + "/" + sender_car_id + "/" + receiver_car_id + "/" + System.currentTimeMillis() + "." + getFileExtension(SendImageUri));
+
+            uploadTask = fileReference.putFile(SendImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if(!task.isSuccessful()){
+                        throw task.getException();
+                    }
+
+                    return fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+                        sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri, "image");
+
+                    }else{
+                        Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openImage(int request_code) {
+                switch (request_code) {
+                    case REQUEST_IMAGE_CAPTURE:
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                            // Create the File where the photo should go
+                            File photoFile = null;
+                            try {
+                                photoFile = createImageFile();
+                            } catch (IOException ex) {
+
+                            }
+                            // Continue only if the File was successfully created
+                            if (photoFile != null) {
+                                Uri photoURI = FileProvider.getUriForFile(this, "com.cs.tu.caruserapp", photoFile);
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                            }
+
+                        }
+                        break;
+
+                    case GALLERY_REQUEST:
+                        Intent pictureActionIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        if (pictureActionIntent.resolveActivity(getPackageManager()) != null) {
+                            startActivityForResult(pictureActionIntent, GALLERY_REQUEST);
+                        }
+                        break;
+                }
+
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+
+    public Uri convertBitmapToUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "JPEG_" + timeStamp, null);
+        return Uri.parse(path);
+    }
+
+    //Check camera permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_IMAGE_CAPTURE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openImage(REQUEST_IMAGE_CAPTURE);
+
+                } else {
+                    Toast.makeText(this, "Camera permission denied.", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(this)
+                            .setMessage("Please give a permission to add car")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
+                }
+                return;
+            }
+        }
     }
 
     //--- Dont send noti while chatting ---

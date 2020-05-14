@@ -55,6 +55,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
 
+        //show date
         if(position != 0 && chat.getDate().equals(mChat.get(position-1).getDate())){
             holder.show_time.setVisibility(View.GONE);
         }else{
@@ -84,7 +85,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             holder.show_time.setVisibility(View.VISIBLE);
         }
 
-        holder.show_message.setText(chat.getMessage());
+        //show message
+        if(chat.getMessage_type().equals("text")){
+            holder.chat_image.setVisibility(View.GONE);
+            holder.show_message.setVisibility(View.VISIBLE);
+            holder.show_message.setText(chat.getMessage());
+
+
+        }else if(chat.getMessage_type().equals("image")){
+            holder.show_message.setVisibility(View.GONE);
+            holder.chat_image.setVisibility(View.VISIBLE);
+            Glide.with(mContext).load(chat.getMessage()).into(holder.chat_image);
+        }
 
         if(imageurl.equals("default")){
             holder.profile_image.setImageResource(R.drawable.ic_light_car);
@@ -114,6 +126,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView show_message;
+        public ImageView chat_image;
         public ImageView profile_image;
         public TextView txt_seen;
         public TextView ststamp;
@@ -123,6 +136,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
+            chat_image = itemView.findViewById(R.id.chat_image);
             show_time = itemView.findViewById(R.id.show_time);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);

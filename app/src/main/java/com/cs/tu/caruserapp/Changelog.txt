@@ -77,3 +77,9 @@
 - add car photo
 - fix add car photo
 - fix add car photo rotate
+
+5/12/2020
+- also delete car photo when delete car
+
+5/14/2020
+- send and show image in chat

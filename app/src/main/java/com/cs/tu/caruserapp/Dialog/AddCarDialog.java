@@ -1,11 +1,9 @@
 package com.cs.tu.caruserapp.Dialog;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -28,25 +26,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
-import com.cs.tu.caruserapp.MainActivity;
-import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -264,12 +254,8 @@ public class AddCarDialog extends DialogFragment {
                     rotatedBitmap = bitmap;
             }
 
-            //convert bitmap to Uri
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-            String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), rotatedBitmap, "Title", null);
 
-            imageUri = Uri.parse(path);
+            imageUri = convertBitmapToUri(getActivity(), rotatedBitmap);
             car_photo.setImageURI(imageUri);
 
         }
@@ -302,6 +288,14 @@ public class AddCarDialog extends DialogFragment {
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
+    }
+
+    public Uri convertBitmapToUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "JPEG_" + timeStamp, null);
+        return Uri.parse(path);
     }
 
 }

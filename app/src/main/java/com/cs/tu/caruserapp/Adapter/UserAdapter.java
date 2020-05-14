@@ -258,7 +258,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     //check for last message
     private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg, final TextView date_time){
         theLastMessage = "default";
-
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -266,7 +266,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
-                        theLastMessage = chat.getMessage();
+                        if(chat.getMessage_type().equals("text")){
+                            theLastMessage = chat.getMessage();
+                        }else if(chat.getMessage_type().equals("image")){
+                            if(chat.getSender().equals(firebaseUser.getUid())){
+                                theLastMessage = "You sent a photo.";
+                            }else{
+                                theLastMessage =  receiver_car_id.toUpperCase() + " sent a photo.";
+                            }
+
+                        }
+
                         the_date = chat.getDate();
                         the_time = chat.getTime();
                     }

@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -34,6 +37,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+    StorageReference storageReference;
 
     public CarAdapter(Context mContext, List<Car> mCars) {
         this.mContext = mContext;
@@ -88,12 +92,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                                                 firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                                                 reference = FirebaseDatabase.getInstance().getReference("Cars")
                                                         .child(car.getCar_id());
-                                                reference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                reference.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        Toast.makeText(mContext, "Delete car complete", Toast.LENGTH_SHORT).show();
+                                                    public void onSuccess(Void aVoid) {
+                                                        listAllStorageFilesAndDelete(car.getCar_id());
                                                     }
-
                                                 });
 
                                             }
@@ -112,6 +115,48 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             }
         });
 
+    }
+
+    public void listAllStorageFilesAndDelete(final String car_id) {
+        final String car_photo_path = "uploads/car_photo/" + firebaseUser.getUid() + "/" + car_id;
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference listRef = storage.getReference(car_photo_path);
+
+        listRef.listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference storageRef = storage.getReference();
+                        String filenameToDelete = "";
+                        for (StorageReference prefix : listResult.getPrefixes()) {
+                            // All the prefixes under listRef.
+                            // You may call listAll() recursively on them.'
+                        }
+
+                        for (StorageReference item : listResult.getItems()) {
+                            filenameToDelete = item.getName();
+                        }
+                        StorageReference desertRef = storageRef.child(car_photo_path + "/" + filenameToDelete);
+                        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(mContext, "Delete car success", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, "Delete car information success but failed to delete car photo", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Uh-oh, an error occurred!
+                    }
+                });
     }
 
     @Override

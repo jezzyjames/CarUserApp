@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveBtnText("Go")
                         .setNegativeBtnBackground("#FFA9A7A8")
                         .setGifResource(R.drawable.driving_gif)   //Pass your Gif here
-                        .isCancellable(false)
+                        .isCancellable(true)
                         .OnPositiveClicked(new FancyGifDialogListener() {
                             @Override
                             public void OnClick() {
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveBtnText("Go")
                         .setNegativeBtnBackground("#FFA9A7A8")
                         .setGifResource(R.drawable.thieft)   //Pass your Gif here
-                        .isCancellable(false)
+                        .isCancellable(true)
                         .OnPositiveClicked(new FancyGifDialogListener() {
                             @Override
                             public void OnClick() {

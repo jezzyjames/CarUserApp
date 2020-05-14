@@ -7,16 +7,18 @@ public class Chat {
     private String sender_car_id;
     private String receiver_car_id;
     private String message;
+    private String message_type;
     private boolean isseen;
     private String time;
     private String date;
 
-    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, boolean isSeen, String time, String date) {
+    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, String message_type, boolean isSeen, String time, String date) {
         this.sender = sender;
         this.receiver = receiver;
         this.sender_car_id = sender_car_id;
         this.receiver_car_id = receiver_car_id;
         this.message = message;
+        this.message_type = message_type;
         this.isseen = isseen;
         this.time = time;
         this.date = date;
@@ -47,6 +49,14 @@ public class Chat {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getMessage_type() {
+        return message_type;
+    }
+
+    public void setMessage_type(String message_type) {
+        this.message_type = message_type;
     }
 
     public boolean isIsseen() {
