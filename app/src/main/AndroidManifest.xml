@@ -6,9 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -18,14 +19,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".LoadingScreenActivity"
+        <activity android:name=".VerifyActivity"></activity>
+        <activity
+            android:name=".LoadingScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ProfileActivity" />
 
         <meta-data
@@ -40,7 +43,7 @@
             android:resource="@color/colorAccent" />
 
         <activity android:name=".SearchActivity" />
-        <activity android:name=".MessageActivity" />
+        <activity android:name=".MessageActivity" android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".StartActivity" />
@@ -48,8 +51,7 @@
             android:name=".PhoneRegisterActivity"
             android:parentActivityName=".StartActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".StartActivity"/>
-        <!-- [START firebase_service] -->
+        <activity android:name=".StartActivity" /> <!-- [START firebase_service] -->
         <service
             android:name=".Notification.MyFirebaseMessagingService"
             android:enabled="true"
@@ -58,6 +60,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.cs.tu.caruserapp"
@@ -65,10 +68,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
-
-
 
 </manifest>

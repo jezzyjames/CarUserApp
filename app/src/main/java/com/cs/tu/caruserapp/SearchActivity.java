@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Search");
+        getSupportActionBar().setTitle(getString(R.string.search));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +184,10 @@ public class SearchActivity extends AppCompatActivity {
                         province.setText(car.getProvince());
                         brand.setText(car.getBrand());
                         model.setText(car.getModel());
-                        color.setText(car.getColor());
+
+                        String[] colors = getResources().getStringArray(R.array.color_arrays);
+                        String car_color = colors[car.getColor()];
+                        color.setText(car_color);
 
                         //set image
                         if (car.getImageURL().equals("default")) {
@@ -222,7 +225,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(SearchActivity.this, "ID not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchActivity.this, getString(R.string.car_id_not_found), Toast.LENGTH_SHORT).show();
                     cardview_result.setVisibility(View.INVISIBLE);
                 }
             }

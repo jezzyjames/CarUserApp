@@ -31,11 +31,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutFirstname"
-                android:hint="First name"
+                android:hint="@string/firstname"
                 android:textColorHint="@color/gray"
                 android:layout_marginBottom="10dp"
                 app:helperTextEnabled="true"
-                app:helperText="Your first name will be private."
+                app:helperText="@string/firstname_helper"
                 app:helperTextTextAppearance="@style/HelperText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -55,10 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutLastname"
-                android:hint="Last name"
+                android:hint="@string/lastname"
                 android:textColorHint="@color/gray"
                 app:helperTextEnabled="true"
-                app:helperText="Your last name will be private."
+                app:helperText="@string/lastname_helper"
                 app:helperTextTextAppearance="@style/HelperText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/layoutPhone"
-            android:hint="Phone number"
+            android:hint="@string/phone_number"
             android:textColorHint="@color/white"
             android:layout_marginTop="10dp">
 
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/layoutVerifyCode"
-            android:hint="Code"
+            android:hint="@string/code"
             android:textColorHint="@color/white"
             app:errorEnabled="false"
             android:visibility="gone">
@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:id="@+id/resend_code"
-            android:text="Resend code"
+            android:text="@string/resend"
             android:textColor="@color/blue"
             android:textSize="18dp"
             android:visibility="gone"/>
@@ -170,7 +170,8 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Continue"
+                android:text="@string/continue_txt"
+                android:textAllCaps="false"
                 android:id="@+id/verify_btn"
                 android:background="@drawable/round_btn"
                 android:textColor="@color/white"/>

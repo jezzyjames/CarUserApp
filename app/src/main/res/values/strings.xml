@@ -2,10 +2,119 @@
     <string name="app_name">CarUserApp</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="application_name">Car User Application</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="fcm_message">FCM Message</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+    <string name="firstname_lastname">Firstname Lastname</string>
+    <string name="firstname_helper">Your first name will be private.</string>
+    <string name="lastname_helper">Your last name will be private.</string>
+    <string name="continue_txt">Continue</string>
+    <string name="code">Code</string>
+    <string name="submit">Submit</string>
+    <string name="code_was_sent">Verification code was sent to\n</string>
+    <string name="resend">Resend</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="verified">verified</string>
+    <string name="verify_now">Verify now</string>
+    <string name="unverified">unverified</string>
+    <string name="unverified_user">Unverified user</string>
+    <string name="report_user">Report inappropriate user</string>
+    <string name="report">Report</string>
+    <string name="spam_message">Spam message</string>
+    <string name="harmful_message">Harmful message</string>
+    <string name="other">Other</string>
+    <string name="delete_chat">Delete chat</string>
+    <string name="delete_chat_message">Are you sure to delete</string>
+    <string name="delete_chat_message_end">chat?</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="logout_message">Are you sure to logout?</string>
+    <string name="search">Search</string>
+    <string name="search_car_id_number">Search car ID number...</string>
+    <string name="brand">Brand</string>
+    <string name="model">Model</string>
+    <string name="color">Color</string>
+    <string name="chat">Chat</string>
+    <string name="cant_chat_youself">You can\'t chat with yourself</string>
+    <string name="choose_car_title">Choose your active car</string>
+    <string name="choose_car_id_number">Choose car id number</string>
+    <string name="to_your_active_car">\nto your active car?</string>
+    <string name="confirm">Confirm</string>
+    <string name="please_verify_dialog_title">Your account is not verified</string>
+    <string name="please_verify_dialog">For the safety of everyone please verify yourself. if you don\'t, you still can use the app but your unverified status will show to other</string>
+    <string name="add_first_car_dialog_title">Add your first car</string>
+    <string name="add_first_car_dialog">To chat with other people, please add car in your profile.</string>
+    <string name="go">Go</string>
+    <string name="later">Later</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="phone_number">Phone number</string>
+    <string name="verification_status">Verification status :</string>
+    <string name="add_car">Add car</string>
+    <string name="add_car_photo">Add car photo</string>
+    <string name="plate_number">Plate number</string>
+    <string name="province">Province</string>
+    <string name="add">Add</string>
+    <string name="delete_this_car">Delete this car</string>
+    <string name="are_you_sure_to_delete">Are you sure to delete</string>
+    <string name="take_photo">Take a photo from camera</string>
+    <string name="take_gallery">Select a photo from gallery</string>
+    <string name="sent_photo">Sent a photo.</string>
+    <string name="you_sent_photo">You sent a photo.</string>
+    <string name="you_dont_have_car">You dont have a car, please add your car</string>
+
+    //Toast
+    <string name="please_enter_code">Please enter verification code</string>
+    <string name="this_phone_number_is_used">This phone number is used</string>
+    <string name="please_enter_valid_number">Please enter a valid phone number</string>
+    <string name="please_enter_firstname">Please enter first name</string>
+    <string name="please_enter_lastname">Please enter last name</string>
+    <string name="verify_number_complete">Verify phone number complete!</string>
+    <string name="invalid_credential">Invalid credential</string>
+    <string name="sms_error">SMS Quota exceeded</string>
+    <string name="code_has_been_sent">Code has been sent, please check your message inbox.</string>
+    <string name="register_success">Register successful!</string>
+    <string name="error">Error</string>
+    <string name="cant_find_phonenumber">Can\'t find this phone number in system, please register before login</string>
+    <string name="login_success">Login successful!</string>
+    <string name="cant_send_empty_message">Please type a message</string>
+    <string name="send_noti_fail">Failed to send notification message!</string>
+    <string name="upload_image_failed">Failed to upload image!</string>
+    <string name="no_image_select">No image selected</string>
+    <string name="camera_permission_denied">Camera permission denied</string>
+    <string name="please_give_camera_permission">Please give a camera permission to add car</string>
+    <string name="cant_upload_morethan_three_cars">Can\'t add more than 3 cars</string>
+    <string name="add_car_complete">Added car complete!</string>
+    <string name="car_id_not_found">Car ID not found</string>
+    <string name="this_car_already_regist">Can\'t add this car, this car is already registered</string>
+    <string name="please_fill_up_detail">Please fill up all details</string>
+    <string name="delete_car_success">Delete car success</string>
+    <string name="fail_to_delete_car_photo">Failed to delete car photo</string>
+    <string name="user_reported">User reported</string>
+    <string name="delete_chat_complete">Delete chat complete</string>
+
+
+    <string-array name="user_interact_choice">
+        <item value="report_user">Report inappropriate user</item>
+        <item value="delete_chat">Delete Chat</item>
+    </string-array>
+
+    <string-array name="report_list">
+        <item value="spam_message">Spam message</item>
+        <item value="harmful_message">Harmful message</item>
+        <item value="other">Other</item>
+    </string-array>
+
+    <string-array name="take_photo_choice">
+        <item value="take_from_camera">Take a photo from camera</item>
+        <item value="take_from_gallery">Select a photo from gallery</item>
+    </string-array>
 
     <string-array name="province_arrays">
         <item value="กรุงเทพมหานคร">กรุงเทพมหานคร</item>
@@ -89,18 +198,18 @@
     </string-array>
 
     <string-array name="color_arrays">
+        <item value="white">White</item>
+        <item value="black">Black</item>
+        <item value="grey">Grey</item>
         <item value="red">Red</item>
         <item value="blue">Blue</item>
         <item value="sky_blue">Sky blue</item>
         <item value="yellow">Yellow</item>
-        <item value="white">White</item>
-        <item value="black">Black</item>
         <item value="purple">Purple</item>
         <item value="green">Green</item>
         <item value="orange">Orange</item>
         <item value="brown">Brown</item>
         <item value="pink">Pink</item>
-        <item value="grey">Grey</item>
     </string-array>
 
 </resources>

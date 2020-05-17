@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 
     boolean code_sent = false;
     String phoneNumber = "";
+    String raw_phoneNumber = "";
     LinearLayout phone_view_part;
 
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setTitle(getString(R.string.login));
 
         phone_view_part = findViewById(R.id.phone_view_part);
         ccp = findViewById(R.id.ccp);
@@ -88,11 +89,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //*******verify code*******
-                if(verify_btn.getText().equals("Submit") || code_sent){
+                if(verify_btn.getText().toString().equalsIgnoreCase(getString(R.string.submit)) || code_sent){
                     String verificationCode = editText_code.getText().toString();
 
                     if(verificationCode.equals("")){
-                        Toast.makeText(LoginActivity.this, "Please enter verification code", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.please_enter_code), Toast.LENGTH_SHORT).show();
                     }else{
                         verify_progress.setVisibility(View.VISIBLE);
 
@@ -126,9 +127,10 @@ public class LoginActivity extends AppCompatActivity {
                         //admin Test//
                         layoutPhone.setErrorEnabled(false);
                         phoneNumber = ccp.getFullNumberWithPlus();
+                        raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
 
                         //Check if phone number is exist
-                        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(phoneNumber);
+                        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(raw_phoneNumber);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -144,8 +146,8 @@ public class LoginActivity extends AppCompatActivity {
                                             LoginActivity.this,                   //activity for callback
                                             mCallbacks);                                          //onVerificationStateChangedCallbacks
                                 } else {
-                                    layoutPhone.setError("Can't find this phone number in system, please register before login.");
-                                    Toast.makeText(LoginActivity.this, "Can't find this phone number in system, please register before login.", Toast.LENGTH_SHORT).show();
+                                    layoutPhone.setError(getString(R.string.cant_find_phonenumber));
+                                    Toast.makeText(LoginActivity.this, getString(R.string.cant_find_phonenumber), Toast.LENGTH_SHORT).show();
                                     verify_btn.setVisibility(View.VISIBLE);
                                     verify_progress.setVisibility(View.GONE);
                                 }
@@ -158,8 +160,8 @@ public class LoginActivity extends AppCompatActivity {
                         });
 
                     } else {
-                        layoutPhone.setError("Please enter a valid phone number");
-                        Toast.makeText(LoginActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                        layoutPhone.setError(getString(R.string.please_enter_valid_number));
+                        Toast.makeText(LoginActivity.this, getString(R.string.please_enter_valid_number), Toast.LENGTH_SHORT).show();
                         verify_btn.setVisibility(View.VISIBLE);
                         verify_progress.setVisibility(View.GONE);
                     }
@@ -179,16 +181,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if(e instanceof FirebaseAuthInvalidCredentialsException){
-                    Toast.makeText(LoginActivity.this, "Invalid credential: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.invalid_credential) + ": " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }else if(e instanceof FirebaseTooManyRequestsException){
-                    Toast.makeText(LoginActivity.this, "SMS Quota exceeded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.sms_error), Toast.LENGTH_SHORT).show();
                 }
 
                 verify_progress.setVisibility(View.GONE);
                 verify_btn.setVisibility(View.VISIBLE);
                 phone_view_part.setVisibility(View.VISIBLE);
 
-                verify_btn.setText("Continue");
+                verify_btn.setText(getString(R.string.continue_txt));
                 code_sent = false;
                 layoutVerifyCode.setVisibility(View.GONE);
             }
@@ -203,16 +205,29 @@ public class LoginActivity extends AppCompatActivity {
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
-                phone_refer.setVisibility(View.VISIBLE);
-                phone_refer.setText("Message was sent to\n" + phoneNumber);
+                String phoneArr[] = raw_phoneNumber.split(" ");
+                String hidden_number = phoneArr[0];
+                for(int i = 1; i < phoneArr.length-1; i++){
+                    String phone_part = phoneArr[i];
+                    for(int j = 0; j < phone_part.length(); j++){
+                        if(j == 0){
+                            hidden_number = hidden_number + " ";
+                        }
+                        hidden_number = hidden_number + "x";
+                    }
+                }
+                hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
 
-                verify_btn.setText("Submit");
+                phone_refer.setVisibility(View.VISIBLE);
+                phone_refer.setText(getString(R.string.code_was_sent) + hidden_number);
+
+                verify_btn.setText(getString(R.string.submit));
                 verify_btn.setVisibility(View.VISIBLE);
                 layoutVerifyCode.setVisibility(View.VISIBLE);
 
                 //set resend code button
                 resend_code.setVisibility(View.VISIBLE);
-                SpannableString content = new SpannableString("Resend");
+                SpannableString content = new SpannableString(getString(R.string.resend));
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 resend_code.setText(content);
                 resend_code.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +238,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
                 verify_progress.setVisibility(View.GONE);
-                Toast.makeText(LoginActivity.this, "Code has been sent, please check.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.code_has_been_sent), Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -239,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             verify_progress.setVisibility(View.GONE);
 
-                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -249,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in failed, display a message and update the UI
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
 
-                            Toast.makeText(LoginActivity.this, "Error: " + task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, getString(R.string.error) + ": " + task.getException().toString(), Toast.LENGTH_SHORT).show();
 
                             verify_progress.setVisibility(View.GONE);
                             verify_btn.setVisibility(View.VISIBLE);

@@ -8,11 +8,11 @@ public class Car {
     private String province;
     private String brand;
     private String model;
-    private String color;
+    private int color;
     private String imageURL;
     private String owner_id;
 
-    public Car(String car_id, String province, String brand, String model, String color, String imageURL, String owner_id) {
+    public Car(String car_id, String province, String brand, String model, int color, String imageURL, String owner_id) {
         this.car_id = car_id;
         this.province = province;
         this.brand = brand;
@@ -59,11 +59,11 @@ public class Car {
         this.model = model;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

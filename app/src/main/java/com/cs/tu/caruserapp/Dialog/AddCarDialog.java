@@ -51,7 +51,7 @@ public class AddCarDialog extends DialogFragment {
 
     //interface for send input to ProfileActivity
     public interface OnInputListener{
-        void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, String input_color);
+        void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, int input_color);
     }
     public OnInputListener mOnInputListener;
 
@@ -118,9 +118,9 @@ public class AddCarDialog extends DialogFragment {
                 final String input_province = edt_province.getText().toString();
                 final String input_brand = edt_brand.getText().toString();
                 final String input_model = edt_model.getText().toString();
-                final String input_color = color_spinner.getSelectedItem().toString();
+                final int input_color = color_spinner.getSelectedItemPosition();
 
-                if(imageUri != null && !input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("") && !input_color.equals("")) {
+                if(imageUri != null && !input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("")) {
                     Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -131,7 +131,7 @@ public class AddCarDialog extends DialogFragment {
 
 
                             }else{
-                                Toast.makeText(getActivity(), "Can't add this car, this car is already registered.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getString(R.string.this_car_already_regist), Toast.LENGTH_SHORT).show();
 
                             }
                         }
@@ -144,9 +144,9 @@ public class AddCarDialog extends DialogFragment {
 
                 }else{
                     if(imageUri == null){
-                        Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.no_image_select), Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(getActivity(), "Please fill all blanks!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.please_fill_up_detail), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -169,9 +169,9 @@ public class AddCarDialog extends DialogFragment {
 
     private void openImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add car photo");
+        builder.setTitle(getString(R.string.add_car_photo));
 
-        String[] choices = {"Camera", "Select from gallery"};
+        String[] choices = getResources().getStringArray(R.array.take_photo_choice);
         builder.setItems(choices, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

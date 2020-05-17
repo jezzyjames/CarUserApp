@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +79,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Register");
+        getSupportActionBar().setTitle(getString(R.string.register));
 
         layoutName = findViewById(R.id.layoutName);
         layoutFirstname = findViewById(R.id.layoutFirstname);
@@ -106,12 +105,12 @@ public class PhoneRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //*******verify code*******
-                if(verify_btn.getText().equals("Submit") || code_sent){
+                if(verify_btn.getText().toString().equalsIgnoreCase(getString(R.string.submit)) || code_sent){
                     String verificationCode = editText_code.getText().toString();
 
                     if(verificationCode.equals("")){
-                        Toast.makeText(PhoneRegisterActivity.this, "Please enter verification code", Toast.LENGTH_SHORT).show();
-                        layoutVerifyCode.setError("Please insert verify code");
+                        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_code), Toast.LENGTH_SHORT).show();
+                        layoutVerifyCode.setError(getString(R.string.please_enter_code));
                     }else{
                         verify_progress.setVisibility(View.VISIBLE);
                         layoutVerifyCode.setErrorEnabled(false);
@@ -152,8 +151,8 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                                                 PhoneRegisterActivity.this,                   //activity for callback
                                                 mCallbacks);                                          //onVerificationStateChangedCallbacks
                                     } else {
-                                        layoutPhone.setError("This phone number is used, please use other phone number.");
-                                        Toast.makeText(PhoneRegisterActivity.this, "This phone number is used, please use other phone number.", Toast.LENGTH_SHORT).show();
+                                        layoutPhone.setError(getString(R.string.this_phone_number_is_used));
+                                        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.this_phone_number_is_used), Toast.LENGTH_SHORT).show();
                                         verify_btn.setVisibility(View.VISIBLE);
                                         verify_progress.setVisibility(View.GONE);
                                     }
@@ -166,22 +165,22 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             });
 
                         } else {
-                            layoutPhone.setError("Please enter a valid phone number");
-                            Toast.makeText(PhoneRegisterActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                            layoutPhone.setError(getString(R.string.please_enter_valid_number));
+                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_valid_number), Toast.LENGTH_SHORT).show();
                             verify_btn.setVisibility(View.VISIBLE);
                             verify_progress.setVisibility(View.GONE);
                         }
                     }else{
                         if(edt_firstname.getText().toString().equals("")){
-                            layoutFirstname.setError("Please enter display name");
-                            Toast.makeText(PhoneRegisterActivity.this, "Please enter first name", Toast.LENGTH_SHORT).show();
+                            layoutFirstname.setError(getString(R.string.please_enter_firstname));
+                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_firstname), Toast.LENGTH_SHORT).show();
                         }else{
                             layoutFirstname.setErrorEnabled(false);
                         }
 
                         if(edt_lastname.getText().toString().equals("")){
-                            layoutLastname.setError("Please enter display name");
-                            Toast.makeText(PhoneRegisterActivity.this, "Please enter last name", Toast.LENGTH_SHORT).show();
+                            layoutLastname.setError(getString(R.string.please_enter_lastname));
+                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_lastname), Toast.LENGTH_SHORT).show();
                         }else{
                             layoutLastname.setErrorEnabled(false);
                         }
@@ -197,16 +196,16 @@ public class PhoneRegisterActivity extends AppCompatActivity {
             //Instant verification: in some cases the phone number can be instantly verified **without needing to send or enter a verification code**.
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                Toast.makeText(PhoneRegisterActivity.this, "Verify phone number complete!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhoneRegisterActivity.this, getString(R.string.verify_number_complete), Toast.LENGTH_SHORT).show();
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if(e instanceof FirebaseAuthInvalidCredentialsException){
-                    Toast.makeText(PhoneRegisterActivity.this, "Invalid credential: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PhoneRegisterActivity.this, getString(R.string.invalid_credential) + ": " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }else if(e instanceof FirebaseTooManyRequestsException){
-                    Toast.makeText(PhoneRegisterActivity.this, "SMS Quota exceeded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PhoneRegisterActivity.this, getString(R.string.sms_error), Toast.LENGTH_SHORT).show();
                 }
 
                 verify_progress.setVisibility(View.GONE);
@@ -214,7 +213,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 layoutName.setVisibility(View.VISIBLE);
                 phone_view_part.setVisibility(View.VISIBLE);
 
-                verify_btn.setText("Continue");
+                verify_btn.setText(getString(R.string.continue_txt));
                 code_sent = false;
                 layoutVerifyCode.setVisibility(View.GONE);
             }
@@ -244,15 +243,15 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
 
                 phone_refer.setVisibility(View.VISIBLE);
-                phone_refer.setText("Verification code was sent to\n" + hidden_number);
+                phone_refer.setText(getString(R.string.code_was_sent) + hidden_number);
 
-                verify_btn.setText("Submit");
+                verify_btn.setText(getString(R.string.submit));
                 verify_btn.setVisibility(View.VISIBLE);
                 layoutVerifyCode.setVisibility(View.VISIBLE);
 
                 //set resend code button
                 resend_code.setVisibility(View.VISIBLE);
-                SpannableString content = new SpannableString("Resend");
+                SpannableString content = new SpannableString(getString(R.string.resend));
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 resend_code.setText(content);
                 resend_code.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +262,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 });
 
                 verify_progress.setVisibility(View.GONE);
-                Toast.makeText(PhoneRegisterActivity.this, "Code has been sent, please check.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PhoneRegisterActivity.this, getString(R.string.code_has_been_sent), Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -294,7 +293,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(PhoneRegisterActivity.this, "Register successful!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(PhoneRegisterActivity.this, MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -307,7 +306,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             // Sign in failed, display a message and update the UI
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
 
-                            Toast.makeText(PhoneRegisterActivity.this, "Error: " + task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.error) + ": " + task.getException().toString(), Toast.LENGTH_SHORT).show();
 
                             verify_progress.setVisibility(View.GONE);
                             verify_btn.setVisibility(View.VISIBLE);

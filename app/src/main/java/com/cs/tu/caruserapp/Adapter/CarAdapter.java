@@ -37,7 +37,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
-    StorageReference storageReference;
 
     public CarAdapter(Context mContext, List<Car> mCars) {
         this.mContext = mContext;
@@ -63,7 +62,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         holder.txt_province.setText(car.getProvince());
         holder.txt_car_brand.setText(car.getBrand());
         holder.txt_car_model.setText(car.getModel());
-        holder.txt_car_color.setText(car.getColor());
+
+        String[] colors = mContext.getResources().getStringArray(R.array.color_arrays);
+        String car_color = colors[car.getColor()];
+        holder.txt_car_color.setText(car_color);
 
         if(car.getImageURL().equals("default")){
             holder.car_image.setImageResource(R.drawable.ic_light_car);
@@ -77,16 +79,16 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(car.getCar_id().toUpperCase());
 
-                String[] choices = {"Delete this car"};
+                String[] choices = {mContext.getString(R.string.delete_this_car)};
                 builder.setItems(choices, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
                                 new android.app.AlertDialog.Builder(mContext)
-                                        .setTitle("Confirm")
-                                        .setMessage("Are you sure to delete " + car.getCar_id().toUpperCase())
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        .setTitle(mContext.getString(R.string.confirm))
+                                        .setMessage(mContext.getString(R.string.are_you_sure_to_delete) + " " + car.getCar_id().toUpperCase())
+                                        .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -101,7 +103,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
                                             }
                                         })
-                                        .setNegativeButton("No", null)
+                                        .setNegativeButton(mContext.getString(R.string.cancel), null)
                                         .show();
                                 break;
 
@@ -142,12 +144,12 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                         desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(mContext, "Delete car success", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, mContext.getString(R.string.delete_car_success), Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Delete car information success but failed to delete car photo", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, mContext.getString(R.string.fail_to_delete_car_photo), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

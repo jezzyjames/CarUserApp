@@ -197,7 +197,7 @@ public class MessageActivity extends AppCompatActivity {
                 if(!msg.equals("")){
                     sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg, "text");
                 }else{
-                    Toast.makeText(MessageActivity.this, "Can't send empty message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MessageActivity.this, getString(R.string.cant_send_empty_message), Toast.LENGTH_SHORT).show();
                 }
                 text_send.setText("");
 
@@ -376,7 +376,7 @@ public class MessageActivity extends AppCompatActivity {
                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                                     if(response.code() == 200){
                                         if(response.body().success != 1){
-                                            Toast.makeText(MessageActivity.this, "Failed to send notification message!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MessageActivity.this, getString(R.string.send_noti_fail), Toast.LENGTH_SHORT).show();
                                         }
 
                                     }
@@ -513,7 +513,7 @@ public class MessageActivity extends AppCompatActivity {
                         sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri, "image");
 
                     }else{
-                        Toast.makeText(MessageActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MessageActivity.this, getString(R.string.upload_image_failed), Toast.LENGTH_SHORT).show();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -523,7 +523,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_image_select), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -600,10 +600,10 @@ public class MessageActivity extends AppCompatActivity {
                     openImage(REQUEST_IMAGE_CAPTURE);
 
                 } else {
-                    Toast.makeText(this, "Camera permission denied.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show();
                     new AlertDialog.Builder(this)
-                            .setMessage("Please give a permission to add car")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            .setMessage(getString(R.string.please_give_camera_permission))
+                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -613,7 +613,7 @@ public class MessageActivity extends AppCompatActivity {
 
                                 }
                             })
-                            .setNegativeButton("No", null)
+                            .setNegativeButton(getString(R.string.cancel), null)
                             .show();
 
                 }

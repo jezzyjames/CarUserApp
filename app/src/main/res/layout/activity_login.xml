@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutPhone"
-                android:hint="Phone number"
+                android:hint="@string/phone_number"
                 android:textColorHint="@color/white"
                 app:errorEnabled="false"
                 android:layout_marginTop="10dp">
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/layoutVerifyCode"
-            android:hint="Code"
+            android:hint="@string/code"
             android:textColorHint="@color/white"
             app:errorEnabled="false"
             android:visibility="gone">
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:id="@+id/resend_code"
-            android:text="Resend code"
+            android:text="@string/resend"
             android:textColor="@color/blue"
             android:textSize="18dp"
             android:visibility="gone"/>
@@ -113,7 +113,7 @@
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Continue"
+                android:text="@string/continue_txt"
                 android:textAllCaps="false"
                 android:id="@+id/verify_btn"
                 android:background="@drawable/round_btn"

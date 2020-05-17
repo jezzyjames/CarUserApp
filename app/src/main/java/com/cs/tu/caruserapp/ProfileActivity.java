@@ -56,7 +56,7 @@ import java.util.List;
 public class ProfileActivity extends AppCompatActivity implements AddCarDialog.OnInputListener {
     //Receive input from AddCarDialog
     @Override
-    public void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, String input_color) {
+    public void sendInput(Uri imageUri, String input_carid, String input_province, String input_brand, String input_model, int input_color) {
         addCar(imageUri, input_carid, input_province, input_brand, input_model, input_color);
     }
 
@@ -91,13 +91,13 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
         username = findViewById(R.id.username);
         phonenumber = findViewById(R.id.phonenumber);
-        license_status = findViewById(R.id.license_status);
+        license_status = findViewById(R.id.verify_status);
         verify_btn = findViewById(R.id.verify_btn);
         txt_add_car = findViewById(R.id.txt_add_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Your Profile");
+        getSupportActionBar().setTitle(getString(R.string.your_profile));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,13 +117,13 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname() + " " + user.getLastname());
                 phonenumber.setText(user.getPhone_number());
-                license_status.setText("verified");
+                license_status.setText(getString(R.string.verified));
                 license_status.setTextColor(Color.GREEN);
                 verify_btn.setVisibility(View.GONE);
 
                 if(!user.isVerify_status()){
-                    license_status.setText("unverified");
-                    license_status.setTextColor(Color.RED);
+                    license_status.setText(getString(R.string.unverified));
+                    license_status.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
                     verify_btn.setVisibility(View.VISIBLE);
                 }
 
@@ -156,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                     txt_add_car.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(ProfileActivity.this, "Can't add more than three cars", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, getString(R.string.cant_upload_morethan_three_cars), Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -187,7 +187,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
     }
 
-    private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final String car_color){
+    private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final int car_color){
         if(imageUri != null){
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 //            final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "." + getFileExtension(imageUri));
@@ -223,12 +223,12 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(ProfileActivity.this, "Added car complete!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, getString(R.string.add_car_complete), Toast.LENGTH_SHORT).show();
                             }
                         });
 
                     }else{
-                        Toast.makeText(ProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, getString(R.string.upload_image_failed), Toast.LENGTH_SHORT).show();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -238,7 +238,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                 }
             });
         }else{
-            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_image_select), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -266,10 +266,10 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                     showAddCarDialog();
 
                 } else {
-                    Toast.makeText(this, "Camera permission denied.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show();
                     new AlertDialog.Builder(this)
-                            .setMessage("Please give a permission to add car")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            .setMessage(getString(R.string.please_give_camera_permission))
+                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -279,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
                                 }
                             })
-                            .setNegativeButton("No", null)
+                            .setNegativeButton(getString(R.string.cancel), null)
                             .show();
 
                 }

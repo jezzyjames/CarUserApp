@@ -44,7 +44,7 @@
                 android:padding="5dp"
                 android:id="@+id/search_users"
                 android:background="@color/white"
-                android:hint="Search Car ID number..."
+                android:hint="@string/search_car_id_number"
                 android:layout_centerVertical="true"
                 android:elevation="5dp"/>
 
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/verify_status"
-                    android:text="Unverified user"
+                    android:text="@string/unverified_user"
                     android:textColor="@color/red"
                     android:layout_below="@id/profile_image"
                     android:layout_centerHorizontal="true"
@@ -175,9 +175,9 @@
                             android:layout_marginTop="10dp"
                             android:layout_below="@id/layoutCarid"
                             android:layout_centerHorizontal="true"
-                            android:text="Brand:"
+                            android:text="@string/brand"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/colorPrimary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -185,9 +185,9 @@
                             android:layout_marginTop="10dp"
                             android:layout_below="@id/car_brand"
                             android:layout_centerHorizontal="true"
-                            android:text="Model:"
+                            android:text="@string/model"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/colorPrimary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -195,9 +195,9 @@
                             android:layout_marginTop="10dp"
                             android:layout_below="@id/car_model"
                             android:layout_centerHorizontal="true"
-                            android:text="Color:"
+                            android:text="@string/color"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/colorPrimary"/>
 
                     </LinearLayout>
 
@@ -212,9 +212,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:id="@+id/car_brand"
+                            android:text="@string/brand"
                             android:layout_below="@id/layoutCarid"
                             android:layout_centerHorizontal="true"
-                            android:text="brand"
                             android:textColor="@color/black"/>
 
                         <TextView
@@ -222,9 +222,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:id="@+id/car_model"
+                            android:text="@string/model"
                             android:layout_below="@id/car_brand"
                             android:layout_centerHorizontal="true"
-                            android:text="model"
                             android:textColor="@color/black"/>
 
                         <TextView
@@ -232,9 +232,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:id="@+id/car_color"
+                            android:text="@string/color"
                             android:layout_below="@id/car_model"
                             android:layout_centerHorizontal="true"
-                            android:text="color"
                             android:textColor="@color/black"/>
 
                     </LinearLayout>
@@ -245,7 +245,7 @@
                     android:id="@+id/btn_chat"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Chat"
+                    android:text="@string/chat"
                     android:textColor="@color/white"
                     android:background="@drawable/round_btn"
                     android:backgroundTint="@color/colorPrimary"
@@ -259,7 +259,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/cant_chat"
-                    android:text="You can't chat with yourself"
+                    android:text="@string/cant_chat_youself"
                     android:textColor="@color/red"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"

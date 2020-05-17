@@ -46,6 +46,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     ImageView user_icon;
     TextView username;
+    TextView verify_status;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         user_icon = findViewById(R.id.user_icon);
         username = findViewById(R.id.username);
+        verify_status = findViewById(R.id.verify_status);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
@@ -95,14 +97,16 @@ public class MainActivity extends AppCompatActivity {
                 username.setText(user.getFirstname());
                 username.setTextColor(Color.WHITE);
                 user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                verify_status.setVisibility(View.GONE);
                 info.setVisibility(View.GONE);
                 info.clearAnimation();
 
 
                 if(!user.isVerify_status()){
-                    username.setText(user.getFirstname() + " : unverified");
-                    username.setTextColor(Color.RED);
                     user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                    username.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                    verify_status.setText(": " + getString(R.string.unverified));
+                    verify_status.setVisibility(View.VISIBLE);
 
                     info.setVisibility(View.VISIBLE);
                     info.startAnimation(anim);
@@ -220,9 +224,9 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.logout:
                 new AlertDialog.Builder(this)
-                        .setTitle("Confirm")
-                        .setMessage("Are you sure to logout?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.confirm))
+                        .setMessage(getString(R.string.logout_message))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
@@ -231,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         })
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(getString(R.string.cancel), null)
                         .show();
                 return true;
 
@@ -283,11 +287,11 @@ public class MainActivity extends AppCompatActivity {
         switch (dialog){
             case 0:
                 new FancyGifDialog.Builder(MainActivity.this)
-                        .setTitle("Add your first car")
-                        .setMessage("To chat with other people, please add car in your profile.")
-                        .setNegativeBtnText("Later")
+                        .setTitle(getString(R.string.add_first_car_dialog_title))
+                        .setMessage(getString(R.string.add_first_car_dialog))
+                        .setNegativeBtnText(getString(R.string.later))
                         .setPositiveBtnBackground("#4A46B5")
-                        .setPositiveBtnText("Go")
+                        .setPositiveBtnText(getString(R.string.go))
                         .setNegativeBtnBackground("#FFA9A7A8")
                         .setGifResource(R.drawable.driving_gif)   //Pass your Gif here
                         .isCancellable(true)
@@ -306,11 +310,11 @@ public class MainActivity extends AppCompatActivity {
                         .build();
             case 1:
                 new FancyGifDialog.Builder(MainActivity.this)
-                        .setTitle("Your account is not verified")
-                        .setMessage("For the safety of everyone please verify yourself. if you don't, you still can use the app but your unverified status will show to other")
-                        .setNegativeBtnText("Later")
+                        .setTitle(getString(R.string.please_verify_dialog_title))
+                        .setMessage(getString(R.string.please_verify_dialog))
+                        .setNegativeBtnText(getString(R.string.later))
                         .setPositiveBtnBackground("#4A46B5")
-                        .setPositiveBtnText("Go")
+                        .setPositiveBtnText(getString(R.string.go))
                         .setNegativeBtnBackground("#FFA9A7A8")
                         .setGifResource(R.drawable.thieft)   //Pass your Gif here
                         .isCancellable(true)

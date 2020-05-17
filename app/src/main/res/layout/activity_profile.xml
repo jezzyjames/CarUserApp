@@ -54,7 +54,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/username"
-                            android:text="Firstname Lastname"
+                            android:text="@string/firstname_lastname"
                             android:textSize="18sp"
                             android:textColor="@color/colorPrimaryDark"
                             android:layout_centerHorizontal="true"
@@ -72,7 +72,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/phonenumber_head"
-                                android:text="Phone number: "
+                                android:text="@string/phone_number"
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textStyle="bold"
                                 android:textSize="14sp"/>
@@ -81,7 +81,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/phonenumber"
-                                android:text="+66xxxxxxxxx"
+                                android:layout_marginLeft="10dp"
                                 android:textSize="14sp"
                                 android:textColor="@color/black"
                                 android:layout_toRightOf="@id/phonenumber_head"/>
@@ -100,7 +100,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:id="@+id/license_status_text"
-                                android:text="Driver license verify status: "
+                                android:text="@string/verification_status"
                                 android:textSize="18dp"
                                 android:textColor="@color/black"/>
 
@@ -109,7 +109,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_centerHorizontal="true"
-                                android:id="@+id/license_status"
+                                android:id="@+id/verify_status"
+                                android:layout_marginLeft="10dp"
                                 android:layout_toRightOf="@id/license_status_text"
                                 android:textSize="18dp"/>
                         </RelativeLayout>
@@ -122,7 +123,7 @@
                             android:layout_centerHorizontal="true"
                             android:background="@drawable/round_btn"
                             android:backgroundTint="@color/red"
-                            android:text="Verify now"
+                            android:text="@string/verify_now"
                             android:textAllCaps="false"
                             android:textSize="14sp"
                             android:layout_marginTop="10dp"
@@ -133,67 +134,6 @@
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
-
-<!--                <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                    android:layout_width="100dp"-->
-<!--                    android:layout_height="100dp"-->
-<!--                    android:id="@+id/profile_image"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:src="@mipmap/ic_launcher"-->
-<!--                    android:visibility="gone"/>-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:id="@+id/username"-->
-<!--                    android:text="username"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:textColor="@color/colorPrimaryDark"-->
-<!--                    android:layout_below="@id/profile_image"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_marginTop="10dp"/>-->
-
-<!--                <RelativeLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:id="@+id/verify_layout"-->
-<!--                    android:layout_below="@id/username"-->
-<!--                    android:gravity="center">-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="5dp"-->
-<!--                        android:id="@+id/license_status_text"-->
-<!--                        android:text="Driver license verify status: "-->
-<!--                        android:textSize="18dp" />-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="5dp"-->
-<!--                        android:layout_centerHorizontal="true"-->
-<!--                        android:id="@+id/license_status"-->
-<!--                        android:layout_toRightOf="@id/license_status_text"-->
-<!--                        android:text="unverified"-->
-<!--                        android:textColor="@color/red"-->
-<!--                        android:textSize="18dp"/>-->
-<!--                </RelativeLayout>-->
-
-<!--                <Button-->
-<!--                    android:layout_width="120dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:id="@+id/verify_btn"-->
-<!--                    android:layout_below="@id/verify_layout"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:background="@drawable/round_btn"-->
-<!--                    android:backgroundTint="@color/red"-->
-<!--                    android:text="Verify now"-->
-<!--                    android:textAllCaps="false"-->
-<!--                    android:textSize="14sp"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:textColor="@color/white"/>-->
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -206,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txt_add_car"
-                    android:text="Add car"
+                    android:text="@string/add_car"
                     android:layout_below="@+id/recycler_view"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="15dp"

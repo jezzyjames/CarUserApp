@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unverified user"
+            android:text="@string/unverified_user"
             android:id="@+id/verify_status"
             android:textColor="@color/red"
             android:textSize="10sp"
@@ -67,7 +67,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Province"
+                        android:text="@string/province"
                         android:layout_below="@id/username"
                         android:id="@+id/province"
                         android:textSize="10sp"

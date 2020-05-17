@@ -116,22 +116,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(car.getCar_id().toUpperCase());
 
-                String[] choices = {"Report inappropriate user", "Delete chat"};
+                String[] choices = mContext.getResources().getStringArray(R.array.user_interact_choice);
                 builder.setItems(choices, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                                builder.setTitle("Report " + car.getCar_id().toUpperCase());
+                                builder.setTitle(mContext.getString(R.string.report) + " " + car.getCar_id().toUpperCase());
 
                                 //set layout
                                 LinearLayout layout = new LinearLayout(mContext);
                                 layout.setOrientation(LinearLayout.VERTICAL);
-                                layout.setPadding(20,20,20,20);
+                                layout.setPadding(45,30,30,30);
 
                                 //set spinner
-                                String[] spinner_list = {"Spam message", "Harmful message", "Other"};
+                                String[] spinner_list = mContext.getResources().getStringArray(R.array.report_list);
                                 final ArrayAdapter<String> adp = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, spinner_list);
                                 final Spinner spinner = new Spinner(mContext);
                                 spinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -146,7 +146,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 layout.addView(report_input);
                                 builder.setView(layout);
 
-                                builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
+                                builder.setPositiveButton(mContext.getString(R.string.report), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         String report_type = spinner.getSelectedItem().toString();
@@ -176,13 +176,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                         reference.child("Report").child(car.getOwner_id()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(mContext, "User reported", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, mContext.getString(R.string.user_reported), Toast.LENGTH_SHORT).show();
                                             }
                                         });
 
                                     }
                                 });
-                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                builder.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.cancel();
@@ -193,9 +193,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 break;
                             case 1:
                                 new android.app.AlertDialog.Builder(mContext)
-                                        .setTitle("Confirm")
-                                        .setMessage("Are you sure to delete " + car.getCar_id().toUpperCase() + " chat?")
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        .setTitle(mContext.getString(R.string.confirm))
+                                        .setMessage(mContext.getString(R.string.delete_chat_message) + " " + car.getCar_id().toUpperCase() + " " + mContext.getString(R.string.delete_chat_message_end))
+                                        .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -206,14 +206,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                                 reference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                        Toast.makeText(mContext, "Delete chat complete", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(mContext, mContext.getString(R.string.delete_chat_complete), Toast.LENGTH_SHORT).show();
                                                     }
 
                                                 });
 
                                             }
                                         })
-                                        .setNegativeButton("No", null)
+                                        .setNegativeButton(mContext.getString(R.string.cancel), null)
                                         .show();
                                 break;
                         }
@@ -270,9 +270,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             theLastMessage = chat.getMessage();
                         }else if(chat.getMessage_type().equals("image")){
                             if(chat.getSender().equals(firebaseUser.getUid())){
-                                theLastMessage = "You sent a photo.";
+                                theLastMessage = mContext.getString(R.string.you_sent_photo);
                             }else{
-                                theLastMessage =  receiver_car_id.toUpperCase() + " sent a photo.";
+                                theLastMessage =  receiver_car_id.toUpperCase() + mContext.getString(R.string.sent_photo);
                             }
 
                         }
@@ -284,7 +284,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                 switch (theLastMessage){
                     case "default":
-                        last_msg.setText("No Message");
+                        last_msg.setText("");
                         date_time.setText("");
                         break;
 

@@ -83,3 +83,8 @@
 
 5/14/2020
 - send and show image in chat
+
+5/17/2020
+- fix chat edittext box in message activity
+- fix all string in application, support 2 language (ENG, TH)
+- store color as int in database

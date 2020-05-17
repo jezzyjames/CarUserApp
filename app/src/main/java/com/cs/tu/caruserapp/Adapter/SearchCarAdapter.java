@@ -60,7 +60,10 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
         holder.txt_province.setText(car.getProvince());
         holder.txt_car_brand.setText(car.getBrand());
         holder.txt_car_model.setText(car.getModel());
-        holder.txt_car_color.setText(car.getColor());
+
+        String[] colors = mContext.getResources().getStringArray(R.array.color_arrays);
+        String car_color = colors[car.getColor()];
+        holder.txt_car_color.setText(car_color);
 
         if(car.getImageURL().equals("default")){
             holder.car_image.setImageResource(R.drawable.ic_light_car);
@@ -77,11 +80,9 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
                 selectedPos = holder.getAdapterPosition();
                 notifyItemChanged(selectedPos);
 
-
                 new AlertDialog.Builder(mContext)
-                        .setTitle("Confirm")
-                        .setMessage("Choose car id number " + car.getCar_id().toUpperCase() + "\nto your active car?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setMessage(mContext.getString(R.string.choose_car_id_number) + " " + car.getCar_id().toUpperCase() + mContext.getString(R.string.to_your_active_car))
+                        .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(mContext, MessageActivity.class);
@@ -93,7 +94,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
 
                             }
                         })
-                        .setNegativeButton("No", null)
+                        .setNegativeButton(mContext.getString(R.string.cancel), null)
                         .show();
             }
         });
