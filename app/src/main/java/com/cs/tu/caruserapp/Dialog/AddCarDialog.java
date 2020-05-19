@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -60,8 +59,8 @@ public class AddCarDialog extends DialogFragment {
     TextView btn_add;
     Button btn_add_car_photo;
     EditText edt_carid;
-    AutoCompleteTextView edt_province;
-    EditText edt_brand;
+    Spinner province_spinner;
+    Spinner brand_spinner;
     EditText edt_model;
     Spinner color_spinner;
 
@@ -83,17 +82,21 @@ public class AddCarDialog extends DialogFragment {
         edt_carid = view.findViewById(R.id.edt_car_id);
         btn_add_car_photo = view.findViewById(R.id.btn_add_car_photo);
 
-        edt_province = view.findViewById(R.id.edt_province);
-        String[] province = getResources().getStringArray(R.array.province_arrays);
-        ArrayAdapter<String> province_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, province);
-        edt_province.setAdapter(province_adapter);
+        province_spinner = view.findViewById(R.id.province_spinner);
+        String[] province_array = getResources().getStringArray(R.array.province_arrays);
+        final ArrayAdapter<String> province_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, province_array);
+        province_spinner.setAdapter(province_adapter);
 
-        edt_brand = view.findViewById(R.id.edt_brand);
+        brand_spinner = view.findViewById(R.id.brand_spinner);
+        String[] cars_array = getResources().getStringArray(R.array.cars_array);
+        final ArrayAdapter<String> cars_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, cars_array);
+        brand_spinner.setAdapter(cars_adapter);
+
         edt_model = view.findViewById(R.id.edt_model);
 
         color_spinner = view.findViewById(R.id.color_spinner);
-        ArrayAdapter<CharSequence> color_adapter = ArrayAdapter.createFromResource(getContext(), R.array.color_arrays, android.R.layout.simple_spinner_item);
-        color_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        String[] color_array = getResources().getStringArray(R.array.color_arrays);
+        final ArrayAdapter<String> color_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, color_array);
         color_spinner.setAdapter(color_adapter);
 
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -115,12 +118,13 @@ public class AddCarDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final String input_carid = edt_carid.getText().toString();
-                final String input_province = edt_province.getText().toString();
-                final String input_brand = edt_brand.getText().toString();
+                final String input_province = province_spinner.getSelectedItem().toString();
+                final String input_brand = brand_spinner.getSelectedItem().toString();
                 final String input_model = edt_model.getText().toString();
                 final int input_color = color_spinner.getSelectedItemPosition();
 
-                if(imageUri != null && !input_carid.equals("") && !input_province.equals("") && !input_brand.equals("") && !input_model.equals("")) {
+                if(imageUri != null && !input_carid.equals("") && province_spinner.getSelectedItemPosition() != 0 && brand_spinner.getSelectedItemPosition() != 0
+                        && !input_model.equals("") && color_spinner.getSelectedItemPosition() != 0) {
                     Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -145,8 +149,15 @@ public class AddCarDialog extends DialogFragment {
                 }else{
                     if(imageUri == null){
                         Toast.makeText(getActivity(), getString(R.string.no_image_select), Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else if(input_carid.equals("") || input_brand.equals("") || input_model.equals("")){
                         Toast.makeText(getActivity(), getString(R.string.please_fill_up_detail), Toast.LENGTH_SHORT).show();
+
+                    } else if(province_spinner.getSelectedItemPosition() == 0) {
+                        Toast.makeText(getActivity(), getString(R.string.please_select_province), Toast.LENGTH_SHORT).show();
+                    } else if(brand_spinner.getSelectedItemPosition() == 0){
+                        Toast.makeText(getActivity(), getString(R.string.please_select_brand), Toast.LENGTH_SHORT).show();
+                    } else if(color_spinner.getSelectedItemPosition() == 0){
+                        Toast.makeText(getActivity(), getString(R.string.please_select_color), Toast.LENGTH_SHORT).show();
                     }
 
                 }

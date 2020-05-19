@@ -272,7 +272,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             if(chat.getSender().equals(firebaseUser.getUid())){
                                 theLastMessage = mContext.getString(R.string.you_sent_photo);
                             }else{
-                                theLastMessage =  receiver_car_id.toUpperCase() + mContext.getString(R.string.sent_photo);
+                                theLastMessage =  receiver_car_id.toUpperCase() + " " + mContext.getString(R.string.sent_photo);
                             }
 
                         }

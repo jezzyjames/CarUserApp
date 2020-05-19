@@ -103,7 +103,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:maxWidth="250dp"
+            android:maxWidth="200dp"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:id="@+id/last_msg"
@@ -117,7 +117,6 @@
             android:id="@+id/date_time"
             android:textSize="12sp"
             android:layout_alignParentRight="true"
-
             android:paddingTop="5dp"/>
 
     </RelativeLayout>

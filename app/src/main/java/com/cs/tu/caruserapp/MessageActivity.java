@@ -348,7 +348,13 @@ public class MessageActivity extends AppCompatActivity {
 
 
         //NOTIFICATION Part
-        final String msg = message;
+        String msg = "";
+        if(message_type.equals("text")){
+            msg = message;
+        }else if(message_type.equals("image")){
+            msg = "Sent a photo.";
+        }
+
         if(notify){
             //send noti msg to receiver with sender name
             sendNotification(receiver, sender_car_id, receiver_car_id, msg);
@@ -365,7 +371,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " say :", receiver_id, receiver_car_id);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " :", receiver_id, receiver_car_id);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());

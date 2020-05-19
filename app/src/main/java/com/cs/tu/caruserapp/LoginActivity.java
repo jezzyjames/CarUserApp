@@ -124,6 +124,22 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
+                        if(editText_phone.getText().toString().equals("1234 567 8")) {
+                            FirebaseAuth auth = firebaseAuth.getInstance();
+                            auth.signInWithEmailAndPassword("jetzjamez@hotmail...com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if(task.isSuccessful()){
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        Toast.makeText(LoginActivity.this, "Admin Login Failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
                         //admin Test//
                         layoutPhone.setErrorEnabled(false);
                         phoneNumber = ccp.getFullNumberWithPlus();

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -95,6 +96,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }else if(chat.getMessage_type().equals("image")){
             holder.show_message.setVisibility(View.GONE);
             holder.chat_image.setVisibility(View.VISIBLE);
+            holder.chat_image.layout(0,0,0,0);
             Glide.with(mContext).load(chat.getMessage()).into(holder.chat_image);
         }
 
@@ -111,8 +113,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(position == mChat.size()-1){
             if(chat.isIsseen()){
                 holder.txt_seen.setText("Seen");
+                holder.txt_seen.setVisibility(View.VISIBLE);
             }else{
                 holder.txt_seen.setText("Sent");
+                holder.txt_seen.setVisibility(View.VISIBLE);
             }
         }else{
             holder.txt_seen.setVisibility(View.GONE);

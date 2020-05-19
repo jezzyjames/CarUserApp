@@ -55,7 +55,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:id="@+id/txt_car_id"
                 android:text="@string/plate_number"
                 android:textSize="18sp"
@@ -64,7 +64,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:id="@+id/txt_province"
                 android:text="@string/province"
                 android:textSize="18sp"
@@ -73,7 +73,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:id="@+id/txt_car_brand"
                 android:text="@string/brand"
                 android:textSize="18sp"
@@ -82,7 +82,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:id="@+id/txt_car_model"
                 android:text="@string/model"
                 android:textSize="18sp"
@@ -91,7 +91,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:id="@+id/txt_car_color"
                 android:text="@string/color"
                 android:textSize="18sp"
@@ -111,40 +111,57 @@
             <EditText
                 android:id="@+id/edt_car_id"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:ems="4"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
                 android:maxLength="8"
                 android:inputType="text"/>
 
-            <AutoCompleteTextView
-                android:id="@+id/edt_province"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:background="@color/edittext_bg"
-                android:layout_marginTop="10dp"
-                android:maxLines="1"
-                android:maxLength="24"
-                android:inputType="text"
-                android:imeOptions="actionNext"/>
+                android:layout_marginTop="10dp">
 
-            <EditText
-                android:id="@+id/edt_brand"
-                android:layout_width="wrap_content"
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:id="@+id/province_spinner"
+                    android:background="@color/edittext_bg" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drop_down"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:background="@color/edittext_bg"
-                android:layout_marginTop="10dp"
-                android:maxLines="1"
-                android:maxLength="24"
-                android:inputType="text"/>
+                android:layout_marginTop="10dp">
+
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:id="@+id/brand_spinner"
+                    android:background="@color/edittext_bg" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drop_down"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/edt_model"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:ems="10"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
@@ -157,13 +174,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <Spinner
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:id="@+id/color_spinner"
-                    android:background="@color/edittext_bg"
-                    android:spinnerMode="dropdown"
-                    android:layout_centerVertical="true"/>
+                    android:background="@color/edittext_bg" />
 
                 <ImageView
                     android:layout_width="wrap_content"
