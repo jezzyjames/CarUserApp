@@ -91,8 +91,9 @@ public class ChooseCarDialog extends DialogFragment {
                     Bundle bundle = getArguments();
                     String receiver_id = bundle.getString("receiver_id", "");
                     String receiver_car_id = bundle.getString("receiver_car_id", "");
+                    String receiver_car_province = bundle.getString("receiver_car_province", "");
 
-                    searchCarAdapter = new SearchCarAdapter(getContext(), carsList, receiver_id, receiver_car_id);
+                    searchCarAdapter = new SearchCarAdapter(getContext(), carsList, receiver_id, receiver_car_id, receiver_car_province);
                     recyclerView.setAdapter(searchCarAdapter);
                 }
 

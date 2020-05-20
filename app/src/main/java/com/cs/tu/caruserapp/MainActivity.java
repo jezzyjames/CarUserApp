@@ -151,8 +151,10 @@ public class MainActivity extends AppCompatActivity {
                 viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 for(int i = 0; i < carsList.size(); i++){
                     String sender_car_id = carsList.get(i).getCar_id();
+                    String province = carsList.get(i).getProvince();
                     Bundle bundle = new Bundle();
                     bundle.putString("car_id", sender_car_id);
+                    bundle.putString("province", province);
                     ChatsFragment chatsFragment = new ChatsFragment();
                     chatsFragment.setArguments(bundle);
 
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 //                        unreadnum = " (" + unread + ")";
 //                    }
                     //add fragment each car id
-                    viewPagerAdapter.addFragment(chatsFragment, sender_car_id);
+                    viewPagerAdapter.addFragment(chatsFragment, sender_car_id + "\n" + province);
 
                 }
                 if(carsList.size() != 0){
@@ -308,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .build();
+                break;
             case 1:
                 new FancyGifDialog.Builder(MainActivity.this)
                         .setTitle(getString(R.string.please_verify_dialog_title))
@@ -331,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .build();
+                break;
         }
 
 

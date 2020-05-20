@@ -37,7 +37,7 @@
     <string name="logout">Logout</string>
     <string name="logout_message">Are you sure to logout?</string>
     <string name="search">Search</string>
-    <string name="search_car_id_number">Search car ID number...</string>
+    <string name="search_car_id_number">Car ID</string>
     <string name="brand">Brand</string>
     <string name="model">Model</string>
     <string name="color">Color</string>
@@ -120,7 +120,7 @@
     </string-array>
 
     <string-array name="province_arrays">
-        <item value="province">จังหวัด</item>
+        <item value="province">Province</item>
         <item value="กรุงเทพมหานคร">กรุงเทพมหานคร</item>
         <item value="กระบี่">กระบี่</item>
         <item value="กาญจนบุรี">กาญจนบุรี</item>

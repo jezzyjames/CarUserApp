@@ -106,7 +106,10 @@ public class MessageActivity extends AppCompatActivity {
     boolean notify = false;
     String receiver_id;
     String receiver_car_id;
+    String receiver_car_province;
     String sender_car_id;
+    String sender_car_province;
+
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
     private static final int GALLERY_REQUEST = 1;
@@ -161,7 +164,10 @@ public class MessageActivity extends AppCompatActivity {
         intent = getIntent();
         receiver_id = intent.getStringExtra("receiver_id");
         receiver_car_id = intent.getStringExtra("receiver_car_id");
+        receiver_car_province = intent.getStringExtra("receiver_car_province");
         sender_car_id = intent.getStringExtra("sender_car_id");
+        sender_car_province = intent.getStringExtra("sender_car_province");
+
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
@@ -195,7 +201,7 @@ public class MessageActivity extends AppCompatActivity {
                 notify = true;
                 String msg = text_send.getText().toString();
                 if(!msg.equals("")){
-                    sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg, "text");
+                    sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, msg, "text", sender_car_province, receiver_car_province);
                 }else{
                     Toast.makeText(MessageActivity.this, getString(R.string.cant_send_empty_message), Toast.LENGTH_SHORT).show();
                 }
@@ -205,7 +211,7 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         //********* SHOW USER NAME, PROFILE PIC AND READ MESSAGE ***********//
-        reference = FirebaseDatabase.getInstance().getReference("Cars").child(receiver_car_id);
+        reference = FirebaseDatabase.getInstance().getReference("Cars").child(receiver_car_id + "_" + receiver_car_province);
         //Read user data in database
         reference.addValueEventListener(new ValueEventListener() {
             //found user
@@ -240,7 +246,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
                 //read and show all chat message on screen
-                readMessage(sender_car_id, receiver_car_id, car.getImageURL());
+                readMessage(sender_car_id, receiver_car_id, car.getImageURL(), sender_car_province, receiver_car_province);
 
 
             }
@@ -254,7 +260,6 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-
     private void seenMessage(final String receiver_car_id){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
@@ -262,7 +267,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id)){
+                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
+                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isseen", true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -277,7 +283,8 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id, String message, String message_type){
+    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id
+            , String message, String message_type, final String sender_car_province, final String receiver_car_province){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         //get current date
@@ -294,6 +301,8 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver", receiver);
         hashMap.put("sender_car_id", sender_car_id);
         hashMap.put("receiver_car_id", receiver_car_id);
+        hashMap.put("sender_car_province", sender_car_province);
+        hashMap.put("receiver_car_province", receiver_car_province);
         hashMap.put("message", message);
         hashMap.put("message_type", message_type);
         hashMap.put("isseen", false);
@@ -305,8 +314,8 @@ public class MessageActivity extends AppCompatActivity {
         //Add chatlist to sender ID
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(firebaseUser.getUid())
-                .child(sender_car_id)
-                .child(receiver_car_id);
+                .child(sender_car_id + "_" + sender_car_province)
+                .child(receiver_car_id + "_" + receiver_car_province);
 
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -315,6 +324,8 @@ public class MessageActivity extends AppCompatActivity {
                     chatRef.child("id").setValue(receiver);
                     chatRef.child("sender_car_id").setValue(sender_car_id);
                     chatRef.child("receiver_car_id").setValue(receiver_car_id);
+                    chatRef.child("sender_car_province").setValue(sender_car_province);
+                    chatRef.child("receiver_car_province").setValue(receiver_car_province);
                 }
             }
 
@@ -327,8 +338,8 @@ public class MessageActivity extends AppCompatActivity {
         //Add chatlist to receiver ID
         final DatabaseReference receiver_chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(receiver)
-                .child(receiver_car_id)
-                .child(sender_car_id);
+                .child(receiver_car_id + "_" + receiver_car_province)
+                .child(sender_car_id + "_" + sender_car_province);
 
         receiver_chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -337,6 +348,8 @@ public class MessageActivity extends AppCompatActivity {
                     receiver_chatRef.child("id").setValue(firebaseUser.getUid());
                     receiver_chatRef.child("sender_car_id").setValue(receiver_car_id);
                     receiver_chatRef.child("receiver_car_id").setValue(sender_car_id);
+                    receiver_chatRef.child("sender_car_province").setValue(receiver_car_province);
+                    receiver_chatRef.child("receiver_car_province").setValue(sender_car_province);
                 }
             }
 
@@ -357,13 +370,14 @@ public class MessageActivity extends AppCompatActivity {
 
         if(notify){
             //send noti msg to receiver with sender name
-            sendNotification(receiver, sender_car_id, receiver_car_id, msg);
+            sendNotification(receiver, sender_car_id, receiver_car_id, sender_car_province, receiver_car_province, msg);
         }
         notify = false;
 
     }
 
-    private void sendNotification(final String receiver_id, final String sender_car_id, final String receiver_car_id, final String message){
+    private void sendNotification(final String receiver_id, final String sender_car_id, final String receiver_car_id
+            , final String sender_car_province, final String receiver_car_province, final String message){
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver_id);
         query.addValueEventListener(new ValueEventListener() {
@@ -371,7 +385,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), sender_car_id, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " :", receiver_id, receiver_car_id);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, sender_car_province, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " :"
+                            , receiver_id, receiver_car_id, receiver_car_province);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());
@@ -404,7 +419,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //userid mean opposite id (reciever)***
-    private void readMessage(final String sender_car_id, final String receiver_car_id, final String imageurl){
+    private void readMessage(final String sender_car_id, final String receiver_car_id, final String imageurl, final String sender_car_province, final String receiver_car_province){
         mchat = new ArrayList<>();
 
         //Read database from Chats
@@ -416,8 +431,10 @@ public class MessageActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     //add all chat that include sender and receiver id to ArrayList
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id)
-                            || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
+                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
+                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))
+                            || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
+                            && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
 
                             mchat.add(chat);
                     }
@@ -498,7 +515,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private void uploadImage(final Uri SendImageUri){
         if(SendImageUri != null){
-            final StorageReference fileReference = storageReference.child("image_message/" + firebaseUser.getUid() + "/" + sender_car_id + "/" + receiver_car_id + "/" + System.currentTimeMillis() + "." + getFileExtension(SendImageUri));
+            final StorageReference fileReference = storageReference.child("image_message/" + firebaseUser.getUid() + "/"
+                    + sender_car_id + "_" + sender_car_province + "/" + receiver_car_id + "_" + receiver_car_province + "/" + System.currentTimeMillis() + "." + getFileExtension(SendImageUri));
 
             uploadTask = fileReference.putFile(SendImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -516,7 +534,7 @@ public class MessageActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
-                        sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri, "image");
+                        sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri, "image", sender_car_province, receiver_car_province);
 
                     }else{
                         Toast.makeText(MessageActivity.this, getString(R.string.upload_image_failed), Toast.LENGTH_SHORT).show();
@@ -629,9 +647,9 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //--- Dont send noti while chatting ---
-    private void currentUser(String receiver_car_id){
+    private void currentUser(String receiver_car_id, String receiver_car_province){
         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-        editor.putString("currentuser", receiver_car_id);
+        editor.putString("currentuser", receiver_car_id + "_" + receiver_car_province);
         editor.apply();
     }
 
@@ -639,14 +657,14 @@ public class MessageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //--- Dont send noti while chatting --- set current chatting receiver ID to SharedPreference
-        currentUser(receiver_car_id);
+        currentUser(receiver_car_id, receiver_car_province);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         reference.removeEventListener(seenListener);
-        currentUser("none");
+        currentUser("none", "none");
     }
 
     @Override

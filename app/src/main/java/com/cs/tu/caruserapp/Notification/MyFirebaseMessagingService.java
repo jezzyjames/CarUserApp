@@ -52,6 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             //get sender ID from payload
             String sender_car_id = remoteMessage.getData().get("sender_car_id");
+            String sender_car_province = remoteMessage.getData().get("sender_car_province");
             //get receiver ID from payload
             String receiver = remoteMessage.getData().get("receiver");
 
@@ -59,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(firebaseUser != null && receiver.equals(firebaseUser.getUid())){
                 //--- Dont send noti while chatting if sender of notification is who are you chatting with ---
-                if(!currentUser.equals(sender_car_id)){
+                if(!currentUser.equals(sender_car_id + "_" + sender_car_province)){
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                         sendOreoNotification(remoteMessage);
                     }else {
@@ -118,6 +119,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String receiver_id = remoteMessage.getData().get("sender_id");
         String receiver_car_id = remoteMessage.getData().get("sender_car_id");
         String sender_car_id = remoteMessage.getData().get("receiver_car_id");
+        String sender_car_province = remoteMessage.getData().get("receiver_car_province");
+        String receiver_car_province = remoteMessage.getData().get("sender_car_province");
 
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
@@ -130,6 +133,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("receiver_id", receiver_id);
         intent.putExtra("receiver_car_id", receiver_car_id);
         intent.putExtra("sender_car_id", sender_car_id);
+        intent.putExtra("sender_car_province", sender_car_province);
+        intent.putExtra("receiver_car_province", receiver_car_province);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -154,6 +159,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String receiver_id = remoteMessage.getData().get("sender_id");
         String receiver_car_id = remoteMessage.getData().get("sender_car_id");
         String sender_car_id = remoteMessage.getData().get("receiver_car_id");
+        String sender_car_province = remoteMessage.getData().get("receiver_car_province");
+        String receiver_car_province = remoteMessage.getData().get("sender_car_province");
 
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
@@ -165,6 +172,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("receiver_id", receiver_id);
         intent.putExtra("receiver_car_id", receiver_car_id);
         intent.putExtra("sender_car_id", sender_car_id);
+        intent.putExtra("sender_car_province", sender_car_province);
+        intent.putExtra("receiver_car_province", receiver_car_province);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
 

@@ -93,11 +93,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                                                 reference = FirebaseDatabase.getInstance().getReference("Cars")
-                                                        .child(car.getCar_id());
+                                                        .child(car.getCar_id() + "_" + car.getProvince());
                                                 reference.setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        listAllStorageFilesAndDelete(car.getCar_id());
+                                                        listAllStorageFilesAndDelete(car.getCar_id(), car.getProvince());
                                                     }
                                                 });
 
@@ -119,8 +119,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     }
 
-    public void listAllStorageFilesAndDelete(final String car_id) {
-        final String car_photo_path = "uploads/car_photo/" + firebaseUser.getUid() + "/" + car_id;
+    public void listAllStorageFilesAndDelete(final String car_id, final String province) {
+        final String car_photo_path = "uploads/car_photo/" + firebaseUser.getUid() + "/" + car_id + "_" + province;
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference listRef = storage.getReference(car_photo_path);

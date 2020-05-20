@@ -63,9 +63,10 @@ public class ChatsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         String car_id = bundle.getString("car_id", "");
+        String province = bundle.getString("province", "");
 
         usersList = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(firebaseUser.getUid()).child(car_id);
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(firebaseUser.getUid()).child(car_id + "_" + province);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -101,7 +102,7 @@ public class ChatsFragment extends Fragment {
                     Car car = snapshot.getValue(Car.class);
                     for(Chatlist chatlist : usersList){
                         //if users id in database equal to users id in userList (users that you are chatting with)
-                        if(car.getCar_id().equals(chatlist.getReceiver_car_id())){
+                        if(car.getCar_id().equals(chatlist.getReceiver_car_id()) && car.getProvince().equals(chatlist.getReceiver_car_province())){
                             //add that user to mUsers to show on Chat fragment page view
                             mCars.add(car);
                         }

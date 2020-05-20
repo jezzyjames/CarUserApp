@@ -30,13 +30,15 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
     private List<Car> mCars;
     private String receiver_id;
     private String receiver_car_id;
+    private String receiver_car_province;
 
 
-    public SearchCarAdapter(Context mContext, List<Car> mCars, String receiver_id, String receiver_car_id) {
+    public SearchCarAdapter(Context mContext, List<Car> mCars, String receiver_id, String receiver_car_id, String receiver_car_province) {
         this.mContext = mContext;
         this.mCars = mCars;
         this.receiver_id = receiver_id;
         this.receiver_car_id = receiver_car_id;
+        this.receiver_car_province = receiver_car_province;
 
     }
 
@@ -89,6 +91,8 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
                                 intent.putExtra("receiver_id", receiver_id);
                                 intent.putExtra("receiver_car_id", receiver_car_id);
                                 intent.putExtra("sender_car_id", car.getCar_id());
+                                intent.putExtra("receiver_car_province", receiver_car_province);
+                                intent.putExtra("sender_car_province", car.getProvince());
                                 intent.putExtra("from_search", true);
                                 mContext.startActivity(intent);
 

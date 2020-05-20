@@ -112,6 +112,9 @@
                 android:id="@+id/edt_car_id"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
+                android:paddingStart="5dp"
+                android:textSize="16sp"
+                android:textColor="@color/black"
                 android:ems="4"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
@@ -127,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:id="@+id/province_spinner"
-                    android:background="@color/edittext_bg" />
+                    android:background="@color/edittext_bg"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -163,6 +166,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:ems="10"
+                android:paddingStart="5dp"
+                android:textSize="16sp"
+                android:textColor="@color/black"
                 android:background="@color/edittext_bg"
                 android:layout_marginTop="10dp"
                 android:maxLines="1"

@@ -90,10 +90,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         //Show last message on user list
-        lastMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.last_msg, holder.date_time);
+        lastMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.last_msg, holder.date_time);
 
         //show notify sign on unread message
-        countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), holder.unread_num);
+        countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.unread_num);
 
         //check verify status
         checkVerifyStatus(car.getOwner_id(), holder.verify_status);
@@ -104,7 +104,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 Intent intent = new Intent(mContext, MessageActivity.class);
                 intent.putExtra("receiver_id", car.getOwner_id());
                 intent.putExtra("receiver_car_id", car.getCar_id());
+                intent.putExtra("receiver_car_province", car.getProvince());
                 intent.putExtra("sender_car_id", chatlist.getSender_car_id());
+                intent.putExtra("sender_car_province", chatlist.getSender_car_province());
                 mContext.startActivity(intent);
 
             }
@@ -114,7 +116,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public boolean onLongClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(car.getCar_id().toUpperCase());
+                builder.setTitle(car.getCar_id().toUpperCase() + " " + car.getProvince());
 
                 String[] choices = mContext.getResources().getStringArray(R.array.user_interact_choice);
                 builder.setItems(choices, new DialogInterface.OnClickListener() {
@@ -123,7 +125,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         switch (which) {
                             case 0:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                                builder.setTitle(mContext.getString(R.string.report) + " " + car.getCar_id().toUpperCase());
+                                builder.setTitle(mContext.getString(R.string.report) + " " + car.getCar_id().toUpperCase() + " " + car.getProvince());
 
                                 //set layout
                                 LinearLayout layout = new LinearLayout(mContext);
@@ -168,6 +170,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                         hashMap.put("report_message", report_message);
                                         hashMap.put("id", car.getOwner_id());
                                         hashMap.put("car_id", car.getCar_id());
+                                        hashMap.put("province", car.getProvince());
                                         hashMap.put("date", formattedDate);
                                         hashMap.put("time", currentTimeString);
                                         hashMap.put("reporter_id", firebaseUser.getUid());
@@ -194,15 +197,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             case 1:
                                 new android.app.AlertDialog.Builder(mContext)
                                         .setTitle(mContext.getString(R.string.confirm))
-                                        .setMessage(mContext.getString(R.string.delete_chat_message) + " " + car.getCar_id().toUpperCase() + " " + mContext.getString(R.string.delete_chat_message_end))
+                                        .setMessage(mContext.getString(R.string.delete_chat_message) + " " + car.getCar_id().toUpperCase() + " " + car.getProvince() + " " + mContext.getString(R.string.delete_chat_message_end))
                                         .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                                                 reference = FirebaseDatabase.getInstance().getReference("Chatlist")
                                                         .child(firebaseUser.getUid())
-                                                        .child(chatlist.getSender_car_id())
-                                                        .child(car.getCar_id());
+                                                        .child(chatlist.getSender_car_id() + "_" + chatlist.getSender_car_province())
+                                                        .child(car.getCar_id() + "_" + chatlist.getReceiver_car_province());
                                                 reference.setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -256,7 +259,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     //check for last message
-    private void lastMessage(final String sender_car_id, final String receiver_car_id, final TextView last_msg, final TextView date_time){
+    private void lastMessage(final String sender_car_id, final String receiver_car_id, final String sender_car_province, final String receiver_car_province
+            , final TextView last_msg, final TextView date_time){
         theLastMessage = "default";
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -265,14 +269,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getSender_car_id().equals(sender_car_id)){
+                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province)
+                            && chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province)
+                            || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province)
+                            && chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province)){
                         if(chat.getMessage_type().equals("text")){
                             theLastMessage = chat.getMessage();
                         }else if(chat.getMessage_type().equals("image")){
                             if(chat.getSender().equals(firebaseUser.getUid())){
                                 theLastMessage = mContext.getString(R.string.you_sent_photo);
                             }else{
-                                theLastMessage =  receiver_car_id.toUpperCase() + " " + mContext.getString(R.string.sent_photo);
+                                theLastMessage =  receiver_car_id.toUpperCase() + " " + receiver_car_province + " " + mContext.getString(R.string.sent_photo);
                             }
 
                         }
@@ -327,7 +334,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
-    private void countNewMessage(final String sender_car_id, final String receiver_car_id, final TextView unread_num){
+    private void countNewMessage(final String sender_car_id, final String receiver_car_id, final String sender_car_province, final String reciever_car_province, final TextView unread_num){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -335,7 +342,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 int unread = 0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getSender_car_id().equals(receiver_car_id) && !chat.isIsseen()){
+                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province)
+                            && chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(reciever_car_province)
+                            && !chat.isIsseen()){
                         unread++;
                     }
                 }

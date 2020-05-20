@@ -94,3 +94,8 @@
 - change province, brand and color to searchable spinner
 - fix orientation
 - fix imageview wrong scale in messageActivity
+
+5/20/2020
+- improve search check car province does not exist
+- check car province does not exist when add car
+- fix all read/write database

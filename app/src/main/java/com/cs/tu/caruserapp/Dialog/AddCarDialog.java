@@ -29,6 +29,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
 
 import com.google.firebase.database.DataSnapshot;
@@ -129,13 +130,28 @@ public class AddCarDialog extends DialogFragment {
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            boolean exist_car = false;
+                            //check if car id is not exist
                             if(!dataSnapshot.exists()){
                                 mOnInputListener.sendInput(imageUri, input_carid, input_province, input_brand, input_model, input_color);
                                 getDialog().dismiss();
 
 
                             }else{
-                                Toast.makeText(getActivity(), getString(R.string.this_car_already_regist), Toast.LENGTH_SHORT).show();
+                                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    final Car car = snapshot.getValue(Car.class);
+                                    assert car != null;
+                                    if(car.getProvince().equals(input_province)){
+                                        exist_car = true;
+
+                                    }
+                                }
+                                if(!exist_car){
+                                    mOnInputListener.sendInput(imageUri, input_carid, input_province, input_brand, input_model, input_color);
+                                    getDialog().dismiss();
+                                }else{
+                                    Toast.makeText(getActivity(), getString(R.string.this_car_already_regist), Toast.LENGTH_SHORT).show();
+                                }
 
                             }
                         }

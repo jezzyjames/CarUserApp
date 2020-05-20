@@ -32,46 +32,81 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/search_box">
+            android:layout_margin="10dp"
+            android:layout_centerHorizontal="true">
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:layout_margin="5dp"
-                android:padding="5dp"
-                android:id="@+id/search_users"
-                android:background="@color/white"
-                android:hint="@string/search_car_id_number"
-                android:layout_centerVertical="true"
-                android:elevation="5dp"/>
-
-            <ImageButton
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_clear_text"
-                android:src="@drawable/ic_clear"
-                android:tint="@color/white"
-                android:background="@drawable/round_btn"
-                android:backgroundTint="@color/transparation"
-                android:layout_toLeftOf="@id/btn_search"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:visibility="invisible"
-                android:elevation="5dp"/>
+                android:id="@+id/search_box">
 
-            <ImageButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:id="@+id/btn_search"
-                android:background="@drawable/ic_search"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="10dp"
-                android:elevation="5dp"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:id="@+id/search_users"
+                    android:background="@color/white"
+                    android:hint="@string/search_car_id_number"
+                    android:layout_centerVertical="true"
+                    android:ems="7"
+                    android:maxLines="1"
+                    android:maxLength="8"
+                    android:drawableEnd="@color/black" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_clear_text"
+                    android:src="@drawable/ic_clear"
+                    android:tint="@color/white"
+                    android:background="@drawable/round_btn"
+                    android:backgroundTint="@color/transparation"
+                    android:layout_alignRight="@id/search_users"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/province_layout"
+                android:layout_toRightOf="@id/search_box"
+                android:layout_marginLeft="10dp">
+
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/province_spinner"
+                    android:background="@color/white"
+                    android:layout_toStartOf="@id/btn_search"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drop_down"
+                    android:layout_centerVertical="true"
+                    android:layout_alignRight="@id/province_spinner"/>
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:id="@+id/btn_search"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_search"
+                    android:layout_marginLeft="10dp" />
+
+            </RelativeLayout>
+
+
+
+
+
         </RelativeLayout>
 
         <androidx.cardview.widget.CardView

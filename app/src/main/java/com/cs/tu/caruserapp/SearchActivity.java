@@ -15,10 +15,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,11 +38,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchActivity extends AppCompatActivity {
     EditText search_users;
+    Spinner province_spinner;
     CardView cardview_result;
     ImageButton btn_clear_text;
     ImageButton btn_search;
@@ -55,6 +60,8 @@ public class SearchActivity extends AppCompatActivity {
     TextView cant_chat;
     ProgressBar progressBar;
 
+    Car found_car;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,11 @@ public class SearchActivity extends AppCompatActivity {
 
         cardview_result = findViewById(R.id.cardview_result);
         search_users = findViewById(R.id.search_users);
+        province_spinner = findViewById(R.id.province_spinner);
+        String[] province_array = getResources().getStringArray(R.array.province_arrays);
+        final ArrayAdapter<String> province_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, province_array);
+        province_spinner.setAdapter(province_adapter);
+
         btn_clear_text = findViewById(R.id.btn_clear_text);
         btn_search = findViewById(R.id.btn_search);
         image_profile = findViewById(R.id.profile_image);
@@ -136,11 +148,21 @@ public class SearchActivity extends AppCompatActivity {
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchUsers(search_users.getText().toString().toLowerCase());
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        Context.INPUT_METHOD_SERVICE
-                );
-                imm.hideSoftInputFromWindow(search_users.getWindowToken(), 0);
+                if(!search_users.getText().toString().equals("") && province_spinner.getSelectedItemPosition() != 0){
+                    searchUsers(search_users.getText().toString().toLowerCase());
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Context.INPUT_METHOD_SERVICE
+                    );
+                    imm.hideSoftInputFromWindow(search_users.getWindowToken(), 0);
+                }else{
+                    if(search_users.getText().toString().equals("")){
+                        Toast.makeText(SearchActivity.this, "Please insert car id", Toast.LENGTH_SHORT).show();
+                    }else if(province_spinner.getSelectedItemPosition() == 0){
+                        Toast.makeText(SearchActivity.this, "Please select province", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
             }
         });
 
@@ -148,21 +170,30 @@ public class SearchActivity extends AppCompatActivity {
 
     private void searchUsers(String s) {
         progressBar.setVisibility(View.VISIBLE);
-
+        found_car = new Car();
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(s);
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                found_car = null;
                 //if dataSnapshot is not null
                 if(dataSnapshot.exists()){
-                    progressBar.setVisibility(View.GONE);
+
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         final Car car = snapshot.getValue(Car.class);
                         assert car != null;
                         assert firebaseUser != null;
+                        if(car.getProvince().equals(province_spinner.getSelectedItem().toString())){
+                            found_car = car;
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
+                        }
+
+                    }
+                    if(found_car != null){
+                        progressBar.setVisibility(View.GONE);
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(found_car.getOwner_id());
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -180,33 +211,34 @@ public class SearchActivity extends AppCompatActivity {
                             }
                         });
 
-                        car_id.setText(car.getCar_id().toUpperCase());
-                        province.setText(car.getProvince());
-                        brand.setText(car.getBrand());
-                        model.setText(car.getModel());
+                        car_id.setText(found_car.getCar_id().toUpperCase());
+                        province.setText(found_car.getProvince());
+                        brand.setText(found_car.getBrand());
+                        model.setText(found_car.getModel());
 
                         String[] colors = getResources().getStringArray(R.array.color_arrays);
-                        String car_color = colors[car.getColor()];
+                        String car_color = colors[found_car.getColor()];
                         color.setText(car_color);
 
                         //set image
-                        if (car.getImageURL().equals("default")) {
+                        if (found_car.getImageURL().equals("default")) {
                             image_profile.setImageResource(R.drawable.ic_light_car);
                         } else {
-                            Glide.with(getApplicationContext()).load(car.getImageURL()).into(image_profile);
+                            Glide.with(getApplicationContext()).load(found_car.getImageURL()).into(image_profile);
                         }
                         cardview_result.setVisibility(View.VISIBLE);
 
                         //if search result is your own id
-                        if (!car.getOwner_id().equals(firebaseUser.getUid())) {
+                        if (!found_car.getOwner_id().equals(firebaseUser.getUid())) {
                             btn_chat.setVisibility(View.VISIBLE);
                             cant_chat.setVisibility(View.INVISIBLE);
                             btn_chat.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Bundle bundle = new Bundle();
-                                    bundle.putString("receiver_id", car.getOwner_id());
-                                    bundle.putString("receiver_car_id", car.getCar_id());
+                                    bundle.putString("receiver_id", found_car.getOwner_id());
+                                    bundle.putString("receiver_car_id", found_car.getCar_id());
+                                    bundle.putString("receiver_car_province", found_car.getProvince());
 
                                     DialogFragment dialogFragment = new ChooseCarDialog();
                                     dialogFragment.setArguments(bundle);
@@ -220,8 +252,12 @@ public class SearchActivity extends AppCompatActivity {
                             btn_chat.setVisibility(View.INVISIBLE);
                             cant_chat.setVisibility(View.VISIBLE);
                         }
-
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(SearchActivity.this, getString(R.string.car_id_not_found), Toast.LENGTH_SHORT).show();
+                        cardview_result.setVisibility(View.INVISIBLE);
                     }
+
 
                 }else{
                     progressBar.setVisibility(View.GONE);

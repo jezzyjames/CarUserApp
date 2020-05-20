@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         if(editText_phone.getText().toString().equals("1234 567 8")) {
                             FirebaseAuth auth = firebaseAuth.getInstance();
-                            auth.signInWithEmailAndPassword("jetzjamez@hotmail...com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            auth.signInWithEmailAndPassword("jetzjamez@hotmail.com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){

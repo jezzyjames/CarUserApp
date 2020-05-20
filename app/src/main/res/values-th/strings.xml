@@ -37,7 +37,7 @@
     <string name="logout">ออกจากระบบ</string>
     <string name="logout_message">ต้องการออกจากระบบใช่ไหม?</string>
     <string name="search">ค้นหา</string>
-    <string name="search_car_id_number">ค้นหาหมายเลขทะเบียนรถยนต์...</string>
+    <string name="search_car_id_number">ทะเบียนรถ</string>
     <string name="brand">ยี่ห้อ</string>
     <string name="model">รุ่น</string>
     <string name="color">สี</string>

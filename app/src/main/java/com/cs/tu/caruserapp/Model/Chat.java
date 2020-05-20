@@ -6,17 +6,22 @@ public class Chat {
     private String receiver;
     private String sender_car_id;
     private String receiver_car_id;
+    private String sender_car_province;
+    private String receiver_car_province;
     private String message;
     private String message_type;
     private boolean isseen;
     private String time;
     private String date;
 
-    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String message, String message_type, boolean isSeen, String time, String date) {
+    public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String sender_car_province, String receiver_car_province
+            , String message, String message_type, boolean isSeen, String time, String date) {
         this.sender = sender;
         this.receiver = receiver;
         this.sender_car_id = sender_car_id;
         this.receiver_car_id = receiver_car_id;
+        this.sender_car_province = sender_car_province;
+        this.receiver_car_province = receiver_car_province;
         this.message = message;
         this.message_type = message_type;
         this.isseen = isseen;
@@ -81,6 +86,22 @@ public class Chat {
 
     public void setReceiver_car_id(String receiver_car_id) {
         this.receiver_car_id = receiver_car_id;
+    }
+
+    public String getSender_car_province() {
+        return sender_car_province;
+    }
+
+    public void setSender_car_province(String sender_car_province) {
+        this.sender_car_province = sender_car_province;
+    }
+
+    public String getReceiver_car_province() {
+        return receiver_car_province;
+    }
+
+    public void setReceiver_car_province(String receiver_car_province) {
+        this.receiver_car_province = receiver_car_province;
     }
 
     public String getTime() {
