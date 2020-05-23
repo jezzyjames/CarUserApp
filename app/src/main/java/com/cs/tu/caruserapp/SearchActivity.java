@@ -193,23 +193,13 @@ public class SearchActivity extends AppCompatActivity {
                     }
                     if(found_car != null){
                         progressBar.setVisibility(View.GONE);
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(found_car.getOwner_id());
-                        reference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                User user = dataSnapshot.getValue(User.class);
-                                if(user.isVerify_status()){
-                                    verify_status.setVisibility(View.INVISIBLE);
-                                }else{
-                                    verify_status.setVisibility(View.VISIBLE);
-                                }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                        //check verify status
+                        if(found_car.getVerify_status() == 2){
+                            verify_status.setVisibility(View.GONE);
+                        }else{
+                            verify_status.setVisibility(View.VISIBLE);
+                        }
 
                         car_id.setText(found_car.getCar_id().toUpperCase());
                         province.setText(found_car.getProvince());

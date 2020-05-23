@@ -11,4 +11,6 @@
     <color name="blue">#034FF4</color>
     <color name="red">#CF2828</color>
     <color name="edittext_bg">#25000000</color>
+    <color name="green">#4CAF50</color>
+    <color name="yellow">#FFC107</color>
 </resources>

@@ -21,9 +21,9 @@
     <string name="resend">ขอรับรหัสใหม่</string>
     <string name="yes">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
-    <string name="verified">ยันตัวตนเเล้ว</string>
-    <string name="verify_now">ยืนยันตัวตน</string>
-    <string name="unverified">ยังไม่ยืนยันตัวตน</string>
+    <string name="verified">ตรวจสอบเเล้ว</string>
+    <string name="verify_now">ทำการยืนยัน</string>
+    <string name="unverified">ยังไม่ตรวจสอบ</string>
     <string name="unverified_user">ยังไม่ยืนยันตัวตน</string>
     <string name="report_user">รายงานผู้ใช้ที่ไม่เหมาะสม</string>
     <string name="report">รายงาน</string>
@@ -47,8 +47,8 @@
     <string name="choose_car_id_number">เลือกรถยนต์หมายเลขทะเบียน</string>
     <string name="to_your_active_car">\nเป็นรถที่คุณกำลังใช้งาน?</string>
     <string name="confirm">ยืนยัน</string>
-    <string name="please_verify_dialog_title">ยังไม่ได้ยืนยันตัวตนผู้ใช้</string>
-    <string name="please_verify_dialog">โปรดยืนยันตัวตนของท่านเพื่อความปลอดภัยของผู้ใช้งานทุกคน ท่านยังสามารถใช้งานเเอปพลิเคชันได้ เเต่ผู้อื่นจะเห็นสถานะของท่านเป็น \"ยังไม่ยืนยันตัวตน\"</string>
+    <string name="please_verify_dialog_title">รถยนต์ยังไม่ผ่านการตรวจสอบ</string>
+    <string name="please_verify_dialog">โปรดยืนยันตัวตนความเป็นเจ้าของรถของท่านเพื่อความปลอดภัยของผู้ใช้งานทุกคน ท่านยังสามารถใช้งานเเอปพลิเคชันได้ เเต่ผู้อื่นจะเห็นสถานะทะเบียนรถของท่านเป็น \"รถยังไม่ผ่านการตรวจสอบ\"</string>
     <string name="add_first_car_dialog_title">เพิ่มรถคันเเรก</string>
     <string name="add_first_car_dialog">เพิ่มรถของคุณ เพื่อเริ่มเสนทนากับคนอื่น</string>
     <string name="go">ตกลง</string>
@@ -68,6 +68,15 @@
     <string name="sent_photo">ส่งรูปภาพ</string>
     <string name="you_sent_photo">คุณส่งรูปภาพ</string>
     <string name="you_dont_have_car">คุณยังไม่มีรถยนต์ โปรดเพิ่มรถยนต์ของคุณ</string>
+    <string name="unverified_car_detect">คุณมีรถยนต์ที่ยังไม่ถูกยืนยันความเป็นเจ้าของ</string>
+    <string name="choose_method">เลือกช่องทางการตรวจสอบ</string>
+    <string name="car_verify">ตรวจสอบรถยนต์</string>
+    <string name="select">เลือก</string>
+    <string name="by_regist_book">ยืนยันความเป็นเจ้าของรถ\nโดยใช้เล่มทะเบียนรถยนต์</string>
+    <string name="by_car_photo">ยืนยันความเป็นเจ้าของรถ\nโดยใช้ภาพถ่ายรถยนต์</string>
+    <string name="report_if_your_car">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถของคุณ</string>
+    <string name="verifying">กำลังตรวจสอบ...</string>
+
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>

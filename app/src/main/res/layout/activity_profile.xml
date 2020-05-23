@@ -23,144 +23,121 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:layout_below="@id/bar_layout">
-
-        <androidx.cardview.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="8dp">
+            android:padding="8dp">
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:padding="8dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:elevation="8dp">
 
-                <androidx.cardview.widget.CardView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="8dp"
-                    android:id="@+id/layoutUserDetail">
+                    android:padding="8dp"
+                    android:layout_height="wrap_content">
 
-                    <RelativeLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="20dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/username"
-                            android:text="@string/firstname_lastname"
-                            android:textSize="18sp"
-                            android:textColor="@color/colorPrimaryDark"
-                            android:layout_centerHorizontal="true"
-                            android:layout_gravity="center"/>
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/username"
-                            android:layout_marginTop="10dp"
-                            android:layout_centerHorizontal="true"
-                            android:id="@+id/phone_layout">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/phonenumber_head"
-                                android:text="@string/phone_number"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textStyle="bold"
-                                android:textSize="14sp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/phonenumber"
-                                android:layout_marginLeft="10dp"
-                                android:textSize="14sp"
-                                android:textColor="@color/black"
-                                android:layout_toRightOf="@id/phonenumber_head"/>
-                        </RelativeLayout>
+                        android:elevation="8dp"
+                        android:id="@+id/layoutUserDetail">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/verify_layout"
-                            android:layout_below="@id/phone_layout"
-                            android:gravity="center"
-                            android:layout_marginTop="10dp">
+                            android:padding="10dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:id="@+id/license_status_text"
-                                android:text="@string/verification_status"
-                                android:textSize="18dp"
-                                android:textColor="@color/black"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:id="@+id/username"
+                                android:text="@string/firstname_lastname"
+                                android:textSize="18sp"
+                                android:textColor="@color/colorPrimaryDark"
                                 android:layout_centerHorizontal="true"
-                                android:id="@+id/verify_status"
-                                android:layout_marginLeft="10dp"
-                                android:layout_toRightOf="@id/license_status_text"
-                                android:textSize="18dp"/>
+                                android:layout_gravity="center"/>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/username"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_centerHorizontal="true"
+                                android:id="@+id/phone_layout">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/phonenumber_head"
+                                    android:text="@string/phone_number"
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold"
+                                    android:textSize="14sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/phonenumber"
+                                    android:layout_marginLeft="10dp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:layout_toRightOf="@id/phonenumber_head"/>
+                            </RelativeLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/unverified_detect"
+                                android:text="@string/unverified_car_detect"
+                                android:textColor="@color/red"
+                                android:textStyle="bold"
+                                android:textSize="16sp"
+                                android:layout_below="@id/phone_layout"
+                                android:gravity="center"
+                                android:visibility="gone"/>
+
                         </RelativeLayout>
 
-                        <Button
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/verify_btn"
-                            android:layout_below="@id/verify_layout"
-                            android:layout_centerHorizontal="true"
-                            android:background="@drawable/round_btn"
-                            android:backgroundTint="@color/red"
-                            android:text="@string/verify_now"
-                            android:textAllCaps="false"
-                            android:textSize="14sp"
-                            android:layout_marginTop="10dp"
-                            android:layout_margin="10dp"
-                            android:textColor="@color/white"
-                            android:visibility="gone"/>
+                    </androidx.cardview.widget.CardView>
 
-                    </RelativeLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/layoutUserDetail"
+                        android:layout_marginTop="10dp"/>
 
-                </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txt_add_car"
+                        android:text="@string/add_car"
+                        android:layout_below="@+id/recycler_view"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:drawableLeft="@drawable/ic_add"
+                        android:drawablePadding="5dp"
+                        android:layout_marginBottom="10dp"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/layoutUserDetail"
-                    android:layout_marginTop="10dp"/>
+                </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txt_add_car"
-                    android:text="@string/add_car"
-                    android:layout_below="@+id/recycler_view"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:drawableLeft="@drawable/ic_add"
-                    android:drawablePadding="5dp"
-                    android:layout_marginBottom="10dp"/>
+            </androidx.cardview.widget.CardView>
 
-            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
 
-        </androidx.cardview.widget.CardView>
 
-    </RelativeLayout>
     
 </RelativeLayout>

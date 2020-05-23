@@ -99,3 +99,10 @@
 - improve search check car province does not exist
 - check car province does not exist when add car
 - fix all read/write database
+
+5/21/2020
+- fix giffy dialog bug
+- show phone number in MessageActivity
+
+5/22/2020
+- verify each car instead user

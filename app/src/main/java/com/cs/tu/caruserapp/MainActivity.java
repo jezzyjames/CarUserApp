@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -13,13 +12,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     TabLayout tabLayout;
 
-    ImageView info;
-    Animation anim;
+    boolean warn_dialog_addcar = false;
+    boolean warn_dialog_verify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
-
-        info = findViewById(R.id.info);
-        info.setVisibility(View.GONE);
-        info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                warnDialog(1);
-            }
-        });
-        anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,31 +75,15 @@ public class MainActivity extends AppCompatActivity {
         verify_status = findViewById(R.id.verify_status);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
+
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname());
-                username.setTextColor(Color.WHITE);
-                user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.white));
-                verify_status.setVisibility(View.GONE);
-                info.setVisibility(View.GONE);
-                info.clearAnimation();
-
-
-                if(!user.isVerify_status()){
-                    user_icon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    username.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    verify_status.setText(": " + getString(R.string.unverified));
-                    verify_status.setVisibility(View.VISIBLE);
-
-                    info.setVisibility(View.VISIBLE);
-                    info.startAnimation(anim);
-
-                    warnDialog(1);
-
-                }
 
                 user_icon.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -146,10 +116,16 @@ public class MainActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Car car = snapshot.getValue(Car.class);
                     carsList.add(car);
+
+                    if(car.getVerify_status() != 2 && !warn_dialog_verify){
+                        warnDialog(1);
+                    }
                 }
 
                 viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 for(int i = 0; i < carsList.size(); i++){
+
+
                     String sender_car_id = carsList.get(i).getCar_id();
                     String province = carsList.get(i).getProvince();
                     Bundle bundle = new Bundle();
@@ -158,43 +134,16 @@ public class MainActivity extends AppCompatActivity {
                     ChatsFragment chatsFragment = new ChatsFragment();
                     chatsFragment.setArguments(bundle);
 
-                    //count unread message
-//                    int unread = 0;
-//                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-//                        Chat chat = snapshot.getValue(Chat.class);
-//                        if(chat.getReceiver_car_id().equals(sender_car_id) && !chat.isIsseen()){
-//                            unread++;
-//                        }
-//                    }
-
-//                    String unreadnum = "";
-//                    if(unread != 0){
-//                        unreadnum = " (" + unread + ")";
-//                    }
-                    //add fragment each car id
                     viewPagerAdapter.addFragment(chatsFragment, sender_car_id + "\n" + province);
 
                 }
                 if(carsList.size() != 0){
                     viewPager.setAdapter(viewPagerAdapter);
                 }else{
-                    warnDialog(0);
+                    if(!warn_dialog_addcar){
+                        warnDialog(0);
+                    }
                 }
-
-
-//                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-//                reference.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
 
             }
 
@@ -205,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     //show menu on top
@@ -288,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
     public void warnDialog(int dialog){
         switch (dialog){
             case 0:
-                new FancyGifDialog.Builder(MainActivity.this)
+                warn_dialog_addcar = true;
+                new FancyGifDialog.Builder(this)
                         .setTitle(getString(R.string.add_first_car_dialog_title))
                         .setMessage(getString(R.string.add_first_car_dialog))
                         .setNegativeBtnText(getString(R.string.later))
@@ -312,7 +261,8 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 break;
             case 1:
-                new FancyGifDialog.Builder(MainActivity.this)
+                warn_dialog_verify = true;
+                new FancyGifDialog.Builder(this)
                         .setTitle(getString(R.string.please_verify_dialog_title))
                         .setMessage(getString(R.string.please_verify_dialog))
                         .setNegativeBtnText(getString(R.string.later))
@@ -336,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
                         .build();
                 break;
         }
-
-
     }
+
 }

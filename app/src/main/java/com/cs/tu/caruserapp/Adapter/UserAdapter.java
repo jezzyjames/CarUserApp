@@ -89,14 +89,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Glide.with(mContext).load(car.getImageURL()).into(holder.profile_image);
         }
 
+        //check verify status
+        if(car.getVerify_status() == 2){
+            holder.verify_status.setVisibility(View.GONE);
+        }else{
+            holder.verify_status.setVisibility(View.VISIBLE);
+        }
+
         //Show last message on user list
         lastMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.last_msg, holder.date_time);
 
         //show notify sign on unread message
         countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.unread_num);
-
-        //check verify status
-        checkVerifyStatus(car.getOwner_id(), holder.verify_status);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,28 +230,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 dialog.show();
 
                 return false;
-            }
-        });
-
-    }
-
-    private void checkVerifyStatus(final String receiver_id, final TextView verify_status) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if(!user.isVerify_status()){
-                    verify_status.setVisibility(View.VISIBLE);
-                }else{
-                    verify_status.setVisibility(View.INVISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 

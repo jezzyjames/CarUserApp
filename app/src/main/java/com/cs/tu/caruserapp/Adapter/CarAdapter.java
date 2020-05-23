@@ -2,19 +2,27 @@ package com.cs.tu.caruserapp.Adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
+import com.cs.tu.caruserapp.VerifyActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +45,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+
+    Animation anim;
 
     public CarAdapter(Context mContext, List<Car> mCars) {
         this.mContext = mContext;
@@ -71,6 +81,53 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             holder.car_image.setImageResource(R.drawable.ic_light_car);
         }else{
             Glide.with(mContext).load(car.getImageURL()).into(holder.car_image);
+        }
+
+        if(car.getVerify_status() == 2){
+            holder.car_verify_status.setText(mContext.getString(R.string.verified));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.green));
+            holder.verify_btn.setVisibility(View.GONE);
+        } else if(car.getVerify_status() == 1){
+            holder.car_verify_status.setText(mContext.getString(R.string.verifying));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.yellow));
+            holder.verify_btn.setVisibility(View.GONE);
+
+        } else if(car.getVerify_status() == 0){
+            holder.car_verify_status.setText(mContext.getString(R.string.unverified));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+            anim = AnimationUtils.loadAnimation(mContext, R.anim.zoom_in_button);
+            holder.verify_btn.setAnimation(anim);
+            holder.verify_btn.setVisibility(View.VISIBLE);
+            holder.verify_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+//                        builder.setTitle(mContext.getString(R.string.car_verify) + "\n" + car.getCar_id() + " " + car.getProvince());
+//
+//                        String[] choices = mContext.getResources().getStringArray(R.array.method_array);
+//                        builder.setItems(choices, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                switch (which) {
+//                                    case 0:
+//
+//                                    case 1:
+//
+//                                        break;
+//                                }
+//                            }
+//                        });
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
+//
+//
+                    Intent intent = new Intent(mContext, VerifyActivity.class);
+                    intent.putExtra("my_car_id", car.getCar_id());
+                    intent.putExtra("my_car_province", car.getProvince());
+                    mContext.startActivity(intent);
+                }
+            });
         }
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -174,6 +231,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         public TextView txt_car_model;
         public TextView txt_car_color;
         public CircleImageView car_image;
+        public TextView car_verify_status;
+        public Button verify_btn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -184,6 +243,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
+            car_verify_status = itemView.findViewById(R.id.car_verify_status);
+            verify_btn = itemView.findViewById(R.id.verify_btn);
 
         }
     }

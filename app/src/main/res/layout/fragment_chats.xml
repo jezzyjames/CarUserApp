@@ -5,9 +5,39 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.ChatsFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/warn_verify_layout"
+        android:visibility="visible"
+        android:gravity="center"
+        android:background="@color/red">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_not_verify"
+            android:text="Your car is not verified"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/info"
+            android:layout_toRightOf="@id/txt_not_verify"
+            android:padding="10dp"
+            android:src="@drawable/ic_info"
+            android:tint="@color/white"
+            android:visibility="visible"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/warn_verify_layout"/>
 
 </RelativeLayout>

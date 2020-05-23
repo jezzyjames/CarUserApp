@@ -26,23 +26,53 @@
                 android:layout_height="30dp"
                 android:id="@+id/profile_image"/>
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/username"
-                android:layout_marginLeft="25dp"
-                android:textColor="#fff"
-                android:textStyle="bold"
-                android:layout_marginStart="25dp"/>
+                android:layout_marginStart="20dp"
+                android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="@string/unverified"
-                android:id="@+id/verify_status"
-                android:textColor="@color/red"
-                android:visibility="invisible"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unverified"
+                    android:textSize="12dp"
+                    android:id="@+id/verify_status"
+                    android:textColor="@color/red"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/username"
+                    android:textColor="@color/white"
+                    android:text="plate number"
+                    android:textStyle="bold"
+                    android:layout_below="@id/verify_status"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/province"
+                    android:textColor="@color/white"
+                    android:text="province"
+                    android:textStyle="bold"
+                    android:layout_below="@id/username"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/phonenumber"
+                    android:layout_marginLeft="25dp"
+                    android:textColor="@color/white"
+                    android:text="phone number"
+                    android:textStyle="bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:drawableStart="@drawable/ic_phone"
+                    android:drawablePadding="5dp"/>
+
+            </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

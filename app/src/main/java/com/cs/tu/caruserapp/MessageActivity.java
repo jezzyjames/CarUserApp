@@ -83,7 +83,9 @@ public class MessageActivity extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
+    TextView province;
     TextView verify_status;
+    TextView phone_number;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -154,7 +156,9 @@ public class MessageActivity extends AppCompatActivity {
 
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
+        province = findViewById(R.id.province);
         verify_status = findViewById(R.id.verify_status);
+        phone_number = findViewById(R.id.phonenumber);
         btn_camera = findViewById(R.id.btn_camera);
         btn_gallery = findViewById(R.id.btn_gallery);
         btn_send = findViewById(R.id.btn_send);
@@ -220,17 +224,23 @@ public class MessageActivity extends AppCompatActivity {
                 //set receiver data on Action bar
                 Car car = dataSnapshot.getValue(Car.class);
                 username.setText(car.getCar_id().toUpperCase());
+                province.setText(car.getProvince());
 
+                //check verify status
+                if(car.getVerify_status() == 2){
+                    verify_status.setVisibility(View.GONE);
+                }else{
+                    verify_status.setVisibility(View.VISIBLE);
+                }
+
+                //Get user phone number and show
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
-                        if(user.isVerify_status()){
-                            verify_status.setVisibility(View.INVISIBLE);
-                        }else{
-                            verify_status.setVisibility(View.VISIBLE);
-                        }
+                        phone_number.setText(user.getPhone_number());
+
                     }
 
                     @Override
@@ -239,6 +249,7 @@ public class MessageActivity extends AppCompatActivity {
                     }
                 });
 
+                //set Circle ImageView
                 if(car.getImageURL().equals("default")){
                     profile_image.setImageResource(R.drawable.ic_light_car);
                 }else{
@@ -293,7 +304,7 @@ public class MessageActivity extends AppCompatActivity {
         String formattedDate = df.format(date);
         //get current time
         String pattern = "HH:mm a";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
         String currentTimeString = simpleDateFormat.format(new Date());
 
         HashMap<String, Object> hashMap = new HashMap<>();

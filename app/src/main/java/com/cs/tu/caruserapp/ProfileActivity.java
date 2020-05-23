@@ -15,7 +15,6 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -67,9 +66,8 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
     TextView username;
     TextView phonenumber;
+    TextView unvrified_detect;
     TextView txt_add_car;
-    TextView license_status;
-    Button verify_btn;
 
     DatabaseReference reference;
     FirebaseUser firebaseUser;
@@ -79,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private StorageTask uploadTask;
 
     DialogFragment dialogFragment;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -91,8 +90,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
 
         username = findViewById(R.id.username);
         phonenumber = findViewById(R.id.phonenumber);
-        license_status = findViewById(R.id.verify_status);
-        verify_btn = findViewById(R.id.verify_btn);
+        unvrified_detect = findViewById(R.id.unverified_detect);
         txt_add_car = findViewById(R.id.txt_add_car);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -117,15 +115,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getFirstname() + " " + user.getLastname());
                 phonenumber.setText(user.getPhone_number());
-                license_status.setText(getString(R.string.verified));
-                license_status.setTextColor(Color.GREEN);
-                verify_btn.setVisibility(View.GONE);
-
-                if(!user.isVerify_status()){
-                    license_status.setText(getString(R.string.unverified));
-                    license_status.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    verify_btn.setVisibility(View.VISIBLE);
-                }
 
             }
 
@@ -142,11 +131,18 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                unvrified_detect.setVisibility(View.GONE);
                 carsList.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Car car = snapshot.getValue(Car.class);
+
+                    if(car.getVerify_status() != 2){
+                        unvrified_detect.setVisibility(View.VISIBLE);
+                    }
+
                     carsList.add(car);
                 }
+
                 carAdapter = new CarAdapter(ProfileActivity.this, carsList);
                 recyclerView.setAdapter(carAdapter);
 
@@ -220,10 +216,12 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         hashMap.put("model", car_model.substring(0, 1).toUpperCase() + car_model.substring(1));
                         hashMap.put("color", car_color);
                         hashMap.put("owner_id", firebaseUser.getUid());
+                        hashMap.put("verify_status", 0);
                         reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(ProfileActivity.this, getString(R.string.add_car_complete), Toast.LENGTH_SHORT).show();
+
                             }
                         });
 

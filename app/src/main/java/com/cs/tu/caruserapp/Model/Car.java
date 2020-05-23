@@ -3,7 +3,6 @@ package com.cs.tu.caruserapp.Model;
 
 
 public class Car {
-
     private String car_id;
     private String province;
     private String brand;
@@ -11,8 +10,9 @@ public class Car {
     private int color;
     private String imageURL;
     private String owner_id;
+    private int verify_status;
 
-    public Car(String car_id, String province, String brand, String model, int color, String imageURL, String owner_id) {
+    public Car(String car_id, String province, String brand, String model, int color, String imageURL, String owner_id, int verify_status) {
         this.car_id = car_id;
         this.province = province;
         this.brand = brand;
@@ -20,6 +20,7 @@ public class Car {
         this.color = color;
         this.imageURL = imageURL;
         this.owner_id = owner_id;
+        this.verify_status = verify_status;
     }
 
     public Car(){
@@ -83,4 +84,11 @@ public class Car {
         this.owner_id = owner_id;
     }
 
+    public int getVerify_status() {
+        return verify_status;
+    }
+
+    public void setVerify_status(int verify_status) {
+        this.verify_status = verify_status;
+    }
 }

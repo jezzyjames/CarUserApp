@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/verify_status"
-                    android:text="@string/unverified_user"
+                    android:text="@string/unverified"
                     android:textColor="@color/red"
                     android:layout_below="@id/profile_image"
                     android:layout_centerHorizontal="true"

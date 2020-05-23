@@ -29,9 +29,12 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
+import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.R;
 
+import com.cs.tu.caruserapp.StartActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -151,6 +154,18 @@ public class AddCarDialog extends DialogFragment {
                                     getDialog().dismiss();
                                 }else{
                                     Toast.makeText(getActivity(), getString(R.string.this_car_already_regist), Toast.LENGTH_SHORT).show();
+                                    new android.app.AlertDialog.Builder(getActivity())
+                                            .setTitle(getString(R.string.this_car_already_regist))
+                                            .setMessage(getString(R.string.report_if_your_car))
+                                            .setPositiveButton(getString(R.string.report), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Toast.makeText(getActivity(), "Report", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            })
+                                            .setNegativeButton(getString(R.string.cancel), null)
+                                            .show();
                                 }
 
                             }

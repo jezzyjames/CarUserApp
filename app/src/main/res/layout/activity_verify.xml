@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".RegisterActivity">
 
     <include
@@ -14,41 +16,152 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@id/toolbar"
-        android:gravity="center">
+        android:gravity="center_horizontal">
 
         <TextView
+            android:id="@+id/txt_method"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Firstname Lastname"/>
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:text="@string/choose_method"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            app:cardCornerRadius="20dp"
+            android:id="@+id/card_regist_book"
+            android:visibility="gone">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/driving_license"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/by_regist_book"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"/>
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/car_regist_book"
+                    android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"/>
+
+                <Button
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_choose_book"
+                    android:background="@drawable/round_btn"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/select"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            app:cardCornerRadius="20dp"
             android:layout_marginTop="10dp"
-            android:adjustViewBounds="true"/>
+            android:id="@+id/card_regist_photo"
+            android:visibility="gone">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/driving_license"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="true"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-        <Button
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_btn"
-            android:layout_marginTop="10dp"
-            android:text="Submit"
-            android:textColor="@color/white"
-            android:textAllCaps="false"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/by_car_photo"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"/>
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/take_car_picture"
+                    android:layout_marginTop="10dp"
+                    android:adjustViewBounds="true"/>
+
+                <Button
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_choose_photo"
+                    android:background="@drawable/round_btn"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/select"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/verify_photo"
+                android:src="@drawable/take_car_picture"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_margin="10dp">
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
+                    android:background="@drawable/round_btn"
+                    android:text="@string/take_photo"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:drawableStart="@drawable/ic_camera"/>
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
+                    android:background="@drawable/round_btn"
+                    android:text="@string/take_gallery"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:drawableStart="@drawable/ic_gallery"/>
+            </LinearLayout>
+
+        </LinearLayout>
 
 
     </LinearLayout>
 
-
-</RelativeLayout>
+</LinearLayout>

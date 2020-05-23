@@ -47,8 +47,8 @@
     <string name="choose_car_id_number">Choose car id number</string>
     <string name="to_your_active_car">\nto your active car?</string>
     <string name="confirm">Confirm</string>
-    <string name="please_verify_dialog_title">Your account is not verified</string>
-    <string name="please_verify_dialog">For the safety of everyone please verify yourself. if you don\'t, you still can use the app but your unverified status will show to other</string>
+    <string name="please_verify_dialog_title">Your car is not verified</string>
+    <string name="please_verify_dialog">For the safety of everyone please verify your car. if you don\'t, you still can use the app but your \"unverified car\" status will show to other</string>
     <string name="add_first_car_dialog_title">Add your first car</string>
     <string name="add_first_car_dialog">To chat with other people, please add car in your profile.</string>
     <string name="go">Go</string>
@@ -68,6 +68,14 @@
     <string name="sent_photo">Sent a photo.</string>
     <string name="you_sent_photo">You sent a photo.</string>
     <string name="you_dont_have_car">You dont have a car, please add your car</string>
+    <string name="unverified_car_detect">Unverified car detect</string>
+    <string name="choose_method">Choose verify methods</string>
+    <string name="car_verify">Car verify</string>
+    <string name="select">Select</string>
+    <string name="by_regist_book">Verify by vehicle registration book</string>
+    <string name="by_car_photo">Verify by car photo</string>
+    <string name="report_if_your_car">Report if someone is stole my car information</string>
+    <string name="verifying">Verifying...</string>
 
     //Toast
     <string name="please_enter_code">Please enter verification code</string>
