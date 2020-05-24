@@ -20,8 +20,16 @@ import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -72,26 +80,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, "Message Notification Title: " + remoteMessage.getNotification().getTitle());
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotificationFirebase(remoteMessage.getNotification().getBody());
+            sendNotificationFirebase(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            storeNotiToDatabase(remoteMessage.getNotification().getBody());
 
         }
 
     }
 
-    private void sendNotificationFirebase(String messageBody) {
+    private void sendNotificationFirebase(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        intent.putExtra("open_noti", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                        .setContentTitle(getString(R.string.fcm_message))
+                        .setSmallIcon(R.mipmap.ic_car_launcher)
+                        .setContentTitle(messageTitle)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
@@ -194,5 +203,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(i, builder.build());
     }
 
+    private void storeNotiToDatabase(String messageBody){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        //get current date
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        String formattedDate = df.format(date);
+        //get current time
+        String pattern = "HH:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
+        String currentTimeString = simpleDateFormat.format(new Date());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("imageURL", "default");
+        hashMap.put("message", messageBody);
+        hashMap.put("isseen", false);
+        hashMap.put("date", formattedDate);
+        hashMap.put("time", currentTimeString);
+
+        reference.child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap);
+
+    }
 
 }

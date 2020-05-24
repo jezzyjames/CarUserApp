@@ -179,8 +179,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                         hashMap.put("time", currentTimeString);
                                         hashMap.put("reporter_id", firebaseUser.getUid());
                                         hashMap.put("reporter_car_id", chatlist.getSender_car_id());
+                                        hashMap.put("reporter_car_province", chatlist.getSender_car_province());
 
-                                        reference.child("Report").child(car.getOwner_id()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        reference.child("Report").child(firebaseUser.getUid()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 Toast.makeText(mContext, mContext.getString(R.string.user_reported), Toast.LENGTH_SHORT).show();

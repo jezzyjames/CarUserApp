@@ -40,7 +40,7 @@ import com.cs.tu.caruserapp.Adapter.MessageAdapter;
 import com.cs.tu.caruserapp.Fragments.APIService;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
-import com.cs.tu.caruserapp.Model.Sender;;
+import com.cs.tu.caruserapp.Model.Sender;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Client;
 import com.cs.tu.caruserapp.Notification.Data;
@@ -111,7 +111,6 @@ public class MessageActivity extends AppCompatActivity {
     String receiver_car_province;
     String sender_car_id;
     String sender_car_province;
-
 
     private static final int REQUEST_IMAGE_CAPTURE = 0;
     private static final int GALLERY_REQUEST = 1;

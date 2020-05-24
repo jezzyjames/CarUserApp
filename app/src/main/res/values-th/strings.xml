@@ -70,13 +70,20 @@
     <string name="you_dont_have_car">คุณยังไม่มีรถยนต์ โปรดเพิ่มรถยนต์ของคุณ</string>
     <string name="unverified_car_detect">คุณมีรถยนต์ที่ยังไม่ถูกยืนยันความเป็นเจ้าของ</string>
     <string name="choose_method">เลือกช่องทางการตรวจสอบ</string>
-    <string name="car_verify">ตรวจสอบรถยนต์</string>
+    <string name="car_verify">ยืนยันความเป็นเจ้าของรถ</string>
     <string name="select">เลือก</string>
-    <string name="by_regist_book">ยืนยันความเป็นเจ้าของรถ\nโดยใช้เล่มทะเบียนรถยนต์</string>
+    <string name="by_regist_book">ยืนยันความเป็นเจ้าของรถ\nโดยใช้ภาพถ่ายเล่มทะเบียนรถยนต์</string>
     <string name="by_car_photo">ยืนยันความเป็นเจ้าของรถ\nโดยใช้ภาพถ่ายรถยนต์</string>
-    <string name="report_if_your_car">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถของคุณ</string>
+    <string name="report_if_your_car">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถของคุณ เเละทำการยืนยันความเป็นเจ้าของรถทันที</string>
     <string name="verifying">กำลังตรวจสอบ...</string>
-
+    <string name="instuction">คำเเนะนำ</string>
+    <string name="verify_instuction">- กรุณาถ่ายภาพหรือเลือกภาพเล่มทะเบียนรถยนต์หน้าที่เเสดงข้อมูลของรถเเละสามารถเห็นข้อมูลได้ชัดเจน\n\n- สามารถใช้เป็นภาพถ่ายสำเนาเขียนระบุว่า\n\"ใช้สำหรับตรวจสอบรถยนต์เเอปพลิเคชัน\nCar user application\" พร้อมลายเซ็นเเละวันที่</string>
+    <string name="private_message">*ข้อมูลของท่านจะไม่ถูกเผยเเพร่ต่อสาธารณะ*</string>
+    <string name="driver_license">ใบขับขี่</string>
+    <string name="send_verify">ส่งเอกสาร</string>
+    <string name="send_verify_complete">ส่งเอกสารเรียบร้อยเเล้ว! โปรดรอการอนุมัติ</string>
+    <string name="notification">การเเจ้งเตือน</string>
+    <string name="exist_car_report_message">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถยนต์ของท่านเเล้ว กรุณารอการตรวจสอบผล</string>
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>

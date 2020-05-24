@@ -102,26 +102,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
 
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-//                        builder.setTitle(mContext.getString(R.string.car_verify) + "\n" + car.getCar_id() + " " + car.getProvince());
-//
-//                        String[] choices = mContext.getResources().getStringArray(R.array.method_array);
-//                        builder.setItems(choices, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                switch (which) {
-//                                    case 0:
-//
-//                                    case 1:
-//
-//                                        break;
-//                                }
-//                            }
-//                        });
-//                        AlertDialog dialog = builder.create();
-//                        dialog.show();
-//
-//
                     Intent intent = new Intent(mContext, VerifyActivity.class);
                     intent.putExtra("my_car_id", car.getCar_id());
                     intent.putExtra("my_car_province", car.getProvince());

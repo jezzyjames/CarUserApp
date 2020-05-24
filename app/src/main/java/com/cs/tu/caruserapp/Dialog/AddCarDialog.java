@@ -31,9 +31,11 @@ import androidx.fragment.app.DialogFragment;
 
 import com.cs.tu.caruserapp.MainActivity;
 import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
 
 import com.cs.tu.caruserapp.StartActivity;
+import com.cs.tu.caruserapp.VerifyActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -72,6 +74,8 @@ public class AddCarDialog extends DialogFragment {
     private static final int GALLERY_REQUEST = 1;
     private Uri imageUri;
     String currentPhotoPath;
+
+    String exist_car_owner_id;
 
     @Nullable
     @Override
@@ -145,6 +149,7 @@ public class AddCarDialog extends DialogFragment {
                                     final Car car = snapshot.getValue(Car.class);
                                     assert car != null;
                                     if(car.getProvince().equals(input_province)){
+                                        exist_car_owner_id = car.getOwner_id();
                                         exist_car = true;
 
                                     }
@@ -160,7 +165,12 @@ public class AddCarDialog extends DialogFragment {
                                             .setPositiveButton(getString(R.string.report), new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    Toast.makeText(getActivity(), "Report", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(getActivity(), VerifyActivity.class);
+                                                    intent.putExtra("my_car_id", input_carid.toLowerCase());
+                                                    intent.putExtra("my_car_province", input_province);
+                                                    intent.putExtra("verify_for_report", true);
+                                                    intent.putExtra("exist_car_owner_id", exist_car_owner_id);
+                                                    startActivity(intent);
 
                                                 }
                                             })

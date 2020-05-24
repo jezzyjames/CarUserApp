@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/circle_image"
+        app:civ_fill_color="@color/colorPrimary"
+        android:src="@drawable/ic_notification"
+        android:layout_centerVertical="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/circle_image"
+        android:layout_marginLeft="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/noti_message"
+            android:text="Notification message"
+            android:maxLines="3"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/noti_message"
+            android:id="@+id/noti_time"
+            android:text="HH.MM"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"/>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

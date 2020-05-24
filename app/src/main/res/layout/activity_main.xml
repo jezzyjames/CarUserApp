@@ -19,6 +19,7 @@
            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
            app:popupTheme="@style/MenuStyle">
 
+
            <ImageView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -63,9 +64,9 @@
             android:background="@color/colorPrimaryDark"
             app:tabSelectedTextColor="@color/white"
             app:tabIndicatorColor="@color/white"
-            app:tabTextColor="@color/gray" />
-
+            app:tabTextColor="@color/gray"/>
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

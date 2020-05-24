@@ -72,10 +72,19 @@
     <string name="choose_method">Choose verify methods</string>
     <string name="car_verify">Car verify</string>
     <string name="select">Select</string>
-    <string name="by_regist_book">Verify by vehicle registration book</string>
+    <string name="by_regist_book">Verify by vehicle registration book photo</string>
     <string name="by_car_photo">Verify by car photo</string>
-    <string name="report_if_your_car">Report if someone is stole my car information</string>
+    <string name="report_if_your_car">Report if someone is stole my car information and verify your car immedietly</string>
     <string name="verifying">Verifying...</string>
+    <string name="instuction">Instruction</string>
+    <string name="verify_instuction">- Please take a clearly photo of vehicle registration book on vehicle information page\n\n- You can use a copy of photo with text \"Used for verify in Car user application\", your signature and date</string>
+    <string name="private_message">*Your information will keep in private and safe*</string>
+    <string name="driver_license">Driver\'s license</string>
+    <string name="send_verify">Submit</string>
+    <string name="send_verify_complete">Send information complete! Please wait for approving process</string>
+    <string name="notification">Notification</string>
+    <string name="exist_car_report_message">Report your exist car in system successfully, please wait for approving</string>
+
 
     //Toast
     <string name="please_enter_code">Please enter verification code</string>

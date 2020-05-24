@@ -21,7 +21,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -186,7 +185,6 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final int car_color){
         if(imageUri != null){
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//            final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "." + getFileExtension(imageUri));
             final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "_" + province + "/" + car_id + "_" + province + "_" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
             uploadTask = fileReference.putFile(imageUri);
@@ -206,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
 
-                        reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase()+"_"+province);
+                        reference = FirebaseDatabase.getInstance().getReference("Cars").child(car_id.toLowerCase() + "_" + province);
 
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("imageURL", mUri);

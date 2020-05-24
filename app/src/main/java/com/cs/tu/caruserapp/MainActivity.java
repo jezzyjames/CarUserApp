@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -18,10 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.cs.tu.caruserapp.Dialog.NotificationDialog;
 import com.cs.tu.caruserapp.Fragments.ChatsFragment;
 import com.cs.tu.caruserapp.Model.Car;
+import com.cs.tu.caruserapp.Model.Notification;
 import com.cs.tu.caruserapp.Model.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
 
+    TextView noti_show_count;
+
     private static final String TAG = "MainActivity";
 
     private List<Car> carsList;
@@ -58,10 +64,16 @@ public class MainActivity extends AppCompatActivity {
     boolean warn_dialog_addcar = false;
     boolean warn_dialog_verify = false;
 
+    DialogFragment dialogFragment;
+
+    Intent intent;
+    boolean open_noti;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toast.makeText(this, "on create", Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -76,14 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-
-
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getFirstname());
+                username.setText(user.getFirstname() + " " + user.getLastname());
 
                 user_icon.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -124,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
                 viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 for(int i = 0; i < carsList.size(); i++){
-
-
                     String sender_car_id = carsList.get(i).getCar_id();
                     String province = carsList.get(i).getProvince();
                     Bundle bundle = new Bundle();
@@ -154,13 +162,56 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(viewPager);
+
     }
 
     //show menu on top
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        final MenuItem menuItem = menu.findItem(R.id.notification);
+        View actionView = menuItem.getActionView();
+        noti_show_count = actionView.findViewById(R.id.noti_count_text);
+        setupBadge();
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
+
+//        menu.findItem(R.id.notification).setVisible(false);
+
         return true;
+    }
+
+    private void setupBadge(){
+        reference = FirebaseDatabase.getInstance().getReference("Notification").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int noti_count = 0;
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Notification noti = snapshot.getValue(Notification.class);
+                    if(!noti.isIsseen()){
+                        noti_count++;
+                    }
+                }
+
+                if(noti_count == 0){
+                    noti_show_count.setVisibility(View.GONE);
+                }else{
+                    noti_show_count.setText(""+noti_count);
+                    noti_show_count.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //Signout if logout has been selected
@@ -192,7 +243,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.search_button:
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
+                return true;
 
+            case R.id.notification:
+                showNotiDialog();
+                return true;
         }
 
         return false;
@@ -288,4 +343,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showNotiDialog(){
+        dialogFragment = new NotificationDialog();
+        dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
+        dialogFragment.show(getSupportFragmentManager(), "Noti");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "on resume", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "on start", Toast.LENGTH_SHORT).show();
+        intent = getIntent();
+        open_noti = intent.getBooleanExtra("open_noti", false);
+        if(open_noti){
+            showNotiDialog();
+            open_noti = false;
+        }
+    }
 }
