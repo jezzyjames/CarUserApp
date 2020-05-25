@@ -99,6 +99,10 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("dont_show_dialog", true);
+                startActivity(intent);
                 finish();
             }
         });

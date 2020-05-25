@@ -27,13 +27,4 @@
         android:text="@string/login"
         android:textColor="@color/white"/>
 
-    <Button
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:id="@+id/register"
-        android:background="@drawable/round_btn"
-        android:text="@string/register"
-        android:textColor="@color/white"/>
-
 </LinearLayout>

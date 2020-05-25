@@ -6,14 +6,12 @@ public class User {
     private String firstname;
     private String lastname;
     private String phone_number;
-    private boolean verify_status;
 
-    public User(String id, String firstname, String lastname, String phone_number, boolean verify_status) {
+    public User(String id, String firstname, String lastname, String phone_number) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone_number = phone_number;
-        this.verify_status = verify_status;
     }
 
     public User(){
@@ -50,13 +48,5 @@ public class User {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
-    }
-
-    public boolean isVerify_status() {
-        return verify_status;
-    }
-
-    public void setVerify_status(boolean verify_status) {
-        this.verify_status = verify_status;
     }
 }

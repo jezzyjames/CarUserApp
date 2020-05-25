@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cs.tu.caruserapp.Adapter.UserAdapter;
 import com.cs.tu.caruserapp.Model.Car;
@@ -45,6 +47,7 @@ public class ChatsFragment extends Fragment {
     private RelativeLayout warn_verify_layout;
     private RecyclerView recyclerView;
 
+    TextView txt_warn_verify;
     ImageView info;
     Animation anim;
 
@@ -67,17 +70,13 @@ public class ChatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
+        txt_warn_verify = view.findViewById(R.id.txt_not_verify);
         info = view.findViewById(R.id.info);
         anim = AnimationUtils.loadAnimation(getActivity(), R.anim.zoom_in);
         info.setAnimation(anim);
 
         warn_verify_layout = view.findViewById(R.id.warn_verify_layout);
-        warn_verify_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                warnDialog();
-            }
-        });
+
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -130,8 +129,23 @@ public class ChatsFragment extends Fragment {
                     if(car.getCar_id().equals(car_id) && car.getProvince().equals(province)){
                         if(car.getVerify_status() == 2){
                             warn_verify_layout.setVisibility(View.GONE);
-                        }else{
+
+                        }else if(car.getVerify_status() == 1){
                             warn_verify_layout.setVisibility(View.VISIBLE);
+                            info.setVisibility(View.GONE);
+                            warn_verify_layout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
+                            txt_warn_verify.setText(getString(R.string.your_car_is_being_approve));
+                        }else if(car.getVerify_status() == 0){
+                            warn_verify_layout.setVisibility(View.VISIBLE);
+                            info.setVisibility(View.VISIBLE);
+                            txt_warn_verify.setText(getActivity().getString(R.string.your_car_not_verified));
+                            warn_verify_layout.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    warnDialog();
+                                }
+                            });
+
                         }
                     }
 

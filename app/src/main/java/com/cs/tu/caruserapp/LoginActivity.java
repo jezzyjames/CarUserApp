@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                         raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
 
                         //Check if phone number is exist
-                        Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(raw_phoneNumber);
+                        Query query = FirebaseDatabase.getInstance().getReference("Phone").orderByChild("phone_number").equalTo(raw_phoneNumber);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

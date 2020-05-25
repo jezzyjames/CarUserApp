@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.cs.tu.caruserapp.Dialog.NotificationDialog;
@@ -67,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
     DialogFragment dialogFragment;
 
     Intent intent;
+    boolean dont_show_dialog;
     boolean open_noti;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(this, "on create", Toast.LENGTH_SHORT).show();
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -86,27 +85,47 @@ public class MainActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         verify_status = findViewById(R.id.verify_status);
 
+        intent = getIntent();
+        dont_show_dialog = intent.getBooleanExtra("dont_show_dialog", false);
+        open_noti = intent.getBooleanExtra("open_noti", false);
+        if(dont_show_dialog){
+            warn_dialog_addcar = true;
+            warn_dialog_verify = true;
+            dont_show_dialog = false;
+        }
+        if(open_noti){
+            showNotiDialog();
+            open_noti = false;
+        }
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getFirstname() + " " + user.getLastname());
+                if(dataSnapshot.exists()){
+                    User user = dataSnapshot.getValue(User.class);
+                    username.setText(user.getFirstname() + " " + user.getLastname());
 
-                user_icon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                    }
-                });
-                username.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                    }
-                });
+                    user_icon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        }
+                    });
+                    username.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        }
+                    });
+
+                }else{
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(MainActivity.this, StartActivity.class));
+                    finish();
+                }
 
             }
 
@@ -348,24 +367,5 @@ public class MainActivity extends AppCompatActivity {
         dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         dialogFragment.show(getSupportFragmentManager(), "Noti");
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, "on resume", Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this, "on start", Toast.LENGTH_SHORT).show();
-        intent = getIntent();
-        open_noti = intent.getBooleanExtra("open_noti", false);
-        if(open_noti){
-            showNotiDialog();
-            open_noti = false;
-        }
     }
 }

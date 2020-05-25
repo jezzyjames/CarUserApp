@@ -21,6 +21,7 @@
     <string name="resend">Resend</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="verify">Verify</string>
     <string name="verified">verified</string>
     <string name="verify_now">Verify now</string>
     <string name="unverified">unverified</string>
@@ -84,6 +85,14 @@
     <string name="send_verify_complete">Send information complete! Please wait for approving process</string>
     <string name="notification">Notification</string>
     <string name="exist_car_report_message">Report your exist car in system successfully, please wait for approving</string>
+    <string name="regist_failed">Failed to register</string>
+    <string name="your_car_not_verified">Your car is not verified</string>
+    <string name="your_car_is_being_approve">Your car is in process of verifying</string>
+    <string name="phone_number_hide">Phone number is hidden</string>
+    <string name="phone_number_show_after">Phone number show after receiver replied your message</string>
+    <string name="please_be_careful">Please be careful</string>
+    <string name="this_user_is_not_verify">You are talking with unverified car, you may ask for evidence like car photo or location photo for both confidence</string>
+
 
 
     //Toast

@@ -62,6 +62,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -119,6 +121,9 @@ public class MessageActivity extends AppCompatActivity {
     StorageReference storageReference;
     private StorageTask uploadTask;
 
+    boolean warn_hidden_phone = false;
+    boolean warn_unverified = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +139,7 @@ public class MessageActivity extends AppCompatActivity {
                 boolean from_search = intent.getBooleanExtra("from_search", false);
                 if(from_search) {
                     Intent intent = new Intent(MessageActivity.this, MainActivity.class);
+                    intent.putExtra("dont_show_dialog", true);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
@@ -170,7 +176,6 @@ public class MessageActivity extends AppCompatActivity {
         receiver_car_province = intent.getStringExtra("receiver_car_province");
         sender_car_id = intent.getStringExtra("sender_car_id");
         sender_car_province = intent.getStringExtra("sender_car_province");
-
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
@@ -228,25 +233,12 @@ public class MessageActivity extends AppCompatActivity {
                 //check verify status
                 if(car.getVerify_status() == 2){
                     verify_status.setVisibility(View.GONE);
-                }else{
+                }else if(car.getVerify_status() == 0 || car.getVerify_status() == 1){
+                    if(!warn_unverified){
+                        warnDialog(0);
+                    }
                     verify_status.setVisibility(View.VISIBLE);
                 }
-
-                //Get user phone number and show
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(car.getOwner_id());
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        phone_number.setText(user.getPhone_number());
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
 
                 //set Circle ImageView
                 if(car.getImageURL().equals("default")){
@@ -438,6 +430,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mchat.clear();
+                int sender_chat = 0;
+                int receiver_chat = 0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     //add all chat that include sender and receiver id to ArrayList
@@ -446,14 +440,60 @@ public class MessageActivity extends AppCompatActivity {
                             || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
                             && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
 
+
                             mchat.add(chat);
+                            if(chat.getSender().equals(firebaseUser.getUid())){
+                               sender_chat++;
+                            }
+                            else{
+                               receiver_chat++;
+                            }
                     }
 
                     messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
-            }
+                //show phone number if start some chat message
+                final int sender_count = sender_chat;
+                final int receiver_count = receiver_chat;
+                    //Get user phone number and show
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            String receiver_raw_phonenum = user.getPhone_number();
+                            String phoneArr[] = receiver_raw_phonenum.split(" ");
+                            String hidden_number = phoneArr[0];
+                            for(int i = 1; i < phoneArr.length-1; i++){
+                                String phone_part = phoneArr[i];
+                                for(int j = 0; j < phone_part.length(); j++){
+                                    if(j == 0){
+                                        hidden_number = hidden_number + " ";
+                                    }
+                                    hidden_number = hidden_number + "x";
+                                }
+                            }
+                            hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
 
+                            if(sender_count > 0 && receiver_count > 0){
+                                phone_number.setText(receiver_raw_phonenum);
+                            }else {
+                                phone_number.setText(hidden_number);
+                                if(!warn_hidden_phone){
+                                    warnDialog(1);
+                                }
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -653,6 +693,33 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 return;
             }
+        }
+    }
+
+    public void warnDialog(int dialog){
+        switch (dialog){
+            case 0:
+                warn_unverified = true;
+                new FancyGifDialog.Builder(this)
+                        .setTitle(getString(R.string.please_be_careful))
+                        .setMessage(getString(R.string.this_user_is_not_verify))
+                        .setPositiveBtnBackground("#4A46B5")
+                        .setPositiveBtnText(getString(R.string.yes))
+                        .setGifResource(R.drawable.bad_emoji_resize)   //Pass your Gif here
+                        .isCancellable(true)
+                        .build();
+                break;
+            case 1:
+                warn_hidden_phone = true;
+                new FancyGifDialog.Builder(this)
+                        .setTitle(getString(R.string.phone_number_hide))
+                        .setMessage(getString(R.string.phone_number_show_after))
+                        .setPositiveBtnBackground("#4A46B5")
+                        .setPositiveBtnText(getString(R.string.yes))
+                        .setGifResource(R.drawable.phone)   //Pass your Gif here
+                        .isCancellable(true)
+                        .build();
+                break;
         }
     }
 

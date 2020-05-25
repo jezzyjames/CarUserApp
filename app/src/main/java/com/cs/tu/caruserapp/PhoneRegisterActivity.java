@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -69,6 +71,8 @@ public class PhoneRegisterActivity extends AppCompatActivity {
     String mVerificationId;
     PhoneAuthProvider.ForceResendingToken mResendToken;
 
+    boolean need_regist = false;
+
     private static final String TAG = "PhoneRegister";
 
 
@@ -79,7 +83,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.register));
+        getSupportActionBar().setTitle(getString(R.string.login));
 
         layoutName = findViewById(R.id.layoutName);
         layoutFirstname = findViewById(R.id.layoutFirstname);
@@ -105,13 +109,14 @@ public class PhoneRegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //*******verify code*******
-                if(verify_btn.getText().toString().equalsIgnoreCase(getString(R.string.submit)) || code_sent){
+                if(verify_btn.getText().toString().equalsIgnoreCase(getString(R.string.verify)) || code_sent){
                     String verificationCode = editText_code.getText().toString();
 
                     if(verificationCode.equals("")){
                         Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_code), Toast.LENGTH_SHORT).show();
                         layoutVerifyCode.setError(getString(R.string.please_enter_code));
                     }else{
+                        verify_btn.setVisibility(View.GONE);
                         verify_progress.setVisibility(View.VISIBLE);
                         layoutVerifyCode.setErrorEnabled(false);
 
@@ -119,57 +124,17 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                         signInWithPhoneAuthCredential(credential);
                     }
 
-                    //*******verify phone number*******
-                }else{
-                    verify_btn.setVisibility(View.GONE);
-                    verify_progress.setVisibility(View.VISIBLE);
+                //*******regist new user*******
+                }else if(verify_btn.getText().toString().equalsIgnoreCase(getString(R.string.submit)) || need_regist){
+                    layoutFirstname.setVisibility(View.VISIBLE);
+                    layoutLastname.setVisibility(View.VISIBLE);
                     if(!edt_firstname.getText().toString().equals("") && !edt_lastname.getText().toString().equals("")) {
                         layoutFirstname.setErrorEnabled(false);
                         layoutLastname.setErrorEnabled(false);
                         firstname = edt_firstname.getText().toString();
                         lastname = edt_lastname.getText().toString();
 
-                        if (!editText_phone.getText().toString().equals("")) {
-                            layoutPhone.setErrorEnabled(false);
-                            raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
-                            phoneNumber = ccp.getFullNumberWithPlus();
-
-                            //Check if phone number is exist
-                            Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(phoneNumber);
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (!dataSnapshot.exists()) {
-                                        layoutPhone.setErrorEnabled(false);
-                                        verify_btn.setVisibility(View.GONE);
-                                        verify_progress.setVisibility(View.VISIBLE);
-
-                                        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                phoneNumber,                                          //phone number to verify
-                                                60,                                                //timeout duration
-                                                TimeUnit.SECONDS,                                     //unit of timeout
-                                                PhoneRegisterActivity.this,                   //activity for callback
-                                                mCallbacks);                                          //onVerificationStateChangedCallbacks
-                                    } else {
-                                        layoutPhone.setError(getString(R.string.this_phone_number_is_used));
-                                        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.this_phone_number_is_used), Toast.LENGTH_SHORT).show();
-                                        verify_btn.setVisibility(View.VISIBLE);
-                                        verify_progress.setVisibility(View.GONE);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.e("", databaseError.getMessage());
-                                }
-                            });
-
-                        } else {
-                            layoutPhone.setError(getString(R.string.please_enter_valid_number));
-                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_valid_number), Toast.LENGTH_SHORT).show();
-                            verify_btn.setVisibility(View.VISIBLE);
-                            verify_progress.setVisibility(View.GONE);
-                        }
+                        registDatabase();
                     }else{
                         if(edt_firstname.getText().toString().equals("")){
                             layoutFirstname.setError(getString(R.string.please_enter_firstname));
@@ -184,9 +149,31 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                         }else{
                             layoutLastname.setErrorEnabled(false);
                         }
-                        verify_btn.setVisibility(View.VISIBLE);
-                        verify_progress.setVisibility(View.GONE);
+
                     }
+
+                //*******verify phone number*******
+                } else{
+                        if (!editText_phone.getText().toString().equals("")) {
+                            verify_btn.setVisibility(View.GONE);
+                            verify_progress.setVisibility(View.VISIBLE);
+                            layoutPhone.setErrorEnabled(false);
+                            raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
+                            phoneNumber = ccp.getFullNumberWithPlus();
+
+                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                    phoneNumber,                                          //phone number to verify
+                                    60,                                                //timeout duration
+                                    TimeUnit.SECONDS,                                     //unit of timeout
+                                    PhoneRegisterActivity.this,                   //activity for callback
+                                    mCallbacks);                                          //onVerificationStateChangedCallbacks
+
+                        } else {
+                            layoutPhone.setError(getString(R.string.please_enter_valid_number));
+                            Toast.makeText(PhoneRegisterActivity.this, getString(R.string.please_enter_valid_number), Toast.LENGTH_SHORT).show();
+                            verify_btn.setVisibility(View.VISIBLE);
+                            verify_progress.setVisibility(View.GONE);
+                        }
                 }
 
             }
@@ -210,12 +197,13 @@ public class PhoneRegisterActivity extends AppCompatActivity {
 
                 verify_progress.setVisibility(View.GONE);
                 verify_btn.setVisibility(View.VISIBLE);
-                layoutName.setVisibility(View.VISIBLE);
                 phone_view_part.setVisibility(View.VISIBLE);
 
                 verify_btn.setText(getString(R.string.continue_txt));
                 code_sent = false;
+                phone_refer.setVisibility(View.GONE);
                 layoutVerifyCode.setVisibility(View.GONE);
+                resend_code.setVisibility(View.GONE);
             }
 
             @Override
@@ -225,7 +213,6 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 mVerificationId = s;
                 mResendToken = forceResendingToken;
 
-                layoutName.setVisibility(View.GONE);
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
@@ -245,8 +232,6 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 phone_refer.setVisibility(View.VISIBLE);
                 phone_refer.setText(getString(R.string.code_was_sent) + hidden_number);
 
-                verify_btn.setText(getString(R.string.submit));
-                verify_btn.setVisibility(View.VISIBLE);
                 layoutVerifyCode.setVisibility(View.VISIBLE);
 
                 //set resend code button
@@ -261,7 +246,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                     }
                 });
 
+                verify_btn.setText(getString(R.string.verify));
+                verify_btn.setVisibility(View.VISIBLE);
                 verify_progress.setVisibility(View.GONE);
+
                 Toast.makeText(PhoneRegisterActivity.this, getString(R.string.code_has_been_sent), Toast.LENGTH_SHORT).show();
             }
         };
@@ -276,31 +264,30 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            verify_progress.setVisibility(View.GONE);
 
-                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-                            //register new user to database at "Users"
-                            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("id", firebaseUser.getUid());
-                            hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
-                            hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
-                            hashMap.put("phone_number", raw_phoneNumber);
-                            hashMap.put("verify_status", false);
-
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(raw_phoneNumber);
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(PhoneRegisterActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        login();
+
+                                    }else{
+                                        phone_view_part.setVisibility(View.GONE);
+                                        verify_progress.setVisibility(View.GONE);
+                                        layoutName.setVisibility(View.VISIBLE);
+                                        verify_btn.setVisibility(View.VISIBLE);
+                                        verify_btn.setText(getString(R.string.submit));
+
                                     }
                                 }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
                             });
+
 
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -327,6 +314,42 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 this,               // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 mResendToken);             // ForceResendingToken from callbacks
+    }
+
+    private void registDatabase(){
+        verify_btn.setVisibility(View.GONE);
+        verify_progress.setVisibility(View.VISIBLE);
+
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        //register new user to database at "Users"
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", firebaseUser.getUid());
+        hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
+        hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
+        hashMap.put("phone_number", raw_phoneNumber);
+        reference.setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                login();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                verify_btn.setVisibility(View.VISIBLE);
+                verify_progress.setVisibility(View.GONE);
+                Toast.makeText(PhoneRegisterActivity.this, getString(R.string.regist_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void login(){
+        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(PhoneRegisterActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
 }

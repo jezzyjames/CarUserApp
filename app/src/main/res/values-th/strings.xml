@@ -16,11 +16,12 @@
     <string name="lastname_helper">นามสกุลของคุณจะไม่ถูกเปิดเผย</string>
     <string name="continue_txt">ต่อไป</string>
     <string name="code">รหัสยืนยัน</string>
-    <string name="submit">ตรวจสอบ</string>
+    <string name="submit">ยืนยัน</string>
     <string name="code_was_sent">รหัสยืนยันถูกส่งไปที่หมายเลข\n</string>
     <string name="resend">ขอรับรหัสใหม่</string>
     <string name="yes">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
+    <string name="verify">ตรวจสอบ</string>
     <string name="verified">ตรวจสอบเเล้ว</string>
     <string name="verify_now">ทำการยืนยัน</string>
     <string name="unverified">ยังไม่ตรวจสอบ</string>
@@ -84,6 +85,13 @@
     <string name="send_verify_complete">ส่งเอกสารเรียบร้อยเเล้ว! โปรดรอการอนุมัติ</string>
     <string name="notification">การเเจ้งเตือน</string>
     <string name="exist_car_report_message">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถยนต์ของท่านเเล้ว กรุณารอการตรวจสอบผล</string>
+    <string name="regist_failed">ลงทะเบียนล้มเหลว</string>
+    <string name="your_car_not_verified">รถของคุณยังไม่ผ่านการตรวจสอบ</string>
+    <string name="your_car_is_being_approve">รถของคุณกำลังอยู่ในขั้นตอนการตรวจสอบ</string>
+    <string name="phone_number_hide">เบอร์โทรศัพท์ถูกซ่อนไว้</string>
+    <string name="phone_number_show_after">เบอร์โทรศัพท์จะถูกเเสดงเมื่อมีการตอบข้อความกลับจากอีกฝ่าย</string>
+    <string name="please_be_careful">โปรดระวังผู้ไม่ประสงค์ดี</string>
+    <string name="this_user_is_not_verify">คุณกำลังสนทนากับรถยนต์ที่ยังไม่ผ่านการตรวจสอบ เพื่อความมั่นใจทั้งสองฝ่ายอาจขอหลักฐานยืนยันจากอีกฝ่ายก่อน อาทิเช่น รูปถ่ายรถ หรือ รูปสถานที่</string>
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>
@@ -217,7 +225,7 @@
 
     <string-array name="color_arrays">
         <item value="color">สี</item>
-        <item value="white">ชาว</item>
+        <item value="white">ขาว</item>
         <item value="black">ดำ</item>
         <item value="grey">เทา</item>
         <item value="red">เเดง</item>

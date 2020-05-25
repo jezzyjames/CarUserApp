@@ -113,3 +113,10 @@
 5/24/2020
 - report if your car exist
 - notification
+
+5/25/2020
+- improve login/register
+- imrpove warning banner layout
+- show phone number after have some chat
+- add warn dialog in messageActivity
+- show warn dialog only 1 time in MainActivity

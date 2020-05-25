@@ -252,10 +252,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province)
-                            && chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province)
-                            || chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province)
-                            && chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province)){
+                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
+                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))
+                            || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
+                            && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
                         if(chat.getMessage_type().equals("text")){
                             theLastMessage = chat.getMessage();
                         }else if(chat.getMessage_type().equals("image")){
