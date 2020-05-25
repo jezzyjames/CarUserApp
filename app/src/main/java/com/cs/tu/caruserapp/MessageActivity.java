@@ -70,11 +70,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -283,6 +285,24 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    final List<String> words = Arrays.asList("idiot", "fuck", "ควย","สัส","ไอสัตว์","ไอบ้า");
+
+    public String filterBadWords(String message) {
+        String censor_word = message;
+        for (String word : words) {
+            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+
+            for(int i=0;i<censor_word.length();i++){
+                if(censor_word.charAt(i) != message.charAt(i)){
+                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
+                }
+            }
+        }
+
+        return censor_word;
     }
 
     private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id
