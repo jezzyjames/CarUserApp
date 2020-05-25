@@ -309,6 +309,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
         }
+
         return censor_word;
     }
 
