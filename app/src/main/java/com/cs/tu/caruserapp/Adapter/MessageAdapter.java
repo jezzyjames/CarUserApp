@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +27,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
+    MessageActivity ms = new MessageActivity();
 
     private Context mContext;
     private List<Chat> mChat;
@@ -89,7 +91,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if(chat.getMessage_type().equals("text")){
             holder.chat_image.setVisibility(View.GONE);
             holder.show_message.setVisibility(View.VISIBLE);
-            holder.show_message.setText(chat.getMessage());
+            holder.show_message.setText(ms.filterBadWords(chat.getMessage().toString()));
 
 
         }else if(chat.getMessage_type().equals("image")){
