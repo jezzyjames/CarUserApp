@@ -126,6 +126,7 @@ public class MessageActivity extends AppCompatActivity {
     boolean warn_hidden_phone = false;
     boolean warn_unverified = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -287,22 +288,29 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    final List<String> words = Arrays.asList("idiot", "fuck", "ควย","สัส","ไอสัตว์","ไอบ้า");
 
     public String filterBadWords(String message) {
-        String censor_word = message;
-        for (String word : words) {
-            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+        String[] bad_words = getResources().getStringArray(R.array.bad_words);;
+        final List<String> words = Arrays.asList(bad_words);;
 
-            for(int i=0;i<censor_word.length();i++){
-                if(censor_word.charAt(i) != message.charAt(i)){
-                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
-                }
-            }
+        for(String word : words){
+            Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
+            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
         }
 
-        return censor_word;
+//        String censor_word = message;
+//        for (String word : words) {
+//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+//
+//            for(int i=0;i<censor_word.length();i++){
+//                if(censor_word.charAt(i) != message.charAt(i)){
+//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
+//                }
+//            }
+//        }
+
+        return message;
     }
 
     private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id
@@ -460,7 +468,8 @@ public class MessageActivity extends AppCompatActivity {
                             || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
                             && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
 
-
+                            //filter bad words
+                            chat.setMessage(filterBadWords(chat.getMessage()));
                             mchat.add(chat);
                             if(chat.getSender().equals(firebaseUser.getUid())){
                                sender_chat++;

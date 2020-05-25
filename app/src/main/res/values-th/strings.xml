@@ -82,9 +82,11 @@
     <string name="private_message">*ข้อมูลของท่านจะไม่ถูกเผยเเพร่ต่อสาธารณะ*</string>
     <string name="driver_license">ใบขับขี่</string>
     <string name="send_verify">ส่งเอกสาร</string>
-    <string name="send_verify_complete">ส่งเอกสารเรียบร้อยเเล้ว! โปรดรอการอนุมัติ</string>
+    <string name="send_verify_complete">ส่งเอกสารสำหรับ</string>
+    <string name="send_verify_complete2">เรียบร้อยเเล้ว! โปรดรอการอนุมัติ</string>
     <string name="notification">การเเจ้งเตือน</string>
-    <string name="exist_car_report_message">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถยนต์ของท่านเเล้ว กรุณารอการตรวจสอบผล</string>
+    <string name="exist_car_report_message">รายงานว่ามีการเเอบอ้างใช้ข้อมูลรถยนต์ของท่านเเล้ว (</string>
+    <string name="exist_car_report_message2">) กรุณารอการตรวจสอบผล</string>
     <string name="regist_failed">ลงทะเบียนล้มเหลว</string>
     <string name="your_car_not_verified">รถของคุณยังไม่ผ่านการตรวจสอบ</string>
     <string name="your_car_is_being_approve">รถของคุณกำลังอยู่ในขั้นตอนการตรวจสอบ</string>
@@ -120,7 +122,8 @@
     <string name="please_fill_up_detail">โปรดกรอกข้อมูลให้ครบถ้วน</string>
     <string name="delete_car_success">ลบรถยนต์คันนี้สำเร็จ</string>
     <string name="fail_to_delete_car_photo">เกิดข้อผิดพลาดในการลบรูปรถยนต์</string>
-    <string name="user_reported">รายงานผู้ใช้เรียบร้อย</string>
+    <string name="car_reported">รายงานผู้ใช้รถทะเบียน</string>
+    <string name="car_reported2">เสร็จสิ้น</string>
     <string name="delete_chat_complete">ลบการสนทนาสำเร็จ</string>
     <string name="please_select_province">กรุณาเลือกจังหวัด</string>
     <string name="please_select_brand">กรุณาระบุยี่ห้อของรถ</string>
@@ -292,6 +295,15 @@
         <item value="toyota">Toyota</item>
         <item value="volkswagen">Volkswagen</item>
         <item value="volvo">Volvo</item>
+    </string-array>
+
+    <string-array name="bad_words">
+        <item value="idiot">idiot</item>
+        <item value="fuck">fuck</item>
+        <item value="kuy">ควย</item>
+        <item value="sus">สัส</item>
+        <item value="i_sus">ไอสัตว์</item>
+        <item value="i_ba">ไอบ้า</item>
     </string-array>
 
 </resources>

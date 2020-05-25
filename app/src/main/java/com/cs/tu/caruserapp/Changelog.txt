@@ -120,3 +120,5 @@
 - show phone number after have some chat
 - add warn dialog in messageActivity
 - show warn dialog only 1 time in MainActivity
+- bad words filter
+- fix minor bugs

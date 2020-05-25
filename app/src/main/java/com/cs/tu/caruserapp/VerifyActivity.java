@@ -30,11 +30,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.Chat;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,7 +49,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -101,7 +97,7 @@ public class VerifyActivity extends AppCompatActivity {
 
         regist_book_layout = findViewById(R.id.regist_book_verify_layout);
         image_car_book = findViewById(R.id.image_car_book);
-        btn_take_photo = findViewById(R.id.btn_take_gallery);
+        btn_take_photo = findViewById(R.id.btn_take_photo);
         btn_take_gallery = findViewById(R.id.btn_take_gallery);
         btn_submit = findViewById(R.id.btn_submit);
         upload_progress = findViewById(R.id.upload_progress);
@@ -163,9 +159,7 @@ public class VerifyActivity extends AppCompatActivity {
                 reference.child("verify_status").setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(VerifyActivity.this, getString(R.string.send_verify_complete), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(VerifyActivity.this, ProfileActivity.class));
-                        finish();
+                        storeNotiToDatabase(getString(R.string.send_verify_complete) + " " + my_car_id + " " + my_car_province + " " +getString(R.string.send_verify_complete2));
                     }
                 });
             }
@@ -279,6 +273,7 @@ public class VerifyActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
+                        Toast.makeText(VerifyActivity.this, getString(R.string.send_verify_complete) + " " + my_car_id + " " + my_car_province + " " + getString(R.string.send_verify_complete2), Toast.LENGTH_LONG).show();
                         if(!verify_for_report){
                             updateStatus();
                         }else{
@@ -427,8 +422,8 @@ public class VerifyActivity extends AppCompatActivity {
         reference.child("Report").child(firebaseUser.getUid()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(VerifyActivity.this, getString(R.string.user_reported), Toast.LENGTH_SHORT).show();
-                storeNotiToDatabase(getString(R.string.exist_car_report_message));
+                Toast.makeText(VerifyActivity.this, getString(R.string.exist_car_report_message) + my_car_id + " " + my_car_province + getString(R.string.exist_car_report_message2), Toast.LENGTH_LONG).show();
+                storeNotiToDatabase(getString(R.string.exist_car_report_message) + my_car_id + " " + my_car_province + getString(R.string.exist_car_report_message2));
             }
         });
     }
@@ -456,7 +451,6 @@ public class VerifyActivity extends AppCompatActivity {
         reference.child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(VerifyActivity.this, getString(R.string.send_verify_complete), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(VerifyActivity.this, ProfileActivity.class));
                 finish();
             }

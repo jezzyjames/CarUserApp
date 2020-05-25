@@ -82,9 +82,11 @@
     <string name="private_message">*Your information will keep in private and safe*</string>
     <string name="driver_license">Driver\'s license</string>
     <string name="send_verify">Submit</string>
-    <string name="send_verify_complete">Send information complete! Please wait for approving process</string>
+    <string name="send_verify_complete">Send information for</string>
+    <string name="send_verify_complete2">complete! Please wait for approving process</string>
     <string name="notification">Notification</string>
-    <string name="exist_car_report_message">Report your exist car in system successfully, please wait for approving</string>
+    <string name="exist_car_report_message">Report your exist car in system successfully (</string>
+    <string name="exist_car_report_message2">), please wait for approving</string>
     <string name="regist_failed">Failed to register</string>
     <string name="your_car_not_verified">Your car is not verified</string>
     <string name="your_car_is_being_approve">Your car is in process of verifying</string>
@@ -122,7 +124,8 @@
     <string name="please_fill_up_detail">Please fill up all details</string>
     <string name="delete_car_success">Delete car success</string>
     <string name="fail_to_delete_car_photo">Failed to delete car photo</string>
-    <string name="user_reported">User reported</string>
+    <string name="car_reported">You have just report</string>
+    <string name="car_reported2">car user</string>
     <string name="delete_chat_complete">Delete chat complete</string>
     <string name="please_select_province">Please select province</string>
     <string name="please_select_brand">Please select brand</string>
@@ -297,4 +300,12 @@
         <item value="volvo">Volvo</item>
     </string-array>
 
+    <string-array name="bad_words">
+        <item value="idiot">idiot</item>
+        <item value="fuck">fuck</item>
+        <item value="kuy">ควย</item>
+        <item value="sus">สัส</item>
+        <item value="i_sus">ไอสัตว์</item>
+        <item value="i_ba">ไอบ้า</item>
+    </string-array>
 </resources>

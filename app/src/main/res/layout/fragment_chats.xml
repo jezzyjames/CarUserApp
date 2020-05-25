@@ -8,38 +8,62 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/warn_verify_layout"
-        android:visibility="gone"
-        android:gravity="center"
-        android:background="@color/red">
+        android:layout_height="wrap_content"
+        android:id="@+id/warn_layout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_not_verify"
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/warn_verify_layout"
+            android:visibility="gone"
+            android:gravity="center"
+            android:background="@color/red">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/info"
-            android:layout_toRightOf="@id/txt_not_verify"
-            android:padding="10dp"
-            android:src="@drawable/ic_info"
-            android:tint="@color/white"
-            android:visibility="visible"
-            android:layout_centerVertical="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_not_verify"
+                android:text="@string/your_car_not_verified"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/info"
+                android:layout_toRightOf="@id/txt_not_verify"
+                android:padding="10dp"
+                android:src="@drawable/ic_info"
+                android:tint="@color/white"
+                android:visibility="visible"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/yellow_warn_verify_layout"
+            android:visibility="gone"
+            android:gravity="center"
+            android:background="@color/yellow">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/your_car_is_being_approve"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"/>
+
+
+        </RelativeLayout>
     </RelativeLayout>
-
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/warn_verify_layout"/>
+        android:layout_below="@id/warn_layout"/>
 
 </RelativeLayout>

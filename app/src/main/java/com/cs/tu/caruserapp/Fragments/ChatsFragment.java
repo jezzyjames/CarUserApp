@@ -45,6 +45,7 @@ import java.util.List;
 
 public class ChatsFragment extends Fragment {
     private RelativeLayout warn_verify_layout;
+    private RelativeLayout yellow_warn_verify_layout;
     private RecyclerView recyclerView;
 
     TextView txt_warn_verify;
@@ -76,6 +77,7 @@ public class ChatsFragment extends Fragment {
         info.setAnimation(anim);
 
         warn_verify_layout = view.findViewById(R.id.warn_verify_layout);
+        yellow_warn_verify_layout = view.findViewById(R.id.yellow_warn_verify_layout);
 
 
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -131,14 +133,11 @@ public class ChatsFragment extends Fragment {
                             warn_verify_layout.setVisibility(View.GONE);
 
                         }else if(car.getVerify_status() == 1){
-                            warn_verify_layout.setVisibility(View.VISIBLE);
-                            info.setVisibility(View.GONE);
-                            warn_verify_layout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.yellow));
-                            txt_warn_verify.setText(getString(R.string.your_car_is_being_approve));
+                            warn_verify_layout.setVisibility(View.GONE);
+                            yellow_warn_verify_layout.setVisibility(View.VISIBLE);
                         }else if(car.getVerify_status() == 0){
+                            yellow_warn_verify_layout.setVisibility(View.GONE);
                             warn_verify_layout.setVisibility(View.VISIBLE);
-                            info.setVisibility(View.VISIBLE);
-                            txt_warn_verify.setText(getActivity().getString(R.string.your_car_not_verified));
                             warn_verify_layout.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

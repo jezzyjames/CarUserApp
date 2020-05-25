@@ -26,10 +26,13 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -102,7 +105,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_car_launcher)
                         .setContentTitle(messageTitle)
-                        .setContentText(messageBody)
+                        .setContentText(filterBadWords(messageBody))
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
@@ -133,7 +136,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
-        String body = remoteMessage.getData().get("body");
+        String body = filterBadWords(remoteMessage.getData().get("body"));
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         // "\\D" mean All character that is not numbers         replace all character with empty string
@@ -226,6 +229,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         reference.child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap);
 
+    }
+
+    public String filterBadWords(String message) {
+        String[] bad_words = getResources().getStringArray(R.array.bad_words);;
+        final List<String> words = Arrays.asList(bad_words);;
+
+        for(String word : words){
+            Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
+            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+        }
+
+//        String censor_word = message;
+//        for (String word : words) {
+//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+//
+//            for(int i=0;i<censor_word.length();i++){
+//                if(censor_word.charAt(i) != message.charAt(i)){
+//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
+//                }
+//            }
+//        }
+
+        return message;
     }
 
 }

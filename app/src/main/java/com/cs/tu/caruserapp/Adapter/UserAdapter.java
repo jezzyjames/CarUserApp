@@ -25,8 +25,11 @@ import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
 import com.cs.tu.caruserapp.Model.User;
+import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
+import com.cs.tu.caruserapp.VerifyActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,11 +42,13 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     View view;
@@ -184,7 +189,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                         reference.child("Report").child(firebaseUser.getUid()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                Toast.makeText(mContext, mContext.getString(R.string.user_reported), Toast.LENGTH_SHORT).show();
+                                                storeNotiToDatabase(mContext.getString(R.string.car_reported) + " " + car.getCar_id() + " " + car.getProvince()
+                                                        + " " + mContext.getString(R.string.car_reported2));
                                             }
                                         });
 
@@ -257,7 +263,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
                             && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
                         if(chat.getMessage_type().equals("text")){
-                            theLastMessage = chat.getMessage();
+                            theLastMessage = filterBadWords(chat.getMessage());
                         }else if(chat.getMessage_type().equals("image")){
                             if(chat.getSender().equals(firebaseUser.getUid())){
                                 theLastMessage = mContext.getString(R.string.you_sent_photo);
@@ -346,6 +352,58 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
 
+    }
+
+    public String filterBadWords(String message) {
+        String[] bad_words = mContext.getResources().getStringArray(R.array.bad_words);;
+        final List<String> words = Arrays.asList(bad_words);;
+
+        for(String word : words){
+            Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
+            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+        }
+
+//        String censor_word = message;
+//        for (String word : words) {
+//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
+//
+//            for(int i=0;i<censor_word.length();i++){
+//                if(censor_word.charAt(i) != message.charAt(i)){
+//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
+//                }
+//            }
+//        }
+
+        return message;
+    }
+
+    private void storeNotiToDatabase(final String messageBody){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        //get current date
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+        String formattedDate = df.format(date);
+        //get current time
+        String pattern = "HH:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
+        String currentTimeString = simpleDateFormat.format(new Date());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("imageURL", "default");
+        hashMap.put("message", messageBody);
+        hashMap.put("isseen", false);
+        hashMap.put("date", formattedDate);
+        hashMap.put("time", currentTimeString);
+
+        reference.child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(mContext, messageBody, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
