@@ -47,9 +47,14 @@ public class NotificationDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notification_dialog, container,false);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         btn_back = view.findViewById(R.id.btn_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +77,7 @@ public class NotificationDialog extends DialogFragment {
                     mNoti.add(notification);
 
                 }
-                Collections.reverse(mNoti);
+
                 NotificationAdapter notificationAdapter = new NotificationAdapter(getContext(), mNoti);
                 recyclerView.setAdapter(notificationAdapter);
             }

@@ -126,3 +126,4 @@
 5/26/2020
 - reverse chat list
 - reverse noti
+- fix reverse order

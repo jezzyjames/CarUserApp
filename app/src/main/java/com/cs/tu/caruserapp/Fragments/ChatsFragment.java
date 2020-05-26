@@ -80,10 +80,13 @@ public class ChatsFragment extends Fragment {
         warn_verify_layout = view.findViewById(R.id.warn_verify_layout);
         yellow_warn_verify_layout = view.findViewById(R.id.yellow_warn_verify_layout);
 
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(linearLayoutManager);
+
 
         //get current user auth state
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -157,7 +160,7 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
-                Collections.reverse(mCars);
+
                 userAdapter = new UserAdapter(getContext(), mCars, usersList);
                 recyclerView.setAdapter(userAdapter);
 
