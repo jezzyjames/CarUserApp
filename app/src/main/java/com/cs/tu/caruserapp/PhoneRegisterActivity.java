@@ -193,8 +193,8 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             verify_btn.setVisibility(View.GONE);
                             verify_progress.setVisibility(View.VISIBLE);
                             layoutPhone.setErrorEnabled(false);
-                            raw_phoneNumber = ccp.getSelectedCountryCodeWithPlus() + " " + editText_phone.getText().toString();
-                            phoneNumber = ccp.getFullNumberWithPlus();
+                            raw_phoneNumber = ccp.getFormattedFullNumber();
+                            phoneNumber = ccp.getFormattedFullNumber();
 
                             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                                     phoneNumber,                                          //phone number to verify
@@ -251,21 +251,8 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 phone_view_part.setVisibility(View.GONE);
                 code_sent = true;
 
-                String phoneArr[] = raw_phoneNumber.split(" ");
-                String hidden_number = phoneArr[0];
-                for(int i = 1; i < phoneArr.length-1; i++){
-                    String phone_part = phoneArr[i];
-                    for(int j = 0; j < phone_part.length(); j++){
-                        if(j == 0){
-                            hidden_number = hidden_number + " ";
-                        }
-                        hidden_number = hidden_number + "x";
-                    }
-                }
-                hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
-
                 phone_refer.setVisibility(View.VISIBLE);
-                phone_refer.setText(getString(R.string.code_was_sent) + hidden_number);
+                phone_refer.setText(getString(R.string.code_was_sent) + hiddenPhone(raw_phoneNumber));
 
                 layoutVerifyCode.setVisibility(View.VISIBLE);
 
@@ -342,6 +329,10 @@ public class PhoneRegisterActivity extends AppCompatActivity {
     }
 
     private void resendCode(String phoneNumber, PhoneAuthProvider.ForceResendingToken mResendToken) {
+        verify_btn.setVisibility(View.GONE);
+        verify_progress.setVisibility(View.VISIBLE);
+        layoutPhone.setErrorEnabled(false);
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -385,6 +376,24 @@ public class PhoneRegisterActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private String hiddenPhone(String phone_num){
+        phone_num.replaceAll("-"," ");
+        String phoneArr[] = phone_num.split(" ");
+        String hidden_number = phoneArr[0];
+        for(int i = 1; i < phoneArr.length-1; i++){
+            String phone_part = phoneArr[i];
+            for(int j = 0; j < phone_part.length(); j++){
+                if(j == 0){
+                    hidden_number = hidden_number + " ";
+                }
+                hidden_number = hidden_number + "x";
+            }
+        }
+        hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
+
+        return hidden_number;
     }
 
 }

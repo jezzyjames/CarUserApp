@@ -127,3 +127,4 @@
 - reverse chat list
 - reverse noti
 - fix reverse order
+- fix phone bug

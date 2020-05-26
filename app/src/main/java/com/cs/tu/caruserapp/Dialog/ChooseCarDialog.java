@@ -97,8 +97,6 @@ public class ChooseCarDialog extends DialogFragment {
                     recyclerView.setAdapter(searchCarAdapter);
                 }
 
-
-
             }
 
             @Override

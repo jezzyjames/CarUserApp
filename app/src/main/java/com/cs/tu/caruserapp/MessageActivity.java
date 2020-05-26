@@ -63,7 +63,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
-import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -228,30 +227,33 @@ public class MessageActivity extends AppCompatActivity {
             //found user
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //set receiver data on Action bar
-                Car car = dataSnapshot.getValue(Car.class);
-                username.setText(car.getCar_id().toUpperCase());
-                province.setText(car.getProvince());
+                if(dataSnapshot.exists()){
+                    //set receiver data on Action bar
+                    Car car = dataSnapshot.getValue(Car.class);
+                    username.setText(car.getCar_id().toUpperCase());
+                    province.setText(car.getProvince());
 
-                //check verify status
-                if(car.getVerify_status() == 2){
-                    verify_status.setVisibility(View.GONE);
-                }else if(car.getVerify_status() == 0 || car.getVerify_status() == 1){
-                    if(!warn_unverified){
-                        warnDialog(0);
+                    //check verify status
+                    if(car.getVerify_status() == 2){
+                        verify_status.setVisibility(View.GONE);
+                    }else if(car.getVerify_status() == 0 || car.getVerify_status() == 1){
+                        if(!warn_unverified){
+                            warnDialog(0);
+                        }
+                        verify_status.setVisibility(View.VISIBLE);
                     }
-                    verify_status.setVisibility(View.VISIBLE);
+
+                    //set Circle ImageView
+                    if(car.getImageURL().equals("default")){
+                        profile_image.setImageResource(R.drawable.ic_light_car);
+                    }else{
+                        Glide.with(getApplicationContext()).load(car.getImageURL()).into(profile_image);
+                    }
+
+                    //read and show all chat message on screen
+                    readMessage(sender_car_id, receiver_car_id, car.getImageURL(), sender_car_province, receiver_car_province);
                 }
 
-                //set Circle ImageView
-                if(car.getImageURL().equals("default")){
-                    profile_image.setImageResource(R.drawable.ic_light_car);
-                }else{
-                    Glide.with(getApplicationContext()).load(car.getImageURL()).into(profile_image);
-                }
-
-                //read and show all chat message on screen
-                readMessage(sender_car_id, receiver_car_id, car.getImageURL(), sender_car_province, receiver_car_province);
 
 
             }

@@ -243,6 +243,7 @@
         <item value="orange">Orange</item>
         <item value="brown">Brown</item>
         <item value="pink">Pink</item>
+        <item value="silver">Silver</item>
     </string-array>
 
     <string-array name="cars_array">

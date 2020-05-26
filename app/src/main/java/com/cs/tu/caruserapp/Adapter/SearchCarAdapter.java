@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -73,6 +74,19 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
             Glide.with(mContext).load(car.getImageURL()).into(holder.car_image);
         }
 
+        if(car.getVerify_status() == 2){
+            holder.car_verify_status.setText(mContext.getString(R.string.verified));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.green));
+        } else if(car.getVerify_status() == 1){
+            holder.car_verify_status.setText(mContext.getString(R.string.verifying));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.yellow));
+
+        } else if(car.getVerify_status() == 0){
+            holder.car_verify_status.setText(mContext.getString(R.string.unverified));
+            holder.car_verify_status.setTextColor(ContextCompat.getColor(mContext, R.color.red));
+
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,16 +132,17 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
         public TextView txt_car_model;
         public TextView txt_car_color;
         public ImageView car_image;
+        public TextView car_verify_status;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             txt_car_id = itemView.findViewById(R.id.car_id);
             txt_province = itemView.findViewById(R.id.province);
             txt_car_brand = itemView.findViewById(R.id.brand);
             txt_car_model = itemView.findViewById(R.id.model);
             txt_car_color = itemView.findViewById(R.id.color);
             car_image = itemView.findViewById(R.id.car_image);
+            car_verify_status = itemView.findViewById(R.id.car_verify_status);
 
         }
     }

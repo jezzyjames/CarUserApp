@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     Car car = snapshot.getValue(Car.class);
                     carsList.add(car);
 
-                    if(car.getVerify_status() != 2 && !warn_dialog_verify){
+                    if(car.getVerify_status() == 0 && !warn_dialog_verify){
                         warnDialog(1);
                     }
                 }
