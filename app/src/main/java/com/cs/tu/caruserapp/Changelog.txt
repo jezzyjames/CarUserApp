@@ -122,3 +122,7 @@
 - show warn dialog only 1 time in MainActivity
 - bad words filter
 - fix minor bugs
+
+5/26/2020
+- reverse chat list
+- reverse noti

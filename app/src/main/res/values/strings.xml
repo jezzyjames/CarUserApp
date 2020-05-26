@@ -303,9 +303,21 @@
     <string-array name="bad_words">
         <item value="idiot">idiot</item>
         <item value="fuck">fuck</item>
+        <item value="kwai">ควาย</item>
+        <item value="i_kwai">ไอควาย</item>
         <item value="kuy">ควย</item>
         <item value="sus">สัส</item>
-        <item value="i_sus">ไอสัตว์</item>
+        <item value="here">เหี้ย</item>
+        <item value="hee">หี</item>
+        <item value="i_sut">ไอสัตว์</item>
         <item value="i_ba">ไอบ้า</item>
+        <item value="i_sus">ไอสัส</item>
+        <item value="i_kuy">ไอควย</item>
+        <item value="i_here">ไอเหี้ย</item>
+        <item value="vain">เวร</item>
+        <item value="i_vain">ไอเวร</item>
+        <item value="i_na_nhee">ไอหน้าหี</item>
+        <item value="por_mung_tai">พ่อมึงตาย</item>
+        <item value="mae_mung_tai">เเม่มึงตาย</item>
     </string-array>
 </resources>

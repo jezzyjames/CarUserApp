@@ -41,6 +41,7 @@ import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ChatsFragment extends Fragment {
@@ -156,6 +157,7 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
+                Collections.reverse(mCars);
                 userAdapter = new UserAdapter(getContext(), mCars, usersList);
                 recyclerView.setAdapter(userAdapter);
 

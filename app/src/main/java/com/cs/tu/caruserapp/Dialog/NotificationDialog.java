@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,6 +72,7 @@ public class NotificationDialog extends DialogFragment {
                     mNoti.add(notification);
 
                 }
+                Collections.reverse(mNoti);
                 NotificationAdapter notificationAdapter = new NotificationAdapter(getContext(), mNoti);
                 recyclerView.setAdapter(notificationAdapter);
             }
