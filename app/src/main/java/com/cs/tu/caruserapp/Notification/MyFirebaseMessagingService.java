@@ -253,17 +253,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
         }
 
-//        String censor_word = message;
-//        for (String word : words) {
-//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
-//
-//            for(int i=0;i<censor_word.length();i++){
-//                if(censor_word.charAt(i) != message.charAt(i)){
-//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
-//                }
-//            }
-//        }
 
         return message;
     }

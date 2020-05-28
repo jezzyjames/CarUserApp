@@ -24,10 +24,7 @@ import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Chatlist;
-import com.cs.tu.caruserapp.Model.User;
-import com.cs.tu.caruserapp.ProfileActivity;
 import com.cs.tu.caruserapp.R;
-import com.cs.tu.caruserapp.VerifyActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -63,6 +60,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+
+    String chat_room_key;
 
     public UserAdapter(Context mContext, List<Car> mCars, List<Chatlist> userList) {
         this.mContext = mContext;
@@ -101,11 +100,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.verify_status.setVisibility(View.VISIBLE);
         }
 
+
         //Show last message on user list
-        lastMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.last_msg, holder.date_time);
+        lastMessage(chatlist.getSender_car_id(), car.getOwner_id(), car.getCar_id(), car.getProvince(), holder.last_msg, holder.date_time);
 
         //show notify sign on unread message
-        countNewMessage(chatlist.getSender_car_id(), car.getCar_id(), chatlist.getSender_car_province(), chatlist.getReceiver_car_province(), holder.unread_num);
+        countNewMessage(chatlist.getSender_car_id(), car.getOwner_id(), car.getCar_id(), holder.unread_num);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,20 +248,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     //check for last message
-    private void lastMessage(final String sender_car_id, final String receiver_car_id, final String sender_car_province, final String receiver_car_province
+    private void lastMessage(final String sender_car_id, final String receiver, final String receiver_car_id, final String receiver_car_province
             , final TextView last_msg, final TextView date_time){
+
         theLastMessage = "default";
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+        createChatRoomKey(firebaseUser.getUid(), sender_car_id, receiver, receiver_car_id);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats").child(chat_room_key).child("Message");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
-                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))
-                            || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
-                            && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
                         if(chat.getMessage_type().equals("text")){
                             theLastMessage = filterBadWords(chat.getMessage());
                         }else if(chat.getMessage_type().equals("image")){
@@ -272,10 +271,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             }
 
                         }
-
                         the_date = chat.getDate();
                         the_time = chat.getTime();
-                    }
+
                 }
 
                 switch (theLastMessage){
@@ -323,17 +321,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
-    private void countNewMessage(final String sender_car_id, final String receiver_car_id, final String sender_car_province, final String reciever_car_province, final TextView unread_num){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+    private void countNewMessage(final String sender_car_id, final String receiver, final String receiver_car_id, final TextView unread_num){
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        createChatRoomKey(firebaseUser.getUid(), sender_car_id, receiver, receiver_car_id);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats").child(chat_room_key).child("Message");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int unread = 0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if(chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province)
-                            && chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(reciever_car_province)
-                            && !chat.isIsseen()){
+                    if((chat.getReceiver().equals(firebaseUser.getUid()) || chat.getSender().equals(receiver)) && !chat.isIsseen()){
                         unread++;
                     }
                 }
@@ -362,18 +362,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             Pattern rx = Pattern.compile("\\b" + word + "\\b", Pattern.CASE_INSENSITIVE);
             message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
         }
-
-//        String censor_word = message;
-//        for (String word : words) {
-//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
-//
-//            for(int i=0;i<censor_word.length();i++){
-//                if(censor_word.charAt(i) != message.charAt(i)){
-//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
-//                }
-//            }
-//        }
 
         return message;
     }
@@ -404,6 +392,25 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 Toast.makeText(mContext, messageBody, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void createChatRoomKey(final String sender, final String sender_car_id, final String receiver, final String receiver_car_id){
+        //Create new chat room
+        String sender_key = sender.replaceAll("[\\D]", "");
+        String receiver_key = receiver.replaceAll("[\\D]", "");
+        int sender_car_id_key = 0;
+        int receiver_car_id_key = 0;
+
+        for(int i = 0; i < sender_car_id.length(); i++){
+            int num = sender_car_id.charAt(i);
+            sender_car_id_key = sender_car_id_key + num;
+        }
+        for(int i = 0; i < receiver_car_id.length(); i++){
+            int num = receiver_car_id.charAt(i);
+            receiver_car_id_key = receiver_car_id_key + num;
+        }
+
+        chat_room_key = String.valueOf((Integer.parseInt(sender_key)*sender_car_id_key) + (Integer.parseInt(receiver_key)*receiver_car_id_key));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

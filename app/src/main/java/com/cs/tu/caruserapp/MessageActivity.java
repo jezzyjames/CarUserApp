@@ -42,7 +42,6 @@ import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.Model.Phone;
 import com.cs.tu.caruserapp.Model.Sender;
-import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Client;
 import com.cs.tu.caruserapp.Notification.Data;
 import com.cs.tu.caruserapp.Notification.MyResponse;
@@ -127,6 +126,9 @@ public class MessageActivity extends AppCompatActivity {
     static boolean warn_unverified = false;
     static boolean CurrentActive = false;
 
+    String chat_room_key;
+    boolean existData = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +186,10 @@ public class MessageActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
 
+        //create chat room key
+        createChatRoomKey(firebaseUser.getUid(), sender_car_id, receiver_id, receiver_car_id);
 
-        //********* CAMERA BUTTON ***********//
+            //********* CAMERA BUTTON ***********//
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,19 +269,18 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-        seenMessage(receiver_car_id);
+        seenMessage();
 
     }
 
-    private void seenMessage(final String receiver_car_id){
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+    private void seenMessage(){
+        reference = FirebaseDatabase.getInstance().getReference("Chats").child(chat_room_key).child("Message");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
-                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))){
+                    if(chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(receiver_id)){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isseen", true);
                         snapshot.getRef().updateChildren(hashMap);
@@ -302,48 +305,12 @@ public class MessageActivity extends AppCompatActivity {
             message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
         }
 
-//        String censor_word = message;
-//        for (String word : words) {
-//            Pattern rx = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-//            message = rx.matcher(message).replaceAll(new String(new char[word.length()]).replace('\0', '*'));
-//
-//            for(int i=0;i<censor_word.length();i++){
-//                if(censor_word.charAt(i) != message.charAt(i)){
-//                    censor_word = censor_word.replace(censor_word.charAt(i),'*');
-//                }
-//            }
-//        }
-
         return message;
     }
 
-    private void sendMessage(String sender, final String receiver, final String sender_car_id, final String receiver_car_id
-            , String message, String message_type, final String sender_car_province, final String receiver_car_province){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+    private void sendMessage(final String sender, final String receiver, final String sender_car_id, final String receiver_car_id
+            , final String message, final String message_type, final String sender_car_province, final String receiver_car_province){
 
-        //get current date
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
-        String formattedDate = df.format(date);
-        //get current time
-        String pattern = "HH:mm a";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
-        String currentTimeString = simpleDateFormat.format(new Date());
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("sender", sender);
-        hashMap.put("receiver", receiver);
-        hashMap.put("sender_car_id", sender_car_id);
-        hashMap.put("receiver_car_id", receiver_car_id);
-        hashMap.put("sender_car_province", sender_car_province);
-        hashMap.put("receiver_car_province", receiver_car_province);
-        hashMap.put("message", message);
-        hashMap.put("message_type", message_type);
-        hashMap.put("isseen", false);
-        hashMap.put("date",formattedDate);
-        hashMap.put("time", currentTimeString);
-
-        reference.child("Chats").push().setValue(hashMap);
 
         //Add chatlist to sender ID
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
@@ -393,6 +360,45 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+
+        final DatabaseReference chat_room = FirebaseDatabase.getInstance().getReference("Chats").child(chat_room_key).child("Users");
+        chat_room.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()) {
+                    chat_room.child(sender).child("id").setValue(sender);
+                    chat_room.child(receiver).child("id").setValue(receiver);
+                    chat_room.child(sender).child("car_id").setValue(sender_car_id + "_" + sender_car_province);
+                    chat_room.child(receiver).child("car_id").setValue(receiver_car_id + "_" + receiver_car_province);
+                }
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                //get current date
+                Date date = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+                String formattedDate = df.format(date);
+                //get current time
+                String pattern = "HH:mm a";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
+                String currentTimeString = simpleDateFormat.format(new Date());
+
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("sender", sender);
+                hashMap.put("receiver", receiver);
+                hashMap.put("message", message);
+                hashMap.put("message_type", message_type);
+                hashMap.put("isseen", false);
+                hashMap.put("date",formattedDate);
+                hashMap.put("time", currentTimeString);
+                reference.child("Chats").child(chat_room_key).child("Message").push().setValue(hashMap);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //NOTIFICATION Part
         String msg = "";
@@ -457,7 +463,7 @@ public class MessageActivity extends AppCompatActivity {
         mchat = new ArrayList<>();
 
         //Read database from Chats
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference = FirebaseDatabase.getInstance().getReference("Chats").child(chat_room_key).child("Message");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -466,12 +472,6 @@ public class MessageActivity extends AppCompatActivity {
                 int receiver_chat = 0;
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
-                    //add all chat that include sender and receiver id to ArrayList
-                    if((chat.getReceiver_car_id().equals(sender_car_id) && chat.getReceiver_car_province().equals(sender_car_province))
-                            && (chat.getSender_car_id().equals(receiver_car_id) && chat.getSender_car_province().equals(receiver_car_province))
-                            || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
-                            && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
-
                         //filter bad words
                         chat.setMessage(filterBadWords(chat.getMessage()));
                         mchat.add(chat);
@@ -481,7 +481,7 @@ public class MessageActivity extends AppCompatActivity {
                         else{
                             receiver_chat++;
                         }
-                    }
+
 
                     messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
                     recyclerView.setAdapter(messageAdapter);
@@ -727,6 +727,26 @@ public class MessageActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    private void createChatRoomKey(final String sender, final String sender_car_id, final String receiver, final String receiver_car_id){
+        //Create new chat room
+        String sender_key = sender.replaceAll("[\\D]", "");
+        String receiver_key = receiver.replaceAll("[\\D]", "");
+        int sender_car_id_key = 0;
+        int receiver_car_id_key = 0;
+
+        for(int i = 0; i < sender_car_id.length(); i++){
+            int num = sender_car_id.charAt(i);
+            sender_car_id_key = sender_car_id_key + num;
+        }
+        for(int i = 0; i < receiver_car_id.length(); i++){
+            int num = receiver_car_id.charAt(i);
+            receiver_car_id_key = receiver_car_id_key + num;
+        }
+
+        chat_room_key = String.valueOf((Integer.parseInt(sender_key)*sender_car_id_key) + (Integer.parseInt(receiver_key)*receiver_car_id_key));
+        Log.d("******chat_room_key : ", chat_room_key);
     }
 
     public void warnDialog(int dialog){

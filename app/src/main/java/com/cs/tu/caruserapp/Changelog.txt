@@ -134,3 +134,6 @@
 
 5/28/2020
 - store Phone separate from Users in database
+
+5/29/2020
+- fix chat security rules

@@ -28,7 +28,7 @@
     <string name="unverified_user">ยังไม่ยืนยันตัวตน</string>
     <string name="report_user">รายงานผู้ใช้ที่ไม่เหมาะสม</string>
     <string name="report">รายงาน</string>
-    <string name="spam_message">ใช้ข้อความเเสปม</string>
+    <string name="spam_message">ใช้ข้อความสแปม</string>
     <string name="harmful_message">ใช้ข้อความไม่สุภาพ</string>
     <string name="other">อื่นๆ</string>
     <string name="delete_chat">ลบการสนทนา</string>
@@ -139,7 +139,7 @@
     </string-array>
 
     <string-array name="report_list">
-        <item value="spam_message">ใช้ข้อความเเสปม</item>
+        <item value="spam_message">ใช้ข้อความสแปม</item>
         <item value="harmful_message">ใช้ข้อความไม่สุภาพ</item>
         <item value="other">อื่นๆ</item>
     </string-array>
