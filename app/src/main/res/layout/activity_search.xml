@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:background="@color/gray_box"
     tools:context=".SearchActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,36 +36,36 @@
             android:layout_centerHorizontal="true">
 
             <RelativeLayout
+                android:id="@+id/search_box"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/search_box">
+                android:layout_height="wrap_content">
 
                 <EditText
+                    android:id="@+id/search_users"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:padding="5dp"
+                    android:layout_centerVertical="true"
+                    android:background="@color/white"
+                    android:drawableEnd="@color/black"
+                    android:ems="7"
+                    android:hint="@string/search_car_id_number"
                     android:imeOptions="actionDone"
                     android:inputType="text"
-                    android:id="@+id/search_users"
-                    android:background="@color/white"
-                    android:hint="@string/search_car_id_number"
-                    android:layout_centerVertical="true"
-                    android:ems="7"
-                    android:maxLines="1"
                     android:maxLength="8"
-                    android:drawableEnd="@color/black" />
+                    android:maxLines="1"
+                    android:padding="5dp" />
 
                 <ImageButton
+                    android:id="@+id/btn_clear_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/btn_clear_text"
-                    android:src="@drawable/ic_clear"
-                    android:tint="@color/white"
-                    android:background="@drawable/round_btn"
-                    android:backgroundTint="@color/transparation"
                     android:layout_alignRight="@id/search_users"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
+                    android:background="@drawable/round_btn"
+                    android:backgroundTint="@color/transparation"
+                    android:src="@drawable/ic_clear"
+                    android:tint="@color/white"
                     android:visibility="invisible" />
 
             </RelativeLayout>

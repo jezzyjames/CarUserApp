@@ -6,12 +6,14 @@ public class User {
     private String firstname;
     private String lastname;
     private String phone_number;
+    private String role;
 
-    public User(String id, String firstname, String lastname, String phone_number) {
+    public User(String id, String firstname, String lastname, String phone_number, String role) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone_number = phone_number;
+        this.role = role;
     }
 
     public User(){
@@ -48,5 +50,13 @@ public class User {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

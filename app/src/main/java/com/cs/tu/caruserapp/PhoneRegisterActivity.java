@@ -156,7 +156,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                 } else{
                         if (!editText_phone.getText().toString().equals("")) {
                             //admin test//
-                            if(editText_phone.getText().toString().equals("1212 312 121")) {
+                            if(editText_phone.getText().toString().equals("121231212")) {
                                 FirebaseAuth auth = firebaseAuth.getInstance();
                                 auth.signInWithEmailAndPassword("jetdokoalah@gmail.com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -172,7 +172,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                            if(editText_phone.getText().toString().equals("1234 567 8")) {
+                            if(editText_phone.getText().toString().equals("12345678")) {
                                 FirebaseAuth auth = firebaseAuth.getInstance();
                                 auth.signInWithEmailAndPassword("jetzjamez@hotmail.com", "1212312121").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -287,14 +287,16 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
 
-                            Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("phone_number").equalTo(raw_phoneNumber);
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         login();
 
                                     }else{
+                                        need_regist = true;
                                         phone_view_part.setVisibility(View.GONE);
                                         verify_progress.setVisibility(View.GONE);
                                         layoutName.setVisibility(View.VISIBLE);
@@ -355,19 +357,41 @@ public class PhoneRegisterActivity extends AppCompatActivity {
         hashMap.put("firstname", firstname.substring(0, 1).toUpperCase() + firstname.substring(1));
         hashMap.put("lastname", lastname.substring(0, 1).toUpperCase() + lastname.substring(1));
         hashMap.put("phone_number", raw_phoneNumber);
+        hashMap.put("role", "user");
         reference.setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                login();
+                //regist phone number
+                DatabaseReference phone_ref = FirebaseDatabase.getInstance().getReference("Phone").child(firebaseUser.getUid());
+                HashMap<String, Object> PhoneHashMap = new HashMap<>();
+                PhoneHashMap.put("phone_number", raw_phoneNumber);
+                phone_ref.setValue(PhoneHashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        login();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        DatabaseFailure();
+                    }
+                });
+
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                verify_btn.setVisibility(View.VISIBLE);
-                verify_progress.setVisibility(View.GONE);
-                Toast.makeText(PhoneRegisterActivity.this, getString(R.string.regist_failed), Toast.LENGTH_SHORT).show();
+                DatabaseFailure();
             }
         });
+    }
+
+    private void DatabaseFailure(){
+        need_regist = false;
+        verify_btn.setVisibility(View.VISIBLE);
+        verify_progress.setVisibility(View.GONE);
+        Toast.makeText(PhoneRegisterActivity.this, getString(R.string.regist_failed), Toast.LENGTH_SHORT).show();
     }
 
     private void login(){

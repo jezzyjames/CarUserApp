@@ -38,7 +38,7 @@
     <string name="logout">ออกจากระบบ</string>
     <string name="logout_message">ต้องการออกจากระบบใช่ไหม?</string>
     <string name="search">ค้นหา</string>
-    <string name="search_car_id_number">ทะเบียนรถ</string>
+    <string name="search_car_id_number">ทะเบียนรถ...</string>
     <string name="brand">ยี่ห้อ</string>
     <string name="model">รุ่น</string>
     <string name="color">สี</string>
@@ -91,9 +91,11 @@
     <string name="your_car_not_verified">รถของคุณยังไม่ผ่านการตรวจสอบ</string>
     <string name="your_car_is_being_approve">รถของคุณกำลังอยู่ในขั้นตอนการตรวจสอบ</string>
     <string name="phone_number_hide">เบอร์โทรศัพท์ถูกซ่อนไว้</string>
-    <string name="phone_number_show_after">เบอร์โทรศัพท์จะถูกเเสดงเมื่อมีการตอบข้อความกลับจากอีกฝ่าย</string>
+    <string name="phone_number_show_after">เบอร์โทรศัพท์จะถูกเเสดงเมื่อมีการตอบข้อความกลับ</string>
     <string name="please_be_careful">โปรดระวังผู้ไม่ประสงค์ดี</string>
     <string name="this_user_is_not_verify">คุณกำลังสนทนากับรถยนต์ที่ยังไม่ผ่านการตรวจสอบ เพื่อความมั่นใจทั้งสองฝ่ายอาจขอหลักฐานยืนยันจากอีกฝ่ายก่อน อาทิเช่น รูปถ่ายรถ หรือ รูปสถานที่</string>
+    <string name="admin">ผู้ดูเเล</string>
+    <string name="car_id_in_verify">หมายเลขทะเบียนรถยนต์</string>
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>
@@ -128,6 +130,8 @@
     <string name="please_select_province">กรุณาเลือกจังหวัด</string>
     <string name="please_select_brand">กรุณาระบุยี่ห้อของรถ</string>
     <string name="please_select_color">กรุณาระบุสีของรถ</string>
+    <string name="please_insert_car_id">กรุณาระบุหมายเลขทะเบียน</string>
+    <string name="please_insert_province">กรุณาเลือกจังหวัด</string>
 
     <string-array name="user_interact_choice">
         <item value="report_user">รายงานผู้ใช้ที่ไม่เหมาะสม</item>
@@ -231,7 +235,7 @@
         <item value="white">ขาว</item>
         <item value="black">ดำ</item>
         <item value="grey">เทา</item>
-        <item value="red">เเดง</item>
+        <item value="red">แดง</item>
         <item value="blue">น้ำเงิน</item>
         <item value="sky_blue">ฟ้า</item>
         <item value="yellow">เหลือง</item>
@@ -316,7 +320,7 @@
         <item value="i_vain">ไอเวร</item>
         <item value="i_na_nhee">ไอหน้าหี</item>
         <item value="por_mung_tai">พ่อมึงตาย</item>
-        <item value="mae_mung_tai">เเม่มึงตาย</item>
+        <item value="mae_mung_tai">แม่มึงตาย</item>
     </string-array>
 
 </resources>

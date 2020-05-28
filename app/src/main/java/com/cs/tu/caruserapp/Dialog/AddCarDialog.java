@@ -133,7 +133,7 @@ public class AddCarDialog extends DialogFragment {
 
                 if(imageUri != null && !input_carid.equals("") && province_spinner.getSelectedItemPosition() != 0 && brand_spinner.getSelectedItemPosition() != 0
                         && !input_model.equals("") && color_spinner.getSelectedItemPosition() != 0) {
-                    Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid);
+                    Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("car_id").equalTo(input_carid.toLowerCase());
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

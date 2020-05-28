@@ -140,7 +140,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         // "\\D" mean All character that is not numbers         replace all character with empty string
-        int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
+        String get_num = sender_id.replaceAll("[\\D]", "");
+        String cut_num = "";
+        for(int i = 0 ;i < get_num.length(); i = i + 2){
+            cut_num = cut_num + get_num.charAt(i);
+        }
+        Log.d(TAG, "cut num in Notification: " + cut_num);
+        int j = Integer.parseInt(cut_num);
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra("receiver_id", receiver_id);
         intent.putExtra("receiver_car_id", receiver_car_id);
@@ -179,7 +185,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body = remoteMessage.getData().get("body");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
-        int j = Integer.parseInt(sender_id.replaceAll("[\\D]", ""));
+        // "\\D" mean All character that is not numbers         replace all character with empty string
+        String get_num = sender_id.replaceAll("[\\D]", "");
+        String cut_num = "";
+        for(int i = 0 ;i < get_num.length(); i = i + 2){
+            cut_num = cut_num + get_num.charAt(i);
+        }
+        Log.d(TAG, "cut num in Notification: " + cut_num);
+        int j = Integer.parseInt(cut_num);
         Intent intent = new Intent(this, MessageActivity.class);
         intent.putExtra("receiver_id", receiver_id);
         intent.putExtra("receiver_car_id", receiver_car_id);

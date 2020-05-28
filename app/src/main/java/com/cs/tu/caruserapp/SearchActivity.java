@@ -156,9 +156,9 @@ public class SearchActivity extends AppCompatActivity {
                     imm.hideSoftInputFromWindow(search_users.getWindowToken(), 0);
                 }else{
                     if(search_users.getText().toString().equals("")){
-                        Toast.makeText(SearchActivity.this, "Please insert car id", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SearchActivity.this, getString(R.string.please_insert_car_id), Toast.LENGTH_SHORT).show();
                     }else if(province_spinner.getSelectedItemPosition() == 0){
-                        Toast.makeText(SearchActivity.this, "Please select province", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SearchActivity.this, getString(R.string.please_select_province), Toast.LENGTH_SHORT).show();
                     }
 
                 }

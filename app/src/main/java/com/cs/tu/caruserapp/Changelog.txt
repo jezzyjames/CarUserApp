@@ -128,3 +128,9 @@
 - reverse noti
 - fix reverse order
 - fix phone bug
+
+5/27/2020
+- fix noti crashed
+
+5/28/2020
+- store Phone separate from Users in database

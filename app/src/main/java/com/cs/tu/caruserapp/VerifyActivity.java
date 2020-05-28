@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -68,6 +69,7 @@ public class VerifyActivity extends AppCompatActivity {
     boolean verify_for_report;
     String exist_car_owner_id;
 
+    TextView txt_car_id;
     CardView card_regist_book;
     Button btn_choose_book;
 
@@ -92,6 +94,7 @@ public class VerifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
+        txt_car_id = findViewById(R.id.txt_car_id);
         card_regist_book = findViewById(R.id.card_regist_book);
         btn_choose_book = findViewById(R.id.btn_choose_book);
 
@@ -101,6 +104,15 @@ public class VerifyActivity extends AppCompatActivity {
         btn_take_gallery = findViewById(R.id.btn_take_gallery);
         btn_submit = findViewById(R.id.btn_submit);
         upload_progress = findViewById(R.id.upload_progress);
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+
+        intent = getIntent();
+        verify_for_report = intent.getBooleanExtra("verify_for_report", false);
+        my_car_id = intent.getStringExtra("my_car_id");
+        my_car_province = intent.getStringExtra("my_car_province");
+        exist_car_owner_id = intent.getStringExtra("exist_car_owner_id");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -113,14 +125,7 @@ public class VerifyActivity extends AppCompatActivity {
             }
         });
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        storageReference = FirebaseStorage.getInstance().getReference("uploads");
-
-        intent = getIntent();
-        verify_for_report = intent.getBooleanExtra("verify_for_report", false);
-        my_car_id = intent.getStringExtra("my_car_id");
-        my_car_province = intent.getStringExtra("my_car_province");
-        exist_car_owner_id = intent.getStringExtra("exist_car_owner_id");
+        txt_car_id.setText(getString(R.string.car_id_in_verify) + "\n" + my_car_id.toUpperCase() + " " + my_car_province);
 
         btn_choose_book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +164,7 @@ public class VerifyActivity extends AppCompatActivity {
                 reference.child("verify_status").setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        storeNotiToDatabase(getString(R.string.send_verify_complete) + " " + my_car_id + " " + my_car_province + " " +getString(R.string.send_verify_complete2));
+                        storeNotiToDatabase(getString(R.string.send_verify_complete) + " " + my_car_id.toUpperCase() + " " + my_car_province + " " +getString(R.string.send_verify_complete2));
                     }
                 });
             }
@@ -239,6 +244,8 @@ public class VerifyActivity extends AppCompatActivity {
                     uploadImage(VerifyImageUri);
                 }
             });
+        }else{
+            Toast.makeText(this, getString(R.string.no_image_select), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -422,8 +429,8 @@ public class VerifyActivity extends AppCompatActivity {
         reference.child("Report").child(firebaseUser.getUid()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(VerifyActivity.this, getString(R.string.exist_car_report_message) + my_car_id + " " + my_car_province + getString(R.string.exist_car_report_message2), Toast.LENGTH_LONG).show();
-                storeNotiToDatabase(getString(R.string.exist_car_report_message) + my_car_id + " " + my_car_province + getString(R.string.exist_car_report_message2));
+                Toast.makeText(VerifyActivity.this, getString(R.string.exist_car_report_message) + my_car_id.toUpperCase() + " " + my_car_province + getString(R.string.exist_car_report_message2), Toast.LENGTH_LONG).show();
+                storeNotiToDatabase(getString(R.string.exist_car_report_message) + my_car_id.toUpperCase() + " " + my_car_province + getString(R.string.exist_car_report_message2));
             }
         });
     }

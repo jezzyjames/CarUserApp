@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.cs.tu.caruserapp.Dialog.NotificationDialog;
@@ -60,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
     ViewPagerAdapter viewPagerAdapter;
     TabLayout tabLayout;
 
-    boolean warn_dialog_addcar = false;
-    boolean warn_dialog_verify = false;
+    static boolean CurrentActive = false;
+    static boolean warn_dialog_addcar = false;
+    static boolean warn_dialog_verify = false;
 
     DialogFragment dialogFragment;
 
@@ -100,41 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    User user = dataSnapshot.getValue(User.class);
-                    username.setText(user.getFirstname() + " " + user.getLastname());
-
-                    user_icon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                        }
-                    });
-                    username.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                        }
-                    });
-
-                }else{
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(MainActivity.this, StartActivity.class));
-                    finish();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         carsList = new ArrayList<>();
 
         Query query = FirebaseDatabase.getInstance().getReference("Cars").orderByChild("owner_id").equalTo(firebaseUser.getUid());
@@ -146,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     Car car = snapshot.getValue(Car.class);
                     carsList.add(car);
 
-                    if(car.getVerify_status() == 0 && !warn_dialog_verify){
+                    if(car.getVerify_status() == 0 && !warn_dialog_verify && CurrentActive){
                         warnDialog(1);
                     }
                 }
@@ -167,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 if(carsList.size() != 0){
                     viewPager.setAdapter(viewPagerAdapter);
                 }else{
-                    if(!warn_dialog_addcar){
+                    if(!warn_dialog_addcar && CurrentActive){
                         warnDialog(0);
                     }
                 }
@@ -199,7 +166,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        menu.findItem(R.id.notification).setVisible(false);
+        final MenuItem deveItem = menu.findItem(R.id.developer);
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    User user = dataSnapshot.getValue(User.class);
+                    if(user.getRole().equals("admin")){
+                        deveItem.setVisible(true);
+                    }
+                    username.setText(user.getFirstname() + " " + user.getLastname());
+
+                    user_icon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        }
+                    });
+                    username.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        }
+                    });
+
+                }else{
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(MainActivity.this, StartActivity.class));
+                    finish();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         return true;
     }
@@ -237,6 +241,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
+            case R.id.developer:
+                Intent admin_intent = new Intent(MainActivity.this, AdminActivity.class);
+                startActivity(admin_intent);
+                return true;
+
             case R.id.profile:
                 Intent profile_intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(profile_intent);
@@ -367,5 +376,17 @@ public class MainActivity extends AppCompatActivity {
         dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         dialogFragment.show(getSupportFragmentManager(), "Noti");
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        CurrentActive = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CurrentActive = false;
     }
 }

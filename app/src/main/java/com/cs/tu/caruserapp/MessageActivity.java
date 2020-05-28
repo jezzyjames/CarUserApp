@@ -40,6 +40,7 @@ import com.cs.tu.caruserapp.Adapter.MessageAdapter;
 import com.cs.tu.caruserapp.Fragments.APIService;
 import com.cs.tu.caruserapp.Model.Car;
 import com.cs.tu.caruserapp.Model.Chat;
+import com.cs.tu.caruserapp.Model.Phone;
 import com.cs.tu.caruserapp.Model.Sender;
 import com.cs.tu.caruserapp.Model.User;
 import com.cs.tu.caruserapp.Notification.Client;
@@ -122,8 +123,9 @@ public class MessageActivity extends AppCompatActivity {
     StorageReference storageReference;
     private StorageTask uploadTask;
 
-    boolean warn_hidden_phone = false;
-    boolean warn_unverified = false;
+    static boolean warn_hidden_phone = false;
+    static boolean warn_unverified = false;
+    static boolean CurrentActive = false;
 
 
     @Override
@@ -237,7 +239,7 @@ public class MessageActivity extends AppCompatActivity {
                     if(car.getVerify_status() == 2){
                         verify_status.setVisibility(View.GONE);
                     }else if(car.getVerify_status() == 0 || car.getVerify_status() == 1){
-                        if(!warn_unverified){
+                        if(!warn_unverified && CurrentActive){
                             warnDialog(0);
                         }
                         verify_status.setVisibility(View.VISIBLE);
@@ -417,8 +419,8 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), sender_car_id, sender_car_province, R.mipmap.ic_car_launcher, message, sender_car_id.toUpperCase() + " :"
-                            , receiver_id, receiver_car_id, receiver_car_province);
+                    Data data = new Data(firebaseUser.getUid(), sender_car_id, sender_car_province, R.mipmap.ic_car_launcher
+                            , message, sender_car_id.toUpperCase() + " " + sender_car_province + " :", receiver_id, receiver_car_id, receiver_car_province);
 
                     //pack data and receiver token into sender
                     Sender sender = new Sender(data, token.getToken());
@@ -470,15 +472,15 @@ public class MessageActivity extends AppCompatActivity {
                             || (chat.getReceiver_car_id().equals(receiver_car_id) && chat.getReceiver_car_province().equals(receiver_car_province))
                             && (chat.getSender_car_id().equals(sender_car_id) && chat.getSender_car_province().equals(sender_car_province))){
 
-                            //filter bad words
-                            chat.setMessage(filterBadWords(chat.getMessage()));
-                            mchat.add(chat);
-                            if(chat.getSender().equals(firebaseUser.getUid())){
-                               sender_chat++;
-                            }
-                            else{
-                               receiver_chat++;
-                            }
+                        //filter bad words
+                        chat.setMessage(filterBadWords(chat.getMessage()));
+                        mchat.add(chat);
+                        if(chat.getSender().equals(firebaseUser.getUid())){
+                            sender_chat++;
+                        }
+                        else{
+                            receiver_chat++;
+                        }
                     }
 
                     messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
@@ -487,43 +489,43 @@ public class MessageActivity extends AppCompatActivity {
                 //show phone number if start some chat message
                 final int sender_count = sender_chat;
                 final int receiver_count = receiver_chat;
-                    //Get user phone number and show
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(receiver_id);
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            String receiver_raw_phonenum = user.getPhone_number();
-                            String phoneArr[] = receiver_raw_phonenum.split(" ");
-                            String hidden_number = phoneArr[0];
-                            for(int i = 1; i < phoneArr.length-1; i++){
-                                String phone_part = phoneArr[i];
-                                for(int j = 0; j < phone_part.length(); j++){
-                                    if(j == 0){
-                                        hidden_number = hidden_number + " ";
-                                    }
-                                    hidden_number = hidden_number + "x";
+                //Get user phone number and show
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Phone").child(receiver_id);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Phone phone = dataSnapshot.getValue(Phone.class);
+                        String receiver_raw_phonenum = phone.getPhone_number();
+                        String phoneArr[] = receiver_raw_phonenum.split(" ");
+                        String hidden_number = phoneArr[0];
+                        for(int i = 1; i < phoneArr.length-1; i++){
+                            String phone_part = phoneArr[i];
+                            for(int j = 0; j < phone_part.length(); j++){
+                                if(j == 0){
+                                    hidden_number = hidden_number + " ";
                                 }
+                                hidden_number = hidden_number + "x";
                             }
-                            hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
+                        }
+                        hidden_number = hidden_number + " " + phoneArr[phoneArr.length-1];
 
-                            if(sender_count > 0 && receiver_count > 0){
-                                phone_number.setText(receiver_raw_phonenum);
-                            }else {
-                                phone_number.setText(hidden_number);
-                                if(!warn_hidden_phone){
-                                    warnDialog(1);
-                                }
-
+                        if(sender_count > 0 && receiver_count > 0){
+                            phone_number.setText(receiver_raw_phonenum);
+                        }else {
+                            phone_number.setText(hidden_number);
+                            if(!warn_hidden_phone && CurrentActive){
+                                warnDialog(1);
                             }
 
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -633,34 +635,34 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void openImage(int request_code) {
-                switch (request_code) {
-                    case REQUEST_IMAGE_CAPTURE:
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                            // Create the File where the photo should go
-                            File photoFile = null;
-                            try {
-                                photoFile = createImageFile();
-                            } catch (IOException ex) {
+        switch (request_code) {
+            case REQUEST_IMAGE_CAPTURE:
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
 
-                            }
-                            // Continue only if the File was successfully created
-                            if (photoFile != null) {
-                                Uri photoURI = FileProvider.getUriForFile(this, "com.cs.tu.caruserapp", photoFile);
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                            }
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(this, "com.cs.tu.caruserapp", photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
 
-                        }
-                        break;
-
-                    case GALLERY_REQUEST:
-                        Intent pictureActionIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        if (pictureActionIntent.resolveActivity(getPackageManager()) != null) {
-                            startActivityForResult(pictureActionIntent, GALLERY_REQUEST);
-                        }
-                        break;
                 }
+                break;
+
+            case GALLERY_REQUEST:
+                Intent pictureActionIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (pictureActionIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(pictureActionIntent, GALLERY_REQUEST);
+                }
+                break;
+        }
 
     }
 
@@ -730,7 +732,7 @@ public class MessageActivity extends AppCompatActivity {
     public void warnDialog(int dialog){
         switch (dialog){
             case 0:
-                warn_unverified = true;
+//                warn_unverified = true;
                 new FancyGifDialog.Builder(this)
                         .setTitle(getString(R.string.please_be_careful))
                         .setMessage(getString(R.string.this_user_is_not_verify))
@@ -786,5 +788,17 @@ public class MessageActivity extends AppCompatActivity {
             finish();
         }
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        CurrentActive = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CurrentActive = false;
     }
 }

@@ -97,7 +97,7 @@ public class SearchCarAdapter extends RecyclerView.Adapter<SearchCarAdapter.View
                 notifyItemChanged(selectedPos);
 
                 new AlertDialog.Builder(mContext)
-                        .setMessage(mContext.getString(R.string.choose_car_id_number) + " " + car.getCar_id().toUpperCase() + mContext.getString(R.string.to_your_active_car))
+                        .setMessage(mContext.getString(R.string.choose_car_id_number) + "\n" + car.getCar_id().toUpperCase()  + " " + car.getProvince() + mContext.getString(R.string.to_your_active_car))
                         .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

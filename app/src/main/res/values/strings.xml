@@ -38,7 +38,7 @@
     <string name="logout">Logout</string>
     <string name="logout_message">Are you sure to logout?</string>
     <string name="search">Search</string>
-    <string name="search_car_id_number">Car ID</string>
+    <string name="search_car_id_number">Car ID...</string>
     <string name="brand">Brand</string>
     <string name="model">Model</string>
     <string name="color">Color</string>
@@ -91,10 +91,11 @@
     <string name="your_car_not_verified">Your car is not verified</string>
     <string name="your_car_is_being_approve">Your car is in process of verifying</string>
     <string name="phone_number_hide">Phone number is hidden</string>
-    <string name="phone_number_show_after">Phone number show after receiver replied your message</string>
+    <string name="phone_number_show_after">Phone number show after message have replied</string>
     <string name="please_be_careful">Please be careful</string>
     <string name="this_user_is_not_verify">You are talking with unverified car, you may ask for evidence like car photo or location photo for both confidence</string>
-
+    <string name="admin">Admin</string>
+    <string name="car_id_in_verify">Car id</string>
 
 
     //Toast
@@ -130,6 +131,8 @@
     <string name="please_select_province">Please select province</string>
     <string name="please_select_brand">Please select brand</string>
     <string name="please_select_color">Please select color</string>
+    <string name="please_insert_car_id">Please insert car number plate</string>
+    <string name="please_insert_province">Please select province</string>
 
 
     <string-array name="user_interact_choice">
@@ -319,6 +322,6 @@
         <item value="i_vain">ไอเวร</item>
         <item value="i_na_nhee">ไอหน้าหี</item>
         <item value="por_mung_tai">พ่อมึงตาย</item>
-        <item value="mae_mung_tai">เเม่มึงตาย</item>
+        <item value="mae_mung_tai">แม่มึงตาย</item>
     </string-array>
 </resources>
