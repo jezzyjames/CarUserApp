@@ -21,6 +21,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     TextView phonenumber;
     TextView unvrified_detect;
     TextView txt_add_car;
+    ProgressBar progressBar;
 
     DatabaseReference reference;
     FirebaseUser firebaseUser;
@@ -91,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
         phonenumber = findViewById(R.id.phonenumber);
         unvrified_detect = findViewById(R.id.unverified_detect);
         txt_add_car = findViewById(R.id.txt_add_car);
+        progressBar = findViewById(R.id.progressBar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -187,7 +190,11 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
     }
 
     private void addCar(final Uri imageUri, final String car_id, final String province, final String car_brand, final String car_model, final int car_color){
+
         if(imageUri != null){
+            progressBar.setVisibility(View.VISIBLE);
+            txt_add_car.setVisibility(View.GONE);
+
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             final StorageReference fileReference = storageReference.child("car_photo/"+ firebaseUser.getUid() + "/" + car_id + "_" + province + "/" + car_id + "_" + province + "_" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
@@ -223,18 +230,24 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(ProfileActivity.this, getString(R.string.add_car_complete), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                txt_add_car.setVisibility(View.VISIBLE);
 
                             }
                         });
 
                     }else{
                         Toast.makeText(ProfileActivity.this, getString(R.string.upload_image_failed), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        txt_add_car.setVisibility(View.VISIBLE);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    txt_add_car.setVisibility(View.VISIBLE);
                 }
             });
         }else{

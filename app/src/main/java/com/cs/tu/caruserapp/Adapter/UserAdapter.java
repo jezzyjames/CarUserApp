@@ -189,7 +189,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                         reference.child("Report").child(firebaseUser.getUid()).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                storeNotiToDatabase(mContext.getString(R.string.car_reported) + " " + car.getCar_id() + " " + car.getProvince()
+                                                storeNotiToDatabase(mContext.getString(R.string.car_reported) + " " + car.getCar_id().toUpperCase() + " " + car.getProvince()
                                                         + " " + mContext.getString(R.string.car_reported2));
                                             }
                                         });

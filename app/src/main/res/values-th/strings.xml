@@ -45,8 +45,7 @@
     <string name="chat">สนทนา</string>
     <string name="cant_chat_youself">ไม่สามารถสนทนากับตัวเองได้</string>
     <string name="choose_car_title">เลือกรถที่คุณกำลังใช้งาน</string>
-    <string name="choose_car_id_number">เลือกรถยนต์หมายเลขทะเบียน</string>
-    <string name="to_your_active_car">\nเป็นรถที่คุณกำลังใช้งาน?</string>
+    <string name="choose_car_id_number">เลือกรถยนต์คันนี้สำหรับการสนทนา?</string>
     <string name="confirm">ยืนยัน</string>
     <string name="please_verify_dialog_title">รถยนต์ยังไม่ผ่านการตรวจสอบ</string>
     <string name="please_verify_dialog">โปรดยืนยันตัวตนความเป็นเจ้าของรถของท่านเพื่อความปลอดภัยของผู้ใช้งานทุกคน ท่านยังสามารถใช้งานเเอปพลิเคชันได้ เเต่ผู้อื่นจะเห็นสถานะทะเบียนรถของท่านเป็น \"รถยังไม่ผ่านการตรวจสอบ\"</string>
@@ -96,6 +95,8 @@
     <string name="this_user_is_not_verify">คุณกำลังสนทนากับรถยนต์ที่ยังไม่ผ่านการตรวจสอบ เพื่อความมั่นใจทั้งสองฝ่ายอาจขอหลักฐานยืนยันจากอีกฝ่ายก่อน อาทิเช่น รูปถ่ายรถ หรือ รูปสถานที่</string>
     <string name="admin">ผู้ดูเเล</string>
     <string name="car_id_in_verify">หมายเลขทะเบียนรถยนต์</string>
+    <string name="noti_from_system">การเเจ้งเตือนจากระบบ</string>
+    <string name="please_wait">กรุณารอสักครู่...</string>
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>

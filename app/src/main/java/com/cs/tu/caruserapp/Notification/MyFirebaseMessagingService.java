@@ -105,7 +105,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_car_launcher)
                         .setContentTitle(messageTitle)
-                        .setContentText(filterBadWords(messageBody))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(filterBadWords(messageBody)))
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
@@ -206,7 +206,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(Integer.parseInt(icon))
                 .setContentTitle(title)
-                .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setAutoCancel(true)
                 .setSound(defaultSound)
                 .setContentIntent(pendingIntent);

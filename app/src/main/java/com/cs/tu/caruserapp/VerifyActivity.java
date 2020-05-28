@@ -6,11 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,11 +24,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -33,6 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cs.tu.caruserapp.Notification.NewNotification;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +54,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -79,6 +89,7 @@ public class VerifyActivity extends AppCompatActivity {
     Button btn_take_gallery;
     Button btn_submit;
     ProgressBar upload_progress;
+    TextView txt_wait;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -104,6 +115,7 @@ public class VerifyActivity extends AppCompatActivity {
         btn_take_gallery = findViewById(R.id.btn_take_gallery);
         btn_submit = findViewById(R.id.btn_submit);
         upload_progress = findViewById(R.id.upload_progress);
+        txt_wait = findViewById(R.id.txt_wait);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
@@ -241,6 +253,7 @@ public class VerifyActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     btn_submit.setVisibility(View.GONE);
                     upload_progress.setVisibility(View.VISIBLE);
+                    txt_wait.setVisibility(View.VISIBLE);
                     uploadImage(VerifyImageUri);
                 }
             });
@@ -252,6 +265,7 @@ public class VerifyActivity extends AppCompatActivity {
     private void setDefualtUI(){
         btn_submit.setVisibility(View.VISIBLE);
         upload_progress.setVisibility(View.GONE);
+        txt_wait.setVisibility(View.GONE);
     }
 
     private String getFileExtension(Uri uri){
@@ -280,7 +294,7 @@ public class VerifyActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if(task.isSuccessful()){
-                        Toast.makeText(VerifyActivity.this, getString(R.string.send_verify_complete) + " " + my_car_id + " " + my_car_province + " " + getString(R.string.send_verify_complete2), Toast.LENGTH_LONG).show();
+
                         if(!verify_for_report){
                             updateStatus();
                         }else{
@@ -435,7 +449,7 @@ public class VerifyActivity extends AppCompatActivity {
         });
     }
 
-    private void storeNotiToDatabase(String messageBody){
+    private void storeNotiToDatabase(final String messageBody){
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -458,10 +472,44 @@ public class VerifyActivity extends AppCompatActivity {
         reference.child("Notification").child(firebaseUser.getUid()).push().setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                sendNotification(getString(R.string.noti_from_system), messageBody);
+                Toast.makeText(VerifyActivity.this, getString(R.string.send_verify_complete) + " " + my_car_id + " " + my_car_province + " " + getString(R.string.send_verify_complete2), Toast.LENGTH_LONG).show();
                 startActivity(new Intent(VerifyActivity.this, ProfileActivity.class));
                 finish();
             }
         });
+    }
+
+    private void sendNotification(String messageTitle, String messageBody) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("dont_show_dialog", true);
+        intent.putExtra("open_noti", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = getString(R.string.default_notification_channel_id);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.mipmap.ic_car_launcher)
+                        .setContentTitle(messageTitle)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Since android Oreo notification channel is needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
 }

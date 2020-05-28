@@ -114,7 +114,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(car.getCar_id().toUpperCase());
+                builder.setTitle(car.getCar_id().toUpperCase() + " " + car.getProvince());
 
                 String[] choices = {mContext.getString(R.string.delete_this_car)};
                 builder.setItems(choices, new DialogInterface.OnClickListener() {
@@ -124,7 +124,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                             case 0:
                                 new android.app.AlertDialog.Builder(mContext)
                                         .setTitle(mContext.getString(R.string.confirm))
-                                        .setMessage(mContext.getString(R.string.are_you_sure_to_delete) + " " + car.getCar_id().toUpperCase())
+                                        .setMessage(mContext.getString(R.string.are_you_sure_to_delete) + "\n" + car.getCar_id().toUpperCase() + " " + car.getProvince())
                                         .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {

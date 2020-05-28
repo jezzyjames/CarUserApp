@@ -137,3 +137,6 @@
 
 5/29/2020
 - fix chat security rules
+- fix minor bugs
+- improve response to user while add car and while verify car
+- setStyle Bigtext for noti

@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
+
+import androidx.core.app.NotificationCompat;
+
 //Notification for Oreo and above
 public class NewNotification extends ContextWrapper {
 
@@ -51,6 +54,7 @@ public class NewNotification extends ContextWrapper {
         return new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingIntent)
                 .setContentTitle(title)
+                .setStyle(new Notification.BigTextStyle().bigText(body))
                 .setContentText(body)
                 .setSmallIcon(Integer.parseInt(icon))
                 .setSound(soundUri)
