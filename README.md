@@ -1,4 +1,20 @@
-# CarUserApp
+# Car-User-Application
+An Android mobile application for communicate between car users
+## Features
+- Users can login by phone number.
+- Users can add cars to their profile maximum to 3 cars.
+- Search others users car by license plate number with province.
+- Users can send text message or image message in chat room.
+- 3 Car status are show on users car includes "unverified", "verifying" and "verified".
+- Users can verified their car with registration car book in user profile page.
+- Profanity filter, bad words will be replaced by '*' symbol.
+- Message Notification by Firebase Cloud Messaging.
+- Users can report an inappropriate users such as user who use badword or spam message.
+- Show both users phone number in chatroom when messages in chat room has been sent from both users.
+- Always warn alert dialog to users when users car are not verified or users are chatting with other unverifed car.
+- 2 Language support includes English and Thai.
+
+
 ```bash
 C:.
 ├───.gradle
