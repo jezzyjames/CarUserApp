@@ -10,7 +10,6 @@ import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.core.app.NotificationCompat;
 
 //Notification for Oreo and above
 public class NewNotification extends ContextWrapper {

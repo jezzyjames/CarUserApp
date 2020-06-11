@@ -97,6 +97,9 @@
     <string name="car_id_in_verify">Car id</string>
     <string name="noti_from_system">Notification from system</string>
     <string name="please_wait">Please wait for a moment...</string>
+    <string name="today">Today</string>
+    <string name="seen">Seen</string>
+    <string name="sent">Sent</string>
 
 
 

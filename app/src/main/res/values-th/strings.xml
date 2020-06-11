@@ -97,6 +97,9 @@
     <string name="car_id_in_verify">หมายเลขทะเบียนรถยนต์</string>
     <string name="noti_from_system">การเเจ้งเตือนจากระบบ</string>
     <string name="please_wait">กรุณารอสักครู่...</string>
+    <string name="today">วันนี้</string>
+    <string name="seen">เห็นเเล้ว</string>
+    <string name="sent">ส่งเเล้ว</string>
 
     //Toast
     <string name="please_enter_code">กรุณาใส่รหัสยืนยัน</string>

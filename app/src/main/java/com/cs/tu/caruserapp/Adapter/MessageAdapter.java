@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.cs.tu.caruserapp.MessageActivity;
 import com.cs.tu.caruserapp.Model.Chat;
 import com.cs.tu.caruserapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +71,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             String year = dateArr[2];
 
             if(chat.getDate().equalsIgnoreCase(formattedDate)){
-                holder.show_time.setText("Today");
+                holder.show_time.setText(mContext.getString(R.string.today));
             }else{
                 holder.show_time.setText(chat.getDate());
                 if(year.equalsIgnoreCase(currentYear)){
@@ -112,10 +111,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         //text seen is show only last chat
         if(position == mChat.size()-1 && mChat.get(position).getSender().equals(firebaseUser.getUid())){
             if(chat.isIsseen()){
-                holder.txt_seen.setText("Seen");
+                holder.txt_seen.setText(mContext.getString(R.string.seen));
                 holder.txt_seen.setVisibility(View.VISIBLE);
             }else{
-                holder.txt_seen.setText("Sent");
+                holder.txt_seen.setText(mContext.getString(R.string.sent));
                 holder.txt_seen.setVisibility(View.VISIBLE);
             }
         }else{

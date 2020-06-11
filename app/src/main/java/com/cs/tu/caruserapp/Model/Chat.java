@@ -15,7 +15,7 @@ public class Chat {
     private String date;
 
     public Chat(String sender, String receiver, String sender_car_id, String receiver_car_id, String sender_car_province, String receiver_car_province
-            , String message, String message_type, boolean isSeen, String time, String date) {
+            , String message, String message_type, boolean isseen, String time, String date) {
         this.sender = sender;
         this.receiver = receiver;
         this.sender_car_id = sender_car_id;

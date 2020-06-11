@@ -257,7 +257,7 @@ public class MessageActivity extends AppCompatActivity {
                     }
 
                     //read and show all chat message on screen
-                    readMessage(sender_car_id, receiver_car_id, car.getImageURL(), sender_car_province, receiver_car_province);
+                    readMessage(car.getImageURL());
                 }
 
 
@@ -459,7 +459,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     //userid mean opposite id (reciever)***
-    private void readMessage(final String sender_car_id, final String receiver_car_id, final String imageurl, final String sender_car_province, final String receiver_car_province){
+    private void readMessage(final String imageurl){
         mchat = new ArrayList<>();
 
         //Read database from Chats
@@ -599,7 +599,8 @@ public class MessageActivity extends AppCompatActivity {
     private void uploadImage(final Uri SendImageUri){
         if(SendImageUri != null){
             final StorageReference fileReference = storageReference.child("image_message/" + firebaseUser.getUid() + "/"
-                    + sender_car_id + "_" + sender_car_province + "/" + receiver_car_id + "_" + receiver_car_province + "/" + System.currentTimeMillis() + "." + getFileExtension(SendImageUri));
+                    + sender_car_id + "_" + sender_car_province + "/" + receiver_car_id + "_" + receiver_car_province + "/"
+                    + System.currentTimeMillis() + "." + getFileExtension(SendImageUri));
 
             uploadTask = fileReference.putFile(SendImageUri);
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -617,7 +618,8 @@ public class MessageActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
-                        sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri, "image", sender_car_province, receiver_car_province);
+                        sendMessage(firebaseUser.getUid(), receiver_id, sender_car_id, receiver_car_id, mUri
+                                , "image", sender_car_province, receiver_car_province);
 
                     }else{
                         Toast.makeText(MessageActivity.this, getString(R.string.upload_image_failed), Toast.LENGTH_SHORT).show();

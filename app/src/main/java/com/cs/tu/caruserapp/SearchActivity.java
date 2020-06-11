@@ -6,8 +6,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,19 +34,19 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.cs.tu.caruserapp.Dialog.ChooseCarDialog;
 import com.cs.tu.caruserapp.Model.Car;
-import com.cs.tu.caruserapp.Model.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,6 +68,9 @@ public class SearchActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
     Car found_car;
+
+    FusedLocationProviderClient client;
+    private static final int REQUEST_LOACTION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +98,8 @@ public class SearchActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
 
         cardview_result.setVisibility(View.INVISIBLE);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -148,6 +160,12 @@ public class SearchActivity extends AppCompatActivity {
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                if (ContextCompat.checkSelfPermission(SearchActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(SearchActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOACTION);
+//
+//                } else {
+//                    getLocation();
+//                }
                 if(!search_users.getText().toString().equals("") && province_spinner.getSelectedItemPosition() != 0){
                     searchUsers(search_users.getText().toString().toLowerCase());
                     InputMethodManager imm = (InputMethodManager) getSystemService(
@@ -262,6 +280,50 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //Check camera permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOACTION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation();
+
+                } else {
+                    Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(this)
+                            .setMessage("Please give location permission for this application to search")
+                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package", SearchActivity.this.getPackageName(), null);
+                                    intent.setData(uri);
+                                    startActivityForResult(intent, REQUEST_LOACTION);
+
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.cancel), null)
+                            .show();
+
+                }
+                return;
+            }
+        }
+    }
+
+    private void getLocation(){
+        client.getLastLocation().addOnSuccessListener(SearchActivity.this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location != null){
+                    Log.d("Location : ", "Latitude is: " + location.getLatitude() + "\n" + "Longtitude is: " + location.getLongitude());
+                    Toast.makeText(SearchActivity.this, "--------------- "+location, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }

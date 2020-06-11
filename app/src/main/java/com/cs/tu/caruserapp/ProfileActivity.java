@@ -142,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity implements AddCarDialog.O
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Car car = snapshot.getValue(Car.class);
 
-                    if(car.getVerify_status() != 2){
+                    if(car.getVerify_status() == 0){
                         unvrified_detect.setVisibility(View.VISIBLE);
                     }
 

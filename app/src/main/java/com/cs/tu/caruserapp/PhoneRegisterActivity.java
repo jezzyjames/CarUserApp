@@ -284,6 +284,7 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            code_sent = false;
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
 
@@ -293,12 +294,18 @@ public class PhoneRegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
+                                        need_regist = false;
                                         login();
 
                                     }else{
                                         need_regist = true;
                                         phone_view_part.setVisibility(View.GONE);
                                         verify_progress.setVisibility(View.GONE);
+
+                                        layoutVerifyCode.setVisibility(View.GONE);
+                                        resend_code.setVisibility(View.GONE);
+                                        phone_refer.setVisibility(View.GONE);
+
                                         layoutName.setVisibility(View.VISIBLE);
                                         verify_btn.setVisibility(View.VISIBLE);
                                         verify_btn.setText(getString(R.string.submit));
