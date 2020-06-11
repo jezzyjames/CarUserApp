@@ -12,7 +12,7 @@ An Android mobile application for communicate between car users
 - Users can report an inappropriate users such as user who use badword or spam message.
 - Show both users phone number in chatroom when messages in chat room has been sent from both users.
 - Always warn alert dialog to users when users car are not verified or users are chatting with other unverifed car.
-- 2 Language support includes English and Thai (Automically change by device language).
+- 2 Language support includes English and Thai (automically change by device language).
 
 
 ```bash
