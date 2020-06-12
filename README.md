@@ -2,6 +2,9 @@
 An android application for communicate between car users.
 ## Github link:
 https://github.com/jezzyjames/CarUserApp
+## Installation
+1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/
+2.Install CarUserApplication.apk in your android device.
 ## Features
 - Users can login by phone number.
 - Users can add cars to their profile maximum to 3 cars.
@@ -15,11 +18,6 @@ https://github.com/jezzyjames/CarUserApp
 - Show both users phone number in chatroom when messages in chat room has been sent from both users.
 - Always warn alert dialog to users when users car are not verified or users are chatting with other unverifed car.
 - 2 Language support includes English and Thai (automically change by device language).
-
-## Installation
-1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/
-2.Install CarUserApplication.apk in your android device.
-
 ## Direction tree
 ```bash
 C:.
