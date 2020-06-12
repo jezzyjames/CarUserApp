@@ -15,7 +15,8 @@ An Android mobile application for communicate between car users
 - 2 Language support includes English and Thai (automically change by device language).
 
 ## Installation
-1.Download lastest version of .apk file from here https://github.com/jezzyjames/CarUserApp/releases/
+1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/
+2.Install CarUserApplication.apk in your android device.
 
 ## Direction tree
 ```bash
