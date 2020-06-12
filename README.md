@@ -14,7 +14,10 @@ An Android mobile application for communicate between car users
 - Always warn alert dialog to users when users car are not verified or users are chatting with other unverifed car.
 - 2 Language support includes English and Thai (automically change by device language).
 
+## Installation
+1.Download lastest version of .apk file from here https://github.com/jezzyjames/CarUserApp/releases/
 
+## Direction tree
 ```bash
 C:.
 ├───.gradle
