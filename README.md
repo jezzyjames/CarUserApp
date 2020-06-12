@@ -1,5 +1,5 @@
 # Car-User-Application
-An Android mobile application for communicate between car users
+An android application for communicate between car users.
 ## Features
 - Users can login by phone number.
 - Users can add cars to their profile maximum to 3 cars.
