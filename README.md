@@ -3,7 +3,7 @@ An android application for communicate between car users.
 ## Github link:
 https://github.com/jezzyjames/CarUserApp
 ## Installation
-1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/
+1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/<br/>
 2.Install CarUserApplication.apk in your android device.
 ## Features
 - Users can login by phone number.
