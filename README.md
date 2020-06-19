@@ -6,10 +6,10 @@ https://github.com/jezzyjames/CarUserApp
 1.Download lastest version of CarUserApplication.apk file from here https://github.com/jezzyjames/CarUserApp/releases/<br/>
 2.Install CarUserApplication.apk in your android device.
 ## Installation for developer
-1.Pull this git to your Android Studio.
-2.Add Firebase to your Android project (following this instruction document -> https://firebase.google.com/docs/android/setup) 
-3.Go to Sign-in method in Firebase Authentication and enable sign-in by phone.
-4.Create Firebase Realtime Database and Firebase Storage.
+1.Pull this git to your Android Studio.<br/>
+2.Add Firebase to your Android project (following this instruction document -> https://firebase.google.com/docs/android/setup)<br/>
+3.Go to Sign-in method in Firebase Authentication and enable sign-in by phone.<br/>
+4.Create Firebase Realtime Database and Firebase Storage.<br/>
 5.Installation complete.
 ## Features
 - Users can login by phone number.
