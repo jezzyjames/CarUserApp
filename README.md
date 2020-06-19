@@ -11,7 +11,7 @@ https://github.com/jezzyjames/CarUserApp
 - Search others users car by license plate number with province.
 - Users can send text message or image message in chat room.
 - 3 Car status are show on users car includes "unverified", "verifying" and "verified".
-- Users can verified their car with registration car book in user profile page.
+- Users can verify their car with registration car book in user profile page.
 - Profanity filter, bad words will be replaced by '*' symbol.
 - Message Notification by Firebase Cloud Messaging.
 - Users can report an inappropriate users such as user who use badword or spam message.
