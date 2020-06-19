@@ -9,8 +9,9 @@ https://github.com/jezzyjames/CarUserApp
 1.Pull this git to your Android Studio.<br/>
 2.Add Firebase to your Android project (following this instruction document https://firebase.google.com/docs/android/setup)<br/>
 3.Go to Sign-in method in Firebase Authentication and enable sign-in by phone.<br/>
-4.Create Firebase Realtime Database and Firebase Storage.<br/>
-5.Installation complete.
+4.Create Firebase Realtime Database and setting rules.<br/>
+5.Create Firebase Storage and setting rules.<br/>
+6.Installation complete.
 ## Features
 - Users can login by phone number.
 - Users can add cars to their profile maximum to 3 cars.
